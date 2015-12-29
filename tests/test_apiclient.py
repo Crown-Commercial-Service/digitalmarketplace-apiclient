@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from flask import json
+from flask import json, request
 import requests
 import requests_mock
 import pytest
@@ -13,7 +13,6 @@ from dmutils.apiclient import APIError, HTTPError, InvalidResponse
 from dmutils.apiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmutils.apiclient.errors import REQUEST_ERROR_MESSAGE
 from dmutils.audit import AuditTypes
-from dmutils import request_id
 
 
 @pytest.yield_fixture
@@ -338,22 +337,17 @@ class TestSearchApiClient(object):
 
 
 class TestDataApiClient(object):
-    def test_request_id_is_added_if_available(
-            self, data_client, rmock, app_with_logging):
-        headers = {'DM-Request-Id': 'generated'}
-        request_id.init_app(app_with_logging)
-        with app_with_logging.test_request_context('/', headers=headers):
-            rmock.get(
-                "http://baseurl/_status",
-                json={"status": "ok"},
-                status_code=200)
+    def test_request_id_is_added_if_available(self, data_client, rmock, app):
+        with app.test_request_context('/'):
+            app.config['DM_REQUEST_ID_HEADER'] = 'DM-Request-Id'
+            request.request_id = 'generated'
+            rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
 
             data_client.get_status()
 
             assert rmock.last_request.headers["DM-Request-Id"] == "generated"
 
-    def test_request_id_is_not_added_if_logging_is_not_loaded(
-            self, data_client, rmock, app):
+    def test_request_id_is_not_added_if_logging_is_not_loaded(self, data_client, rmock, app):
         headers = {'DM-Request-Id': 'generated'}
         with app.test_request_context('/', headers=headers):
             rmock.get(
