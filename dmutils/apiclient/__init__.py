@@ -1,5 +1,7 @@
-from .errors import APIError, HTTPError, InvalidResponse
-from .errors import REQUEST_ERROR_STATUS_CODE, REQUEST_ERROR_MESSAGE
+__version__ = '1.0.0'
 
-from .data import DataAPIClient
-from .search import SearchAPIClient
+from .errors import APIError, HTTPError, InvalidResponse  # noqa
+from .errors import REQUEST_ERROR_STATUS_CODE, REQUEST_ERROR_MESSAGE  # noqa
+
+from .data import DataAPIClient  # noqa
+from .search import SearchAPIClient  # noqa

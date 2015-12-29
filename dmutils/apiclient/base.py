@@ -11,9 +11,8 @@ from flask import has_request_context, request, current_app
 import backoff
 from monotonic import monotonic
 
-from .. import __version__
+from . import __version__
 from .errors import APIError, HTTPError, HTTP503Error, InvalidResponse
-
 
 logger = logging.getLogger(__name__)
 
