@@ -7,12 +7,12 @@ import requests_mock
 import pytest
 import mock
 
-from dmutils.apiclient.base import BaseAPIClient
-from dmutils.apiclient import SearchAPIClient, DataAPIClient
-from dmutils.apiclient import APIError, HTTPError, InvalidResponse
-from dmutils.apiclient.errors import REQUEST_ERROR_STATUS_CODE
-from dmutils.apiclient.errors import REQUEST_ERROR_MESSAGE
-from dmutils.audit import AuditTypes
+from dmapiclient.base import BaseAPIClient
+from dmapiclient import SearchAPIClient, DataAPIClient
+from dmapiclient import APIError, HTTPError, InvalidResponse
+from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
+from dmapiclient.errors import REQUEST_ERROR_MESSAGE
+from dmapiclient.audit import AuditTypes
 
 
 @pytest.yield_fixture
@@ -23,7 +23,7 @@ def rmock():
 
 @pytest.yield_fixture
 def raw_rmock():
-    with mock.patch('dmutils.apiclient.base.requests.request') as rmock:
+    with mock.patch('dmapiclient.base.requests.request') as rmock:
         yield rmock
 
 

@@ -1,4 +1,4 @@
-from dmutils.audit import AuditTypes
+from dmapiclient.audit import AuditTypes
 
 
 def test_should_allow_valid_audit_type():

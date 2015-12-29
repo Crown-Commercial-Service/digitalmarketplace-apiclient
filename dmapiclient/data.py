@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from ..audit import AuditTypes
+from .audit import AuditTypes
 from .base import BaseAPIClient, logger, make_iter_method
 from .errors import HTTPError
 
