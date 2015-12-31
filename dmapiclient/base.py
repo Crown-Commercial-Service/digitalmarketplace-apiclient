@@ -12,7 +12,7 @@ import backoff
 from monotonic import monotonic
 
 from . import __version__
-from .errors import APIError, HTTPError, HTTP503Error, InvalidResponse
+from .errors import APIError, HTTPError, HTTPTemporaryError, InvalidResponse
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ def make_iter_method(method_name, model_name, url_path):
     :param model_name: The name of the model as it appears in the JSON response
     :param url_path: The URL path for the API
     """
-    backoff_decorator = backoff.on_exception(backoff.expo, HTTP503Error, max_tries=5)
+    backoff_decorator = backoff.on_exception(backoff.expo, HTTPTemporaryError, max_tries=5)
 
     def iter_method(self, *args, **kwargs):
         method = getattr(self, method_name)
