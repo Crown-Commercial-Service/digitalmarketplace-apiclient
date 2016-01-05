@@ -19,7 +19,8 @@ class DataAPIClient(BaseAPIClient):
             per_page=None,
             acknowledged=None,
             object_type=None,
-            object_id=None):
+            object_id=None,
+            latest_first=None):
 
         params = {}
         if audit_type:
@@ -38,6 +39,8 @@ class DataAPIClient(BaseAPIClient):
             params['object-type'] = object_type
         if object_id is not None:
             params['object-id'] = object_id
+        if latest_first is not None:
+            params['latest_first'] = latest_first
 
         return self._get(
             "/audit-events",

@@ -1289,7 +1289,7 @@ class TestDataApiClient(object):
 
     def test_find_audit_events_with_all_params(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/audit-events?page=123&audit-type=contact_update&audit-date=2010-01-01&acknowledged=all&object-type=foo&object-id=123",  # noqa
+            "http://baseurl/audit-events?page=123&audit-type=contact_update&audit-date=2010-01-01&acknowledged=all&object-type=foo&object-id=123&latest_first=True",  # noqa
             json={"audit-event": "result"},
             status_code=200,
         )
@@ -1300,7 +1300,8 @@ class TestDataApiClient(object):
             acknowledged='all',
             audit_date='2010-01-01',
             object_type='foo',
-            object_id=123)
+            object_id=123,
+            latest_first=True)
 
         assert result == {"audit-event": "result"}
         assert rmock.called
