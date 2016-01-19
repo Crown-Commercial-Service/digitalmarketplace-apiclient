@@ -26,6 +26,8 @@ class AuditTypes(Enum):
     send_g7_application_question = "send_g7_application_question"
     snapshot_framework_stats = "snapshot_framework_stats"
     framework_update = "framework_update"
+    upload_countersigned_agreement = "upload_countersigned_agreement"
+    delete_countersigned_agreement = "delete_countersigned_agreement"
 
     @staticmethod
     def is_valid_audit_type(test_audit_type):
