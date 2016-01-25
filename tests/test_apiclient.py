@@ -1150,6 +1150,24 @@ class TestDataApiClient(object):
             }
         }
 
+    def test_update_draft_service_status(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/draft-services/2/update-status",
+            json={"services": {"status": "failed"}},
+            status_code=200,
+        )
+
+        result = data_client.update_draft_service_status(2, 'failed', 'user')
+
+        assert result == {"services": {"status": "failed"}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'update_details': {
+                'updated_by': 'user'
+            },
+            'services': {'status': 'failed'}
+        }
+
     def test_update_draft_service(self, data_client, rmock):
         rmock.post(
             "http://baseurl/draft-services/2",
