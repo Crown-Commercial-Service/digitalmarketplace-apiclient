@@ -405,6 +405,16 @@ class DataAPIClient(BaseAPIClient):
                 }
             })
 
+    def update_draft_service_status(self, draft_id, status, user):
+        data = {
+            "update_details": {
+                "updated_by": user
+            },
+            "services": {"status": status},
+        }
+
+        return self._post("/draft-services/{}/update-status".format(draft_id), data=data)
+
     def publish_draft_service(self, draft_id, user):
         return self._post(
             "/draft-services/{}/publish".format(draft_id),
