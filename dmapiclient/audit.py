@@ -29,6 +29,9 @@ class AuditTypes(Enum):
     framework_update = "framework_update"
     upload_countersigned_agreement = "upload_countersigned_agreement"
     delete_countersigned_agreement = "delete_countersigned_agreement"
+    create_brief = "create_brief"
+    update_brief = "update_brief"
+    update_brief_status = "update_brief_status"
 
     @staticmethod
     def is_valid_audit_type(test_audit_type):
