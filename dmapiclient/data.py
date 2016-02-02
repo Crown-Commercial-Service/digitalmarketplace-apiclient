@@ -254,7 +254,7 @@ class DataAPIClient(BaseAPIClient):
                 raise
         return None
 
-    def authenticate_user(self, email_address, password, supplier=True):
+    def authenticate_user(self, email_address, password, role=None):
         try:
             response = self._post(
                 '/users/auth',
@@ -264,8 +264,9 @@ class DataAPIClient(BaseAPIClient):
                         "password": password,
                     }
                 })
-            if not supplier or "supplier" in response['users']:
-                return response
+            if response:
+                if not role or role == response['users']['role']:
+                    return response
         except HTTPError as e:
             if e.status_code not in [400, 403, 404]:
                 raise
