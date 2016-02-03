@@ -1481,6 +1481,28 @@ class TestDataApiClient(object):
 
             data_client.get_framework_stats('g-cloud-11')
 
+    def test_find_frameworks(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/frameworks',
+            json={'frameworks': ['g6', 'g7']},
+            status_code=200)
+
+        result = data_client.find_frameworks()
+
+        assert result == {'frameworks': ['g6', 'g7']}
+        assert rmock.called
+
+    def test_get_framework(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/frameworks/g-cloud-11',
+            json={'frameworks': {'g-cloud-11': 'yes'}},
+            status_code=200)
+
+        result = data_client.get_framework('g-cloud-11')
+
+        assert result == {'frameworks': {'g-cloud-11': 'yes'}}
+        assert rmock.called
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):
