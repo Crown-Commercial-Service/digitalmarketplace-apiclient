@@ -560,8 +560,7 @@ class TestDataApiClient(object):
             json=self.user(),
             status_code=200)
 
-        user = data_client.authenticate_user(
-            "email_address", "password")['users']
+        user = data_client.authenticate_user("email_address", "password")['users']
 
         assert user['id'] == "id"
         assert user['email_address'] == "email_address"
@@ -575,8 +574,7 @@ class TestDataApiClient(object):
             text=json.dumps({'authorization': False}),
             status_code=404)
 
-        user = data_client.authenticate_user(
-            "email_address", "password")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user is None
 
@@ -587,8 +585,7 @@ class TestDataApiClient(object):
             text=json.dumps({'authorization': False}),
             status_code=403)
 
-        user = data_client.authenticate_user(
-            "email_address", "password")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user is None
 
@@ -599,25 +596,24 @@ class TestDataApiClient(object):
             text=json.dumps({'authorization': False}),
             status_code=400)
 
-        user = data_client.authenticate_user(
-            "email_address", "password")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user is None
 
-    def test_authenticate_user_returns_none_on_non_supplier(
+    def test_authenticate_user_returns_buyer_user(
             self, data_client, rmock):
         user_with_no_supplier = self.user()
         del user_with_no_supplier['users']['supplier']
+        user_with_no_supplier['users']['role'] = 'buyer'
 
         rmock.post(
             'http://baseurl/users/auth',
             text=json.dumps(user_with_no_supplier),
             status_code=200)
 
-        user = data_client.authenticate_user(
-            "email_address", "password")
+        user = data_client.authenticate_user("email_address", "password")
 
-        assert user is None
+        assert user == user_with_no_supplier
 
     def test_authenticate_user_raises_on_500(self, data_client, rmock):
         with pytest.raises(APIError):
@@ -779,7 +775,7 @@ class TestDataApiClient(object):
             'id': 'id',
             'email_address': 'email_address',
             'name': 'name',
-            'role': 'role',
+            'role': 'supplier',
             'active': 'active',
             'locked': False,
             'created_at': "2015-05-05T05:05:05",
@@ -1484,6 +1480,28 @@ class TestDataApiClient(object):
                 status_code=400)
 
             data_client.get_framework_stats('g-cloud-11')
+
+    def test_find_frameworks(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/frameworks',
+            json={'frameworks': ['g6', 'g7']},
+            status_code=200)
+
+        result = data_client.find_frameworks()
+
+        assert result == {'frameworks': ['g6', 'g7']}
+        assert rmock.called
+
+    def test_get_framework(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/frameworks/g-cloud-11',
+            json={'frameworks': {'g-cloud-11': 'yes'}},
+            status_code=200)
+
+        result = data_client.get_framework('g-cloud-11')
+
+        assert result == {'frameworks': {'g-cloud-11': 'yes'}}
+        assert rmock.called
 
 
 class TestDataAPIClientIterMethods(object):
