@@ -9,8 +9,8 @@ PR: [#8](https://github.com/alphagov/digitalmarketplace-apiclient/pull/8)
 ### What changed
 
 The `authenticate_user` method used to take a boolean flag to indicate if the user is a supplier user.
-It now takes an optional `role` parameter instead, and if `role` is specified then the authenticate method 
-will only returns the user if the role of the user matches the specified role.
+Now it just returns users with any role, and it is up to the front-end apps to decide if the authenticated
+user should be allowed to access a resource.
 
 ### Example app change
 
@@ -21,7 +21,7 @@ user = api_client.authenticate_user("email_address", "password", supplier=False)
 
 New
 ```
-user = api_client.authenticate_user("email_address", "password", role='buyer')
+user = api_client.authenticate_user("email_address", "password")
 ```
 
 ## 1.0.0

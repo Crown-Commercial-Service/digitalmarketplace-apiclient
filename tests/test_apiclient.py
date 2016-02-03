@@ -560,8 +560,7 @@ class TestDataApiClient(object):
             json=self.user(),
             status_code=200)
 
-        user = data_client.authenticate_user(
-            "email_address", "password", "supplier")['users']
+        user = data_client.authenticate_user("email_address", "password")['users']
 
         assert user['id'] == "id"
         assert user['email_address'] == "email_address"
@@ -575,8 +574,7 @@ class TestDataApiClient(object):
             text=json.dumps({'authorization': False}),
             status_code=404)
 
-        user = data_client.authenticate_user(
-            "email_address", "password", "supplier")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user is None
 
@@ -587,8 +585,7 @@ class TestDataApiClient(object):
             text=json.dumps({'authorization': False}),
             status_code=403)
 
-        user = data_client.authenticate_user(
-            "email_address", "password", "supplier")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user is None
 
@@ -599,28 +596,11 @@ class TestDataApiClient(object):
             text=json.dumps({'authorization': False}),
             status_code=400)
 
-        user = data_client.authenticate_user(
-            "email_address", "password", "supplier")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user is None
 
-    def test_authenticate_user_returns_none_on_non_supplier_if_supplier_role(
-            self, data_client, rmock):
-        user_with_no_supplier = self.user()
-        del user_with_no_supplier['users']['supplier']
-        user_with_no_supplier['users']['role'] = 'not-supplier'
-
-        rmock.post(
-            'http://baseurl/users/auth',
-            text=json.dumps(user_with_no_supplier),
-            status_code=200)
-
-        user = data_client.authenticate_user(
-            "email_address", "password", "supplier")
-
-        assert user is None
-
-    def test_authenticate_user_returns_buyer_user_if_buyer_role(
+    def test_authenticate_user_returns_buyer_user(
             self, data_client, rmock):
         user_with_no_supplier = self.user()
         del user_with_no_supplier['users']['supplier']
@@ -631,8 +611,7 @@ class TestDataApiClient(object):
             text=json.dumps(user_with_no_supplier),
             status_code=200)
 
-        user = data_client.authenticate_user(
-            "email_address", "password", "buyer")
+        user = data_client.authenticate_user("email_address", "password")
 
         assert user == user_with_no_supplier
 
@@ -643,7 +622,7 @@ class TestDataApiClient(object):
                 text=json.dumps({'authorization': False}),
                 status_code=500)
 
-            data_client.authenticate_user("email_address", "password", "supplier")
+            data_client.authenticate_user("email_address", "password")
 
     def test_create_user(self, data_client, rmock):
         rmock.post(
