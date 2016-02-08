@@ -510,3 +510,52 @@ class DataAPIClient(BaseAPIClient):
     def get_framework_stats(self, framework_slug):
         return self._get(
             "/frameworks/{}/stats".format(framework_slug))
+
+    # Buyer briefs
+
+    def create_brief(self, framework, lot, brief_title, user_id, user):
+        return self._post(
+            "/briefs",
+            data={
+                "briefs": {
+                    "frameworkSlug": framework,
+                    "lot": lot,
+                    "userId": user_id,
+                    "title": brief_title
+                },
+                "update_details": {
+                    "updated_by": user
+                }
+            })
+
+    def update_brief(self, brief_id, brief, user):
+        return self._post(
+            "/briefs/{}".format(brief_id),
+            data={
+                "briefs": brief,
+                "update_details": {
+                    "updated_by": user
+                }
+            },
+        )
+
+    def update_brief_status(self, brief_id, status, user):
+        return self._put(
+            "/briefs/{}/status".format(brief_id),
+            data={
+                "briefs": {"status": status},
+                "update_details": {
+                    "updated_by": user
+                }
+            },
+        )
+
+    def get_brief(self, brief_id):
+        return self._get(
+            "/briefs/{}".format(brief_id))
+
+    def find_briefs(self, user_id=None):
+        return self._get(
+            "/briefs",
+            params={"user_id": user_id}
+        )
