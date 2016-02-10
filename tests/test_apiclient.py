@@ -1510,7 +1510,11 @@ class TestDataApiClient(object):
             status_code=201,
         )
 
-        result = data_client.create_brief("digital-things", "digital-watches", "Timex", 123, "user@email.com")
+        result = data_client.create_brief(
+            "digital-things", "digital-watches", 123,
+            {"title": "Timex"},
+            "user@email.com",
+            page_questions=["title"])
 
         assert result == {"briefs": "result"}
         assert rmock.last_request.json() == {
@@ -1522,7 +1526,8 @@ class TestDataApiClient(object):
             },
             "update_details": {
                 "updated_by": "user@email.com"
-            }
+            },
+            "page_questions": ["title"],
         }
 
     def test_update_brief(self, data_client, rmock):
@@ -1539,7 +1544,8 @@ class TestDataApiClient(object):
             "briefs": {"foo": "bar"},
             "update_details": {
                 "updated_by": "user@email.com"
-            }
+            },
+            "page_questions": [],
         }
 
     def test_update_brief_status(self, data_client, rmock):
