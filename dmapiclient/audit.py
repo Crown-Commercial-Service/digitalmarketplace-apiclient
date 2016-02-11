@@ -32,6 +32,7 @@ class AuditTypes(Enum):
     create_brief = "create_brief"
     update_brief = "update_brief"
     update_brief_status = "update_brief_status"
+    create_brief_response = "create_brief_response"
 
     @staticmethod
     def is_valid_audit_type(test_audit_type):
