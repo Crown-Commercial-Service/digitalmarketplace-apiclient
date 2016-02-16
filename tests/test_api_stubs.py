@@ -34,7 +34,8 @@ def test_lot():
 
 
 def test_brief():
-    assert api_stubs.brief(status='published', framework_slug='a-framework-slug', lot_slug='a-lot-slug') == {
+    assert api_stubs.brief(status='published', framework_slug='a-framework-slug', lot_slug='a-lot-slug', user_id=234)\
+        == {
         "briefs": {
             "id": 1234,
             "frameworkSlug": "a-framework-slug",
@@ -43,7 +44,7 @@ def test_brief():
             'users': [{"active": True,
                        "role": "buyer",
                        "emailAddress": "buyer@email.com",
-                       "id": 123,
+                       "id": 234,
                        "name": "Buyer User"}],
         }
     }

@@ -30,7 +30,10 @@ def lot(slug="some-lot", allows_brief=False, one_service_limit=False):
     }
 
 
-def brief(status="draft", framework_slug="digital-outcomes-and-specialists", lot_slug="digital-specialists"):
+def brief(status="draft",
+          framework_slug="digital-outcomes-and-specialists",
+          lot_slug="digital-specialists",
+          user_id=123):
     return {
         "briefs": {
             "id": 1234,
@@ -40,7 +43,7 @@ def brief(status="draft", framework_slug="digital-outcomes-and-specialists", lot
             'users': [{"active": True,
                        "role": "buyer",
                        "emailAddress": "buyer@email.com",
-                       "id": 123,
+                       "id": user_id,
                        "name": "Buyer User"}],
         }
     }
