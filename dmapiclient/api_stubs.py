@@ -28,3 +28,22 @@ def lot(slug="some-lot", allows_brief=False, one_service_limit=False):
         "allowsBrief": allows_brief,
         "oneServiceLimit": one_service_limit,
     }
+
+
+def brief(status="draft",
+          framework_slug="digital-outcomes-and-specialists",
+          lot_slug="digital-specialists",
+          user_id=123):
+    return {
+        "briefs": {
+            "id": 1234,
+            "frameworkSlug": framework_slug,
+            "lotSlug": lot_slug,
+            "status": status,
+            'users': [{"active": True,
+                       "role": "buyer",
+                       "emailAddress": "buyer@email.com",
+                       "id": user_id,
+                       "name": "Buyer User"}],
+        }
+    }

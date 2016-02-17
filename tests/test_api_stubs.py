@@ -31,3 +31,20 @@ def test_lot():
         "allowsBrief": False,
         "oneServiceLimit": False,
     }
+
+
+def test_brief():
+    assert api_stubs.brief(status='published', framework_slug='a-framework-slug', lot_slug='a-lot-slug', user_id=234)\
+        == {
+        "briefs": {
+            "id": 1234,
+            "frameworkSlug": "a-framework-slug",
+            "lotSlug": "a-lot-slug",
+            "status": "published",
+            'users': [{"active": True,
+                       "role": "buyer",
+                       "emailAddress": "buyer@email.com",
+                       "id": 234,
+                       "name": "Buyer User"}],
+        }
+    }

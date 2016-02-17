@@ -513,29 +513,33 @@ class DataAPIClient(BaseAPIClient):
 
     # Buyer briefs
 
-    def create_brief(self, framework, lot, brief_title, user_id, user):
+    def create_brief(self, framework_slug, lot_slug, user_id, data, updated_by, page_questions=None):
+        brief_data = data.copy()
+        brief_data.update({
+            "frameworkSlug": framework_slug,
+            "lot": lot_slug,
+            "userId": user_id,
+        })
         return self._post(
             "/briefs",
             data={
-                "briefs": {
-                    "frameworkSlug": framework,
-                    "lot": lot,
-                    "userId": user_id,
-                    "title": brief_title
-                },
+                "briefs": brief_data,
                 "update_details": {
-                    "updated_by": user
-                }
-            })
+                    "updated_by": updated_by
+                },
+                "page_questions": page_questions or [],
+            }
+        )
 
-    def update_brief(self, brief_id, brief, user):
+    def update_brief(self, brief_id, brief, updated_by, page_questions=None):
         return self._post(
             "/briefs/{}".format(brief_id),
             data={
                 "briefs": brief,
                 "update_details": {
-                    "updated_by": user
-                }
+                    "updated_by": updated_by
+                },
+                "page_questions": page_questions or [],
             },
         )
 
