@@ -34,17 +34,39 @@ def test_lot():
 
 
 def test_brief():
-    assert api_stubs.brief(status='published', framework_slug='a-framework-slug', lot_slug='a-lot-slug', user_id=234)\
+    assert api_stubs.brief() \
         == {
         "briefs": {
             "id": 1234,
+            "title": "I need a thing to do a thing",
+            "frameworkSlug": "digital-outcomes-and-specialists",
+            "lotSlug": "digital-specialists",
+            "status": "draft",
+            "users": [{"active": True,
+                       "role": "buyer",
+                       "emailAddress": "buyer@email.com",
+                       "id": 123,
+                       "name": "Buyer User"}],
+            "createdAt": "2016-03-29T10:11:12.000000Z",
+            "updatedAt": "2016-03-29T10:11:13.000000Z"
+        }
+    }
+
+    assert api_stubs.brief(status='live', framework_slug='a-framework-slug', lot_slug='a-lot-slug', user_id=234) \
+        == {
+        "briefs": {
+            "id": 1234,
+            "title": "I need a thing to do a thing",
             "frameworkSlug": "a-framework-slug",
             "lotSlug": "a-lot-slug",
-            "status": "published",
-            'users': [{"active": True,
+            "status": "live",
+            "users": [{"active": True,
                        "role": "buyer",
                        "emailAddress": "buyer@email.com",
                        "id": 234,
                        "name": "Buyer User"}],
+            "createdAt": "2016-03-29T10:11:12.000000Z",
+            "updatedAt": "2016-03-29T10:11:13.000000Z",
+            "publishedAt": "2016-03-29T10:11:14.000000Z"
         }
     }
