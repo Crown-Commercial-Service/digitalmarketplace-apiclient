@@ -563,3 +563,12 @@ class DataAPIClient(BaseAPIClient):
             "/briefs",
             params={"user_id": user_id}
         )
+
+    def delete_brief(self, brief_id, user):
+        return self._delete(
+            "/briefs/{}".format(brief_id),
+            data={
+                "update_details": {
+                    "updated_by": user
+                },
+            })
