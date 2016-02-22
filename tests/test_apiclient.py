@@ -645,9 +645,7 @@ class TestDataApiClient(object):
             "users": {
                 "password": "newpassword"
             },
-            "update_details": {
-                "updated_by": "no logged-in user"
-            }
+            "updated_by": "no logged-in user"
         }
 
     def test_update_user_password_by_logged_in_user(self, data_client, rmock):
@@ -660,9 +658,7 @@ class TestDataApiClient(object):
             "users": {
                 "password": "newpassword"
             },
-            "update_details": {
-                "updated_by": "test@example.com"
-            }
+            "updated_by": "test@example.com"
         }
 
     def test_update_user_password_returns_false_on_non_200(
@@ -693,7 +689,7 @@ class TestDataApiClient(object):
         data_client.update_user(123, role='supplier', updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
-            "update_details": {"updated_by": "test@example.com"},
+            "updated_by": "test@example.com",
             "users": {"role": 'supplier'}
         }
 
@@ -705,7 +701,7 @@ class TestDataApiClient(object):
         data_client.update_user(123, supplier_id=123, updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
-            "update_details": {"updated_by": "test@example.com"},
+            "updated_by": "test@example.com",
             "users": {"supplierId": 123}
         }
 
@@ -717,7 +713,7 @@ class TestDataApiClient(object):
         data_client.update_user(123, supplier_id=123, role='supplier', updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
-            "update_details": {"updated_by": "test@example.com"},
+            "updated_by": "test@example.com",
             "users": {
                 "supplierId": 123,
                 "role": "supplier"
@@ -732,7 +728,7 @@ class TestDataApiClient(object):
         data_client.update_user(123, locked=False, updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
-            "update_details": {"updated_by": "test@example.com"},
+            "updated_by": "test@example.com",
             "users": {"locked": False}
         }
 
@@ -744,7 +740,7 @@ class TestDataApiClient(object):
         data_client.update_user(123, active=True, updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
-            "update_details": {"updated_by": "test@example.com"},
+            "updated_by": "test@example.com",
             "users": {"active": True}
         }
 
@@ -756,7 +752,7 @@ class TestDataApiClient(object):
         data_client.update_user(123, active=False, updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
-            "update_details": {"updated_by": "test@example.com"},
+            "updated_by": "test@example.com",
             "users": {"active": False}
         }
 
@@ -951,7 +947,7 @@ class TestDataApiClient(object):
 
         assert result == {"frameworkInterest": {"supplierId": 123, "frameworkId": 19}}
         assert rmock.called
-        assert rmock.request_history[0].json() == {'update_details': {'updated_by': 'g-15-user'}}
+        assert rmock.request_history[0].json() == {'updated_by': 'g-15-user'}
 
     def test_get_supplier_declaration(self, data_client, rmock):
         rmock.get(
@@ -1009,7 +1005,7 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {
             'frameworkInterest': {'onFramework': True},
-            'update_details': {'updated_by': 'user'}
+            'updated_by': 'user'
         }
 
     def test_register_framework_agreement_returned(self, data_client, rmock):
@@ -1023,7 +1019,7 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {
             'frameworkInterest': {'agreementReturned': True},
-            'update_details': {'updated_by': 'user'}
+            'updated_by': 'user'
         }
 
     def test_find_framework_suppliers(self, data_client, rmock):
@@ -1087,9 +1083,7 @@ class TestDataApiClient(object):
         assert result == {"done": "it"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
     def test_copy_draft_service_from_existing_service(
@@ -1107,9 +1101,7 @@ class TestDataApiClient(object):
         assert result == {"done": "it"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
     def test_copy_draft_service(self, data_client, rmock):
@@ -1124,9 +1116,7 @@ class TestDataApiClient(object):
         assert result == {"done": "copy"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
     def test_complete_draft_service(self, data_client, rmock):
@@ -1141,9 +1131,7 @@ class TestDataApiClient(object):
         assert result == {"done": "complete"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
     def test_update_draft_service_status(self, data_client, rmock):
@@ -1158,9 +1146,7 @@ class TestDataApiClient(object):
         assert result == {"services": {"status": "failed"}}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            },
+            'updated_by': 'user',
             'services': {'status': 'failed'}
         }
 
@@ -1181,9 +1167,7 @@ class TestDataApiClient(object):
             'services': {
                 "field": "value"
             },
-            'update_details': {
-                'updated_by': 'user'
-            },
+            'updated_by': 'user'
         }
 
     def test_update_draft_service_with_page_questions(self, data_client, rmock):
@@ -1203,9 +1187,7 @@ class TestDataApiClient(object):
             'services': {
                 "field": "value"
             },
-            'update_details': {
-                'updated_by': 'user'
-            },
+            'updated_by': 'user',
             'page_questions': ['question1', 'question2']
         }
 
@@ -1223,9 +1205,7 @@ class TestDataApiClient(object):
         assert result == {"done": "it"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
     def test_create_new_draft_service(self, data_client, rmock):
@@ -1243,9 +1223,7 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {
             'page_questions': [],
-            'update_details': {
-                'updated_by': 'user'
-            },
+            'updated_by': 'user',
             'services': {
                 'frameworkSlug': 'g-cloud-7',
                 'supplierId': 2,
@@ -1358,9 +1336,7 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"audit-event": "result"}
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
     def test_create_audit_event(self, data_client, rmock):
@@ -1524,10 +1500,8 @@ class TestDataApiClient(object):
                 "userId": 123,
                 "title": "Timex"
             },
-            "update_details": {
-                "updated_by": "user@email.com"
-            },
             "page_questions": ["title"],
+            "updated_by": "user@email.com"
         }
 
     def test_update_brief(self, data_client, rmock):
@@ -1542,10 +1516,8 @@ class TestDataApiClient(object):
         assert result == {"briefs": "result"}
         assert rmock.last_request.json() == {
             "briefs": {"foo": "bar"},
-            "update_details": {
-                "updated_by": "user@email.com"
-            },
             "page_questions": [],
+            "updated_by": "user@email.com"
         }
 
     def test_update_brief_status(self, data_client, rmock):
@@ -1560,9 +1532,7 @@ class TestDataApiClient(object):
         assert result == {"briefs": "result"}
         assert rmock.last_request.json() == {
             "briefs": {"status": "published"},
-            "update_details": {
-                "updated_by": "user@email.com"
-            }
+            "updated_by": "user@email.com"
         }
 
     def test_get_brief(self, data_client, rmock):
@@ -1609,9 +1579,7 @@ class TestDataApiClient(object):
         assert result == {"done": "it"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'update_details': {
-                'updated_by': 'user'
-            }
+            'updated_by': 'user'
         }
 
 
