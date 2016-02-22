@@ -1582,6 +1582,47 @@ class TestDataApiClient(object):
             'updated_by': 'user'
         }
 
+    def test_create_brief_response(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/brief-responses",
+            json={"briefs": "result"},
+            status_code=201,
+        )
+
+        result = data_client.create_brief_response(
+            1, 2, {"essentialRequirements": [True, None, False]}, "user@email.com"
+        )
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "briefResponses": {
+                "briefId": 1,
+                "supplierId": 2,
+                "essentialRequirements": [True, None, False],
+            },
+            "updated_by": "user@email.com"
+        }
+
+    def test_get_brief_response(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/brief-responses/123",
+            json={"briefResponses": "result"},
+            status_code=200)
+
+        result = data_client.get_brief_response(123)
+
+        assert result == {"briefResponses": "result"}
+
+    def test_find_brief_responses(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/brief-responses?brief_id=1&supplier_id=2",
+            json={"briefResponses": []},
+            status_code=200)
+
+        result = data_client.find_brief_responses(brief_id=1, supplier_id=2)
+
+        assert result == {"briefResponses": []}
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):

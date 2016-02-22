@@ -533,3 +533,26 @@ class DataAPIClient(BaseAPIClient):
             data={},
             user=user,
         )
+
+    def create_brief_response(self, brief_id, supplier_id, data, user):
+        data = dict(data, briefId=brief_id, supplierId=supplier_id)
+        return self._post_with_updated_by(
+            "/brief-responses",
+            data={
+                "briefResponses": data
+            },
+            user=user,
+        )
+
+    def get_brief_response(self, brief_response_id):
+        return self._get(
+            "/brief-responses/{}".format(brief_response_id))
+
+    def find_brief_responses(self, brief_id=None, supplier_id=None):
+        return self._get(
+            "/brief-responses",
+            params={
+                "brief_id": brief_id,
+                "supplier_id": supplier_id,
+            }
+        )
