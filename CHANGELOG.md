@@ -2,6 +2,23 @@
 
 Records breaking changes from major version bumps
 
+## 3.0.0
+
+PR: [#14](https://github.com/alphagov/digitalmarketplace-apiclient/pull/14)
+
+### What changed
+
+All POST, PUT and DELETE methods are now sending `"updated_by"` payload instead of `"update_details"`.
+The new payload should be supported by the data API for all methods.
+
+This shouldn't require any changes to the code that's using `DataAPIClient`, but might break test
+expectations if any of them rely on `update_details` payload key.
+
+### Example app change
+
+Search for `update_details` and replace all instances of `{"update_details": {"updated_by": ...}}` with
+`{"updated_by": ...}` if they affect the tests.
+
 ## 2.0.0
 
 PR: [#8](https://github.com/alphagov/digitalmarketplace-apiclient/pull/8)

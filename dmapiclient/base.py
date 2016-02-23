@@ -51,14 +51,26 @@ class BaseAPIClient(object):
     def _put(self, url, data):
         return self._request("PUT", url, data=data)
 
+    def _put_with_updated_by(self, url, data, user):
+        data = dict(data, updated_by=user)
+        return self._put(url, data)
+
     def _get(self, url, params=None):
         return self._request("GET", url, params=params)
 
     def _post(self, url, data):
         return self._request("POST", url, data=data)
 
+    def _post_with_updated_by(self, url, data, user):
+        data = dict(data, updated_by=user)
+        return self._post(url, data)
+
     def _delete(self, url, data=None):
         return self._request("DELETE", url, data=data)
+
+    def _delete_with_updated_by(self, url, data, user):
+        data = dict(data, updated_by=user)
+        return self._delete(url, data)
 
     def _request(self, method, url, data=None, params=None):
         if not self.enabled:
