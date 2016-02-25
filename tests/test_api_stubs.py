@@ -48,7 +48,8 @@ def test_brief():
                        "id": 123,
                        "name": "Buyer User"}],
             "createdAt": "2016-03-29T10:11:12.000000Z",
-            "updatedAt": "2016-03-29T10:11:13.000000Z"
+            "updatedAt": "2016-03-29T10:11:13.000000Z",
+            "clarificationQuestions": [],
         }
     }
 
@@ -67,6 +68,29 @@ def test_brief():
                        "name": "Buyer User"}],
             "createdAt": "2016-03-29T10:11:12.000000Z",
             "updatedAt": "2016-03-29T10:11:13.000000Z",
-            "publishedAt": "2016-03-29T10:11:14.000000Z"
+            "publishedAt": "2016-03-29T10:11:14.000000Z",
+            "clarificationQuestions": [],
+        }
+    }
+
+    assert api_stubs.brief(clarification_questions=[{"question": "Why?", "answer": "Because"}]) \
+        == {
+        "briefs": {
+            "id": 1234,
+            "title": "I need a thing to do a thing",
+            "frameworkSlug": "digital-outcomes-and-specialists",
+            "lotSlug": "digital-specialists",
+            "status": "draft",
+            "users": [{"active": True,
+                       "role": "buyer",
+                       "emailAddress": "buyer@email.com",
+                       "id": 123,
+                       "name": "Buyer User"}],
+            "createdAt": "2016-03-29T10:11:12.000000Z",
+            "updatedAt": "2016-03-29T10:11:13.000000Z",
+            "clarificationQuestions": [{
+                "question": "Why?",
+                "answer": "Because"
+            }],
         }
     }

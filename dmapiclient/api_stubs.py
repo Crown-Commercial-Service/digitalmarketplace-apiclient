@@ -33,7 +33,8 @@ def lot(slug="some-lot", allows_brief=False, one_service_limit=False):
 def brief(status="draft",
           framework_slug="digital-outcomes-and-specialists",
           lot_slug="digital-specialists",
-          user_id=123):
+          user_id=123,
+          clarification_questions=None):
     brief = {
         "briefs": {
             "id": 1234,
@@ -47,7 +48,8 @@ def brief(status="draft",
                        "id": user_id,
                        "name": "Buyer User"}],
             "createdAt": "2016-03-29T10:11:12.000000Z",
-            "updatedAt": "2016-03-29T10:11:13.000000Z"
+            "updatedAt": "2016-03-29T10:11:13.000000Z",
+            "clarificationQuestions": clarification_questions or []
         }
     }
     if status == "live":
