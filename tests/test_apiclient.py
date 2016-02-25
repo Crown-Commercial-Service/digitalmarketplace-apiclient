@@ -1623,6 +1623,20 @@ class TestDataApiClient(object):
 
         assert result == {"briefResponses": []}
 
+    def test_add_brief_clarification_question(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/1/clarification-questions",
+            json={"briefs": "result"},
+            status_code=200)
+
+        result = data_client.add_brief_clarification_question(1, "Why?", "Because", "user@example.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "clarificationQuestion": {"question": "Why?", "answer": "Because"},
+            "updated_by": "user@example.com",
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):

@@ -554,5 +554,15 @@ class DataAPIClient(BaseAPIClient):
             params={
                 "brief_id": brief_id,
                 "supplier_id": supplier_id,
-            }
-        )
+            })
+
+    def add_brief_clarification_question(self, brief_id, question, answer, user):
+        return self._post_with_updated_by(
+            "/briefs/{}/clarification-questions".format(brief_id),
+            data={
+                "clarificationQuestion": {
+                    "question": question,
+                    "answer": answer,
+                }
+            },
+            user=user)
