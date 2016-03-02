@@ -191,6 +191,16 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def unset_framework_agreement_returned(self, supplier_id, framework_slug, user):
+        return self._post_with_updated_by(
+            "/suppliers/{}/frameworks/{}".format(
+                supplier_id, framework_slug),
+            data={
+                "frameworkInterest": {"agreementReturned": False},
+            },
+            user=user,
+        )
+
     def find_framework_suppliers(self, framework_slug, agreement_returned=None):
         params = {}
         if agreement_returned is not None:
