@@ -765,21 +765,21 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"users": "result"}
 
-    def test_email_address_has_valid_buyer_domain_true(self, data_client, rmock):
+    def test_is_email_address_with_valid_buyer_domain_true(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users/check-buyer-email?email_address=kev%40gov.uk",
             json={"valid": True},
             status_code=200)
-        result = data_client.email_address_has_valid_buyer_domain('kev@gov.uk')
+        result = data_client.is_email_address_with_valid_buyer_domain('kev@gov.uk')
         assert rmock.called
         assert result is True
 
-    def test_email_address_has_valid_buyer_domain_false(self, data_client, rmock):
+    def test_is_email_address_with_valid_buyer_domain_false(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users/check-buyer-email?email_address=kev%40ymail.com",
             json={"valid": False},
             status_code=200)
-        result = data_client.email_address_has_valid_buyer_domain('kev@ymail.com')
+        result = data_client.is_email_address_with_valid_buyer_domain('kev@ymail.com')
         assert rmock.called
         assert result is False
 
