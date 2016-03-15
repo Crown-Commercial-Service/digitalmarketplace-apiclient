@@ -1627,6 +1627,16 @@ class TestDataApiClient(object):
             'updated_by': 'user'
         }
 
+    def test_is_supplier_eligible_for_brief(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/suppliers/123/briefs/456",
+            json={"eligible": True},
+            status_code=200)
+
+        result = data_client.is_supplier_eligible_for_brief(123, 456)
+
+        assert result is True
+
     def test_create_brief_response(self, data_client, rmock):
         rmock.post(
             "http://baseurl/brief-responses",

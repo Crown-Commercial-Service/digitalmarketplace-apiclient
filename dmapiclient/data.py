@@ -556,6 +556,11 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def is_supplier_eligible_for_brief(self, supplier_id, brief_id):
+        return self._get(
+            "/suppliers/{}/briefs/{}".format(supplier_id, brief_id)
+        )['eligible']
+
     def create_brief_response(self, brief_id, supplier_id, data, user):
         data = dict(data, briefId=brief_id, supplierId=supplier_id)
         return self._post_with_updated_by(
