@@ -1585,6 +1585,7 @@ class TestDataApiClient(object):
 
         result = data_client.find_briefs(user_id=123)
 
+        assert rmock.called
         assert result == {"briefs": []}
 
     def test_find_briefs_for_user(self, data_client, rmock):
@@ -1595,7 +1596,19 @@ class TestDataApiClient(object):
 
         result = data_client.find_briefs(user_id=123)
 
+        assert rmock.called
         assert result == {"briefs": []}
+
+    def test_find_briefs_by_lot_status_framework(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/briefs?status=live,closed&framework=digital-biscuits&lot=custard-creams",
+            json={"briefs": [{"biscuit": "tasty"}]},
+            status_code=200)
+
+        result = data_client.find_briefs(status="live,closed", framework="digital-biscuits", lot="custard-creams")
+
+        assert rmock.called
+        assert result == {"briefs": [{"biscuit": "tasty"}]}
 
     def test_delete_brief(self, data_client, rmock):
         rmock.delete(
