@@ -1629,13 +1629,23 @@ class TestDataApiClient(object):
 
     def test_is_supplier_eligible_for_brief(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/suppliers/123/briefs/456",
-            json={"eligible": True},
+            "http://baseurl/briefs/456/services?supplier_id=123",
+            json={"services": ["one"]},
             status_code=200)
 
         result = data_client.is_supplier_eligible_for_brief(123, 456)
 
         assert result is True
+
+    def test_supplier_ineligible_for_brief(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/briefs/456/services?supplier_id=123",
+            json={"services": []},
+            status_code=200)
+
+        result = data_client.is_supplier_eligible_for_brief(123, 456)
+
+        assert result is False
 
     def test_create_brief_response(self, data_client, rmock):
         rmock.post(

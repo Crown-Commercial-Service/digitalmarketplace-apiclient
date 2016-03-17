@@ -557,9 +557,10 @@ class DataAPIClient(BaseAPIClient):
         )
 
     def is_supplier_eligible_for_brief(self, supplier_id, brief_id):
-        return self._get(
-            "/suppliers/{}/briefs/{}".format(supplier_id, brief_id)
-        )['eligible']
+        return len(self._get(
+            "/briefs/{}/services".format(brief_id),
+            params={"supplier_id": supplier_id}
+        )['services']) > 0
 
     def create_brief_response(self, brief_id, supplier_id, data, user):
         data = dict(data, briefId=brief_id, supplierId=supplier_id)
