@@ -40,6 +40,7 @@ def test_brief():
             "id": 1234,
             "title": "I need a thing to do a thing",
             "frameworkSlug": "digital-outcomes-and-specialists",
+            "frameworkName": "Digital Outcomes and Specialists",
             "lotSlug": "digital-specialists",
             "status": "draft",
             "users": [{"active": True,
@@ -53,12 +54,17 @@ def test_brief():
         }
     }
 
-    assert api_stubs.brief(status='live', framework_slug='a-framework-slug', lot_slug='a-lot-slug', user_id=234) \
+    assert api_stubs.brief(
+        status='live',
+        framework_slug='a-framework-slug',
+        lot_slug='a-lot-slug', user_id=234,
+        framework_name='A Framework Name') \
         == {
         "briefs": {
             "id": 1234,
             "title": "I need a thing to do a thing",
             "frameworkSlug": "a-framework-slug",
+            "frameworkName": "A Framework Name",
             "lotSlug": "a-lot-slug",
             "status": "live",
             "users": [{"active": True,
@@ -79,6 +85,7 @@ def test_brief():
             "id": 1234,
             "title": "I need a thing to do a thing",
             "frameworkSlug": "digital-outcomes-and-specialists",
+            "frameworkName": "Digital Outcomes and Specialists",
             "lotSlug": "digital-specialists",
             "status": "draft",
             "users": [{"active": True,

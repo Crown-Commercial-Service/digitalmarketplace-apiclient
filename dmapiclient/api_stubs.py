@@ -34,12 +34,14 @@ def brief(status="draft",
           framework_slug="digital-outcomes-and-specialists",
           lot_slug="digital-specialists",
           user_id=123,
+          framework_name="Digital Outcomes and Specialists",
           clarification_questions=None):
     brief = {
         "briefs": {
             "id": 1234,
             "title": "I need a thing to do a thing",
             "frameworkSlug": framework_slug,
+            "frameworkName": framework_name,
             "lotSlug": lot_slug,
             "status": status,
             "users": [{"active": True,
