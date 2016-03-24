@@ -75,6 +75,9 @@ def test_brief():
             "createdAt": "2016-03-29T10:11:12.000000Z",
             "updatedAt": "2016-03-29T10:11:13.000000Z",
             "publishedAt": "2016-03-29T10:11:14.000000Z",
+            "applicationsClosedAt": "2016-04-07T00:00:00.000000Z",
+            "clarificationQuestionsClosedAt": "2016-04-02T00:00:00.000000Z",
+            "clarificationQuestionsAreClosed": False,
             "clarificationQuestions": [],
         }
     }
@@ -99,5 +102,29 @@ def test_brief():
                 "question": "Why?",
                 "answer": "Because"
             }],
+        }
+    }
+
+    assert api_stubs.brief(status='live', clarification_questions_closed=True) \
+        == {
+        "briefs": {
+            "id": 1234,
+            "title": "I need a thing to do a thing",
+            "frameworkSlug": "digital-outcomes-and-specialists",
+            "frameworkName": "Digital Outcomes and Specialists",
+            "lotSlug": "digital-specialists",
+            "status": "live",
+            "users": [{"active": True,
+                       "role": "buyer",
+                       "emailAddress": "buyer@email.com",
+                       "id": 123,
+                       "name": "Buyer User"}],
+            "createdAt": "2016-03-29T10:11:12.000000Z",
+            "updatedAt": "2016-03-29T10:11:13.000000Z",
+            "publishedAt": "2016-03-29T10:11:14.000000Z",
+            "applicationsClosedAt": "2016-04-07T00:00:00.000000Z",
+            "clarificationQuestionsClosedAt": "2016-04-02T00:00:00.000000Z",
+            "clarificationQuestionsAreClosed": True,
+            "clarificationQuestions": [],
         }
     }

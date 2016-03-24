@@ -35,7 +35,8 @@ def brief(status="draft",
           lot_slug="digital-specialists",
           user_id=123,
           framework_name="Digital Outcomes and Specialists",
-          clarification_questions=None):
+          clarification_questions=None,
+          clarification_questions_closed=False):
     brief = {
         "briefs": {
             "id": 1234,
@@ -51,9 +52,13 @@ def brief(status="draft",
                        "name": "Buyer User"}],
             "createdAt": "2016-03-29T10:11:12.000000Z",
             "updatedAt": "2016-03-29T10:11:13.000000Z",
-            "clarificationQuestions": clarification_questions or []
+            "clarificationQuestions": clarification_questions or [],
         }
     }
     if status == "live":
         brief['briefs']['publishedAt'] = "2016-03-29T10:11:14.000000Z"
+        brief['briefs']['applicationsClosedAt'] = "2016-04-07T00:00:00.000000Z"
+        brief['briefs']['clarificationQuestionsClosedAt'] = "2016-04-02T00:00:00.000000Z"
+        brief['briefs']['clarificationQuestionsAreClosed'] = clarification_questions_closed
+
     return brief
