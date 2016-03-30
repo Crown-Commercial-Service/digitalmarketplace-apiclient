@@ -41,6 +41,7 @@ class AuditTypes(Enum):
     answer_selection_questions = "answer_selection_questions"
 
     # Framework lifecycle
+    create_framework = "create_framework"
     framework_update = "framework_update"
 
     # Admin actions
