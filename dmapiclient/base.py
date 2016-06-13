@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 
 
 def make_iter_method(method_name, model_name, url_path):
-    """Make an iterator method from a find method
+    """Make a page-concatenating iterator method from a find method
 
     :param method_name: The name of the find method to decorate
     :param model_name: The name of the model as it appears in the JSON response
-    :param url_path: The URL path for the API
+    :param url_path: The URL path for the API -- FIXME parameter ignored?
     """
     backoff_decorator = backoff.on_exception(backoff.expo, HTTPTemporaryError, max_tries=5)
 
