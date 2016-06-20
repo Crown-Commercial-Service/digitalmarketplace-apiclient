@@ -181,13 +181,17 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def register_framework_agreement_returned(self, supplier_id, framework_slug, user):
+    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, signer_details=None):
+        framework_interest_dict = {
+            "agreementReturned": True,
+        }
+        if signer_details is not None:
+            framework_interest_dict['signerDetails'] = signer_details
+
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
-            data={
-                "frameworkInterest": {"agreementReturned": True},
-            },
+            data={"frameworkInterest": framework_interest_dict},
             user=user,
         )
 
@@ -196,7 +200,29 @@ class DataAPIClient(BaseAPIClient):
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
             data={
-                "frameworkInterest": {"agreementReturned": False},
+                "frameworkInterest": {
+                    "agreementReturned": False,
+                },
+            },
+            user=user,
+        )
+
+    def register_framework_agreement_countersigned(self, supplier_id, framework_slug, user):
+        return self._post_with_updated_by(
+            "/suppliers/{}/frameworks/{}".format(
+                supplier_id, framework_slug),
+            data={
+                "frameworkInterest": {"countersigned": True},
+            },
+            user=user,
+        )
+
+    def unset_framework_agreement_countersigned(self, supplier_id, framework_slug, user):
+        return self._post_with_updated_by(
+            "/suppliers/{}/frameworks/{}".format(
+                supplier_id, framework_slug),
+            data={
+                "frameworkInterest": {"countersigned": False},
             },
             user=user,
         )
