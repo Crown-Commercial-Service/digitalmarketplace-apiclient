@@ -195,34 +195,12 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def unset_framework_agreement_returned(self, supplier_id, framework_slug, user):
-        return self._post_with_updated_by(
-            "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
-            data={
-                "frameworkInterest": {
-                    "agreementReturned": False,
-                },
-            },
-            user=user,
-        )
-
     def register_framework_agreement_countersigned(self, supplier_id, framework_slug, user):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
             data={
                 "frameworkInterest": {"countersigned": True},
-            },
-            user=user,
-        )
-
-    def unset_framework_agreement_countersigned(self, supplier_id, framework_slug, user):
-        return self._post_with_updated_by(
-            "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
-            data={
-                "frameworkInterest": {"countersigned": False},
             },
             user=user,
         )
