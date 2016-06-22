@@ -2,6 +2,17 @@
 
 Records breaking changes from major version bumps
 
+## 4.0.0
+
+PR: [#26](https://github.com/alphagov/digitalmarketplace-apiclient/pull/26)
+
+### What changed
+
+Removed the `unset_framework_agreement_returned` method.
+
+This shouldn't require any changes as this method is only used in at most one old script and should 
+never need to be used again.
+
 ## 3.0.0
 
 PR: [#14](https://github.com/alphagov/digitalmarketplace-apiclient/pull/14)

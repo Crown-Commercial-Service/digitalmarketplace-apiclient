@@ -1026,31 +1026,70 @@ class TestDataApiClient(object):
             'updated_by': 'user'
         }
 
-    def test_register_framework_agreement_returned(self, data_client, rmock):
+    def test_register_framework_agreement_returned_with_signer_details(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/123/frameworks/g-cloud-7",
-            json={"frameworkInterest": {"agreementReturned": True}},
+            json={
+                'frameworkInterest': {
+                    'agreementReturned': True,
+                    'signerDetails': {'some': 'details'},
+                },
+            },
+            status_code=200)
+
+        result = data_client.register_framework_agreement_returned(
+            123, 'g-cloud-7', "user", signer_details={'some': 'details'}
+        )
+        assert result == {
+            'frameworkInterest': {
+                'agreementReturned': True,
+                'signerDetails': {'some': 'details'},
+            },
+        }
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'frameworkInterest': {
+                    'agreementReturned': True,
+                    'signerDetails': {'some': 'details'},
+                },
+            'updated_by': 'user',
+        }
+
+    def test_register_framework_agreement_returned_without_signer_details(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7",
+            json={
+                'frameworkInterest': {
+                    'agreementReturned': True,
+                },
+            },
             status_code=200)
 
         result = data_client.register_framework_agreement_returned(123, 'g-cloud-7', "user")
-        assert result == {"frameworkInterest": {"agreementReturned": True}}
+        assert result == {
+            'frameworkInterest': {
+                'agreementReturned': True,
+            },
+        }
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'frameworkInterest': {'agreementReturned': True},
-            'updated_by': 'user'
+            'frameworkInterest': {
+                    'agreementReturned': True,
+                },
+            'updated_by': 'user',
         }
 
-    def test_unset_framework_agreement_returned(self, data_client, rmock):
+    def test_register_framework_agreement_countersigned(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/123/frameworks/g-cloud-7",
-            json={"frameworkInterest": {"agreementReturned": False}},
+            json={"frameworkInterest": {"countersigned": True}},
             status_code=200)
 
-        result = data_client.unset_framework_agreement_returned(123, 'g-cloud-7', "user")
-        assert result == {"frameworkInterest": {"agreementReturned": False}}
+        result = data_client.register_framework_agreement_countersigned(123, 'g-cloud-7', "user")
+        assert result == {"frameworkInterest": {"countersigned": True}}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'frameworkInterest': {'agreementReturned': False},
+            'frameworkInterest': {'countersigned': True},
             'updated_by': 'user'
         }
 
