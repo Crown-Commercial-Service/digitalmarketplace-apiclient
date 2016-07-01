@@ -1079,6 +1079,20 @@ class TestDataApiClient(object):
             'updated_by': 'user',
         }
 
+    def test_unset_framework_agreement_returned(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7",
+            json={"frameworkInterest": {"agreementReturned": False}},
+            status_code=200)
+
+        result = data_client.unset_framework_agreement_returned(123, 'g-cloud-7', "user")
+        assert result == {"frameworkInterest": {"agreementReturned": False}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'frameworkInterest': {'agreementReturned': False},
+            'updated_by': 'user'
+        }
+
     def test_register_framework_agreement_countersigned(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/123/frameworks/g-cloud-7",
