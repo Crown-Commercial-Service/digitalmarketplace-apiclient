@@ -181,12 +181,12 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, signer_details=None):
+    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, agreement_details=None):
         framework_interest_dict = {
             "agreementReturned": True,
         }
-        if signer_details is not None:
-            framework_interest_dict['signerDetails'] = signer_details
+        if agreement_details is not None:
+            framework_interest_dict['agreementDetails'] = agreement_details
 
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
