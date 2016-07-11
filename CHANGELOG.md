@@ -2,6 +2,20 @@
 
 Records breaking changes from major version bumps
 
+## 5.0.0
+
+PR: [#28](https://github.com/alphagov/digitalmarketplace-apiclient/pull/28)
+
+### What changed
+
+Changed `register_framework_agreement_returned` from taking an optional `agreement_details`
+parameter to taking an optional `uploader_user_id` parameter. This is because when returning an
+agreement (that has a framework agreement version), we expect only an `uploader_user_id` instead
+of a flexible dictionary and have made this method stricter to enforce/strongly encourage this.
+
+At the moment, this should cause no actual breaks in our applications as the `agreement_details`
+parameter is not yet being used.
+
 ## 4.0.0
 
 PR: [#26](https://github.com/alphagov/digitalmarketplace-apiclient/pull/26)
@@ -10,7 +24,7 @@ PR: [#26](https://github.com/alphagov/digitalmarketplace-apiclient/pull/26)
 
 Removed the `unset_framework_agreement_returned` method.
 
-This shouldn't require any changes as this method is only used in at most one old script and should 
+This shouldn't require any changes as this method is only used in at most one old script and should
 never need to be used again.
 
 ## 3.0.0
