@@ -181,12 +181,12 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, agreement_details=None):
+    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, uploader_user_id=None):
         framework_interest_dict = {
             "agreementReturned": True,
         }
-        if agreement_details is not None:
-            framework_interest_dict['agreementDetails'] = agreement_details
+        if uploader_user_id is not None:
+            framework_interest_dict['agreementDetails'] = {'uploaderUserId': uploader_user_id}
 
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
@@ -202,6 +202,18 @@ class DataAPIClient(BaseAPIClient):
             data={
                 "frameworkInterest": {
                     "agreementReturned": False,
+                },
+            },
+            user=user,
+        )
+
+    def update_supplier_framework_agreement_details(self, supplier_id, framework_slug, agreement_details, user):
+        return self._post_with_updated_by(
+            "/suppliers/{}/frameworks/{}".format(
+                supplier_id, framework_slug),
+            data={
+                "frameworkInterest": {
+                    "agreementDetails": agreement_details
                 },
             },
             user=user,
