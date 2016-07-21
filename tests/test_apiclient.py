@@ -1678,13 +1678,13 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"briefs": []}
 
-    def test_find_briefs_by_lot_status_framework(self, data_client, rmock):
+    def test_find_briefs_by_lot_status_framework_and_human_readable(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/briefs?status=live,closed&framework=digital-biscuits&lot=custard-creams",
+            "http://baseurl/briefs?status=live,closed&framework=digital-biscuits&lot=custard-creams&human=true",
             json={"briefs": [{"biscuit": "tasty"}]},
             status_code=200)
 
-        result = data_client.find_briefs(status="live,closed", framework="digital-biscuits", lot="custard-creams")
+        result = data_client.find_briefs(status="live,closed", framework="digital-biscuits", lot="custard-creams", human=True)
 
         assert rmock.called
         assert result == {"briefs": [{"biscuit": "tasty"}]}

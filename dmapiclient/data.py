@@ -565,14 +565,15 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/briefs/{}".format(brief_id))
 
-    def find_briefs(self, user_id=None, status=None, framework=None, lot=None, page=None):
+    def find_briefs(self, user_id=None, status=None, framework=None, lot=None, page=None, human=None):
         return self._get(
             "/briefs",
             params={"user_id": user_id,
                     "framework": framework,
                     "lot": lot,
                     "status": status,
-                    "page": page
+                    "page": page,
+                    "human": human
                     }
         )
 
