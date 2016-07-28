@@ -1631,18 +1631,17 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
-    def test_update_brief_status(self, data_client, rmock):
-        rmock.put(
-            "http://baseurl/briefs/123/status",
+    def test_publish_brief(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/123/publish",
             json={"briefs": "result"},
             status_code=200,
         )
 
-        result = data_client.update_brief_status(123, "published", "user@email.com")
+        result = data_client.publish_brief(123, "user@email.com")
 
         assert result == {"briefs": "result"}
         assert rmock.last_request.json() == {
-            "briefs": {"status": "published"},
             "updated_by": "user@email.com"
         }
 
