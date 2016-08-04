@@ -2,6 +2,30 @@
 
 Records breaking changes from major version bumps
 
+## 6.0.0
+
+PR: [#31](https://github.com/alphagov/digitalmarketplace-apiclient/pull/31)
+
+### What changed
+
+Removed `update_brief_status` method.
+
+This functionality has been removed and calls to publish a brief (i.e. change it's status from
+'draft' to 'live') should now use the `publish_brief` method. There should no other current
+uses of the `update_brief_status` in our apps that set a status to something other than 'live'.
+
+### Example app change
+
+Old
+```
+api_client.update_brief_status(brief_id, 'live', user)
+```
+
+New
+```
+api_client.publish_brief(brief_id, user)
+
+
 ## 5.0.0
 
 PR: [#28](https://github.com/alphagov/digitalmarketplace-apiclient/pull/28)

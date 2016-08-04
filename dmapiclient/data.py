@@ -552,12 +552,10 @@ class DataAPIClient(BaseAPIClient):
             user=updated_by,
         )
 
-    def update_brief_status(self, brief_id, status, user):
-        return self._put_with_updated_by(
-            "/briefs/{}/status".format(brief_id),
-            data={
-                "briefs": {"status": status},
-            },
+    def publish_brief(self, brief_id, user):
+        return self._post_with_updated_by(
+            "/briefs/{}/publish".format(brief_id),
+            data={},
             user=user,
         )
 
