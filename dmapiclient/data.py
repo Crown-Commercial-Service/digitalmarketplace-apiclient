@@ -358,6 +358,11 @@ class DataAPIClient(BaseAPIClient):
             "/users/export/{}".format(framework_slug)
         )
 
+    def export_buyers_with_briefs(self):
+        return self._get(
+            "/buyers/briefs"
+        )
+
     def is_email_address_with_valid_buyer_domain(self, email_address):
         return self._get(
             "/users/check-buyer-email", params={'email_address': email_address}

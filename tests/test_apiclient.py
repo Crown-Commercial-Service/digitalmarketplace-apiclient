@@ -765,6 +765,15 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"users": "result"}
 
+    def test_can_export_buyers_with_briefs(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/buyers/briefs",
+            json={"buyers": "result"},
+            status_code=200)
+        result = data_client.export_buyers_with_briefs()
+        assert rmock.called
+        assert result == {"buyers": "result"}
+
     def test_is_email_address_with_valid_buyer_domain_true(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users/check-buyer-email?email_address=kev%40gov.uk",
