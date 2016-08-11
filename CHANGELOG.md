@@ -24,7 +24,7 @@ api_client.update_brief_status(brief_id, 'live', user)
 New
 ```
 api_client.publish_brief(brief_id, user)
-
+```
 
 ## 5.0.0
 
