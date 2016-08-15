@@ -504,6 +504,20 @@ class TestDataApiClient(object):
 
         assert user == self.user()
 
+    def test_find_users_not_possible_with_supplier_id_and_role(self, data_client, rmock):
+        with pytest.raises(ValueError):
+            data_client.find_users(supplier_id=123, role='buyer')
+
+    def test_find_users_by_role(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/users?role=buyer",
+            json=self.user(),
+            status_code=200)
+
+        user = data_client.find_users(role='buyer')
+
+        assert user == self.user()
+
     def test_find_users_by_page(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users?page=12",
@@ -1049,9 +1063,9 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {
             'frameworkInterest': {
-                    'agreementReturned': True,
-                    'agreementDetails': {'uploaderUserId': 10},
-                },
+                'agreementReturned': True,
+                'agreementDetails': {'uploaderUserId': 10},
+            },
             'updated_by': 'user',
         }
 
@@ -1074,8 +1088,8 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {
             'frameworkInterest': {
-                    'agreementReturned': True,
-                },
+                'agreementReturned': True,
+            },
             'updated_by': 'user',
         }
 
@@ -1114,8 +1128,8 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {
             'frameworkInterest': {
-                    'agreementDetails': {'signerName': 'name'}
-                },
+                'agreementDetails': {'signerName': 'name'}
+            },
             'updated_by': 'user',
         }
 
@@ -1685,6 +1699,17 @@ class TestDataApiClient(object):
 
         result = data_client.find_briefs(status="live,closed", framework="digital-biscuits", lot="custard-creams",
                                          human=True)
+
+        assert rmock.called
+        assert result == {"briefs": [{"biscuit": "tasty"}]}
+
+    def test_find_briefs_with_users(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/briefs?with_users=True",
+            json={"briefs": [{"biscuit": "tasty"}]},
+            status_code=200)
+
+        result = data_client.find_briefs(with_users=True)
 
         assert rmock.called
         assert result == {"briefs": [{"biscuit": "tasty"}]}

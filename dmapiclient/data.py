@@ -247,10 +247,15 @@ class DataAPIClient(BaseAPIClient):
                 "users": user,
             })
 
-    def find_users(self, supplier_id=None, page=None):
+    def find_users(self, supplier_id=None, page=None, role=None):
         params = {}
+        if supplier_id is not None and role is not None:
+            raise ValueError(
+                "Cannot get users by both supplier_id and role")
         if supplier_id is not None:
             params['supplier_id'] = supplier_id
+        if role is not None:
+            params['role'] = role
         if page is not None:
             params['page'] = page
         return self._get("/users", params=params)
@@ -563,7 +568,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/briefs/{}".format(brief_id))
 
-    def find_briefs(self, user_id=None, status=None, framework=None, lot=None, page=None, human=None):
+    def find_briefs(self, user_id=None, status=None, framework=None, lot=None, page=None, human=None, with_users=None):
         return self._get(
             "/briefs",
             params={"user_id": user_id,
@@ -571,7 +576,8 @@ class DataAPIClient(BaseAPIClient):
                     "lot": lot,
                     "status": status,
                     "page": page,
-                    "human": human
+                    "human": human,
+                    "with_users": with_users
                     }
         )
 
