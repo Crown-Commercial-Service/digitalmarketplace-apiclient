@@ -96,14 +96,14 @@ class DataAPIClient(BaseAPIClient):
 
     find_suppliers_iter = make_iter_method('find_suppliers', 'suppliers', 'suppliers')
 
-    def get_supplier(self, supplier_id):
+    def get_supplier(self, supplier_code):
         return self._get(
-            "/suppliers/{}".format(supplier_id)
+            "/suppliers/{}".format(supplier_code)
         )
 
-    def import_supplier(self, supplier_id, supplier):
+    def import_supplier(self, supplier_code, supplier):
         return self._put(
-            "/suppliers/{}".format(supplier_id),
+            "/suppliers/{}".format(supplier_code),
             data={"suppliers": supplier},
         )
 
@@ -113,75 +113,75 @@ class DataAPIClient(BaseAPIClient):
             data={"suppliers": supplier},
         )
 
-    def update_supplier(self, supplier_id, supplier, user):
+    def update_supplier(self, supplier_code, supplier, user):
         return self._post_with_updated_by(
-            "/suppliers/{}".format(supplier_id),
+            "/suppliers/{}".format(supplier_code),
             data={
                 "suppliers": supplier,
             },
             user=user,
         )
 
-    def update_contact_information(self, supplier_id, contact_id,
+    def update_contact_information(self, supplier_code, contact_id,
                                    contact, user):
         return self._post_with_updated_by(
             "/suppliers/{}/contact-information/{}".format(
-                supplier_id, contact_id),
+                supplier_code, contact_id),
             data={
                 "contactInformation": contact,
             },
             user=user,
         )
 
-    def get_framework_interest(self, supplier_id):
+    def get_framework_interest(self, supplier_code):
         return self._get(
-            "/suppliers/{}/frameworks/interest".format(supplier_id)
+            "/suppliers/{}/frameworks/interest".format(supplier_code)
         )
 
-    def register_framework_interest(self, supplier_id, framework_slug, user):
+    def register_framework_interest(self, supplier_code, framework_slug, user):
         return self._put_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
+                supplier_code, framework_slug),
             data={},
             user=user,
         )
 
-    def get_supplier_declaration(self, supplier_id, framework_slug):
+    def get_supplier_declaration(self, supplier_code, framework_slug):
         response = self._get(
-            "/suppliers/{}/frameworks/{}".format(supplier_id, framework_slug)
+            "/suppliers/{}/frameworks/{}".format(supplier_code, framework_slug)
         )
         return {'declaration': response['frameworkInterest']['declaration']}
 
-    def set_supplier_declaration(self, supplier_id, framework_slug, declaration, user):
+    def set_supplier_declaration(self, supplier_code, framework_slug, declaration, user):
         return self._put_with_updated_by(
-            "/suppliers/{}/frameworks/{}/declaration".format(supplier_id, framework_slug),
+            "/suppliers/{}/frameworks/{}/declaration".format(supplier_code, framework_slug),
             data={
                 "declaration": declaration
             },
             user=user
         )
 
-    def get_supplier_frameworks(self, supplier_id):
+    def get_supplier_frameworks(self, supplier_code):
         return self._get(
-            "/suppliers/{}/frameworks".format(supplier_id)
+            "/suppliers/{}/frameworks".format(supplier_code)
         )
 
-    def get_supplier_framework_info(self, supplier_id, framework_slug):
+    def get_supplier_framework_info(self, supplier_code, framework_slug):
         return self._get(
-            "/suppliers/{}/frameworks/{}".format(supplier_id, framework_slug)
+            "/suppliers/{}/frameworks/{}".format(supplier_code, framework_slug)
         )
 
-    def set_framework_result(self, supplier_id, framework_slug, is_on_framework, user):
+    def set_framework_result(self, supplier_code, framework_slug, is_on_framework, user):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
+                supplier_code, framework_slug),
             data={
                 "frameworkInterest": {"onFramework": is_on_framework},
             },
             user=user,
         )
 
-    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, uploader_user_id=None):
+    def register_framework_agreement_returned(self, supplier_code, framework_slug, user, uploader_user_id=None):
         framework_interest_dict = {
             "agreementReturned": True,
         }
@@ -190,15 +190,15 @@ class DataAPIClient(BaseAPIClient):
 
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
+                supplier_code, framework_slug),
             data={"frameworkInterest": framework_interest_dict},
             user=user,
         )
 
-    def unset_framework_agreement_returned(self, supplier_id, framework_slug, user):
+    def unset_framework_agreement_returned(self, supplier_code, framework_slug, user):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
+                supplier_code, framework_slug),
             data={
                 "frameworkInterest": {
                     "agreementReturned": False,
@@ -207,10 +207,10 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def update_supplier_framework_agreement_details(self, supplier_id, framework_slug, agreement_details, user):
+    def update_supplier_framework_agreement_details(self, supplier_code, framework_slug, agreement_details, user):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
+                supplier_code, framework_slug),
             data={
                 "frameworkInterest": {
                     "agreementDetails": agreement_details
@@ -219,10 +219,10 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def register_framework_agreement_countersigned(self, supplier_id, framework_slug, user):
+    def register_framework_agreement_countersigned(self, supplier_code, framework_slug, user):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
-                supplier_id, framework_slug),
+                supplier_code, framework_slug),
             data={
                 "frameworkInterest": {"countersigned": True},
             },
@@ -247,10 +247,10 @@ class DataAPIClient(BaseAPIClient):
                 "users": user,
             })
 
-    def find_users(self, supplier_id=None, page=None):
+    def find_users(self, supplier_code=None, page=None):
         params = {}
-        if supplier_id is not None:
-            params['supplier_id'] = supplier_id
+        if supplier_code is not None:
+            params['supplier_code'] = supplier_code
         if page is not None:
             params['page'] = page
         return self._get("/users", params=params)
@@ -316,7 +316,7 @@ class DataAPIClient(BaseAPIClient):
                     locked=None,
                     active=None,
                     role=None,
-                    supplier_id=None,
+                    supplier_code=None,
                     updater="no logged-in user"):
         fields = {}
         if locked is not None:
@@ -334,9 +334,9 @@ class DataAPIClient(BaseAPIClient):
                 'role': role
             })
 
-        if supplier_id is not None:
+        if supplier_code is not None:
             fields.update({
-                'supplierId': supplier_id
+                'supplierCode': supplier_code
             })
 
         params = {
@@ -365,10 +365,10 @@ class DataAPIClient(BaseAPIClient):
 
     # Services
 
-    def find_draft_services(self, supplier_id, service_id=None, framework=None):
+    def find_draft_services(self, supplier_code, service_id=None, framework=None):
 
         params = {
-            'supplier_id': supplier_id
+            'supplier_code': supplier_code
         }
         if service_id is not None:
             params['service_id'] = service_id
@@ -440,12 +440,12 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def create_new_draft_service(self, framework_slug, lot, supplier_id, data, user, page_questions=None):
+    def create_new_draft_service(self, framework_slug, lot, supplier_code, data, user, page_questions=None):
         service_data = data.copy()
         service_data.update({
             "frameworkSlug": framework_slug,
             "lot": lot,
-            "supplierId": supplier_id,
+            "supplierCode": supplier_code,
         })
 
         return self._post_with_updated_by(
@@ -469,9 +469,9 @@ class DataAPIClient(BaseAPIClient):
                 raise
         return None
 
-    def find_services(self, supplier_id=None, framework=None, status=None, page=None, lot=None):
+    def find_services(self, supplier_code=None, framework=None, status=None, page=None, lot=None):
         params = {
-            'supplier_id': supplier_id,
+            'supplier_code': supplier_code,
             'framework': framework,
             'lot': lot,
             'status': status,
@@ -584,14 +584,14 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def is_supplier_eligible_for_brief(self, supplier_id, brief_id):
+    def is_supplier_eligible_for_brief(self, supplier_code, brief_id):
         return len(self._get(
             "/briefs/{}/services".format(brief_id),
-            params={"supplier_id": supplier_id}
+            params={"supplier_code": supplier_code}
         )['services']) > 0
 
-    def create_brief_response(self, brief_id, supplier_id, data, user):
-        data = dict(data, briefId=brief_id, supplierId=supplier_id)
+    def create_brief_response(self, brief_id, supplier_code, data, user):
+        data = dict(data, briefId=brief_id, supplierCode=supplier_code)
         return self._post_with_updated_by(
             "/brief-responses",
             data={
@@ -604,12 +604,12 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/brief-responses/{}".format(brief_response_id))
 
-    def find_brief_responses(self, brief_id=None, supplier_id=None):
+    def find_brief_responses(self, brief_id=None, supplier_code=None):
         return self._get(
             "/brief-responses",
             params={
                 "brief_id": brief_id,
-                "supplier_id": supplier_id,
+                "supplier_code": supplier_code,
             })
 
     def add_brief_clarification_question(self, brief_id, question, answer, user):
