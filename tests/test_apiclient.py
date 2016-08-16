@@ -47,7 +47,7 @@ def service():
     """A stripped down G6-IaaS service"""
     return {
         "id": "1234567890123456",
-        "supplierId": 1,
+        "supplierCode": 1,
         "lot": "IaaS",
         "title": "My Iaas Service",
         "lastUpdated": "2014-12-23T14:46:17Z",
@@ -444,14 +444,14 @@ class TestDataApiClient(object):
         assert result == {"services": "result"}
         assert rmock.called
 
-    def test_find_services_adds_supplier_id_parameter(
+    def test_find_services_adds_supplier_code_parameter(
             self, data_client, rmock):
         rmock.get(
-            "http://baseurl/services?supplier_id=1",
+            "http://baseurl/services?supplier_code=1",
             json={"services": "result"},
             status_code=200)
 
-        result = data_client.find_services(supplier_id=1)
+        result = data_client.find_services(supplier_code=1)
 
         assert result == {"services": "result"}
         assert rmock.called
@@ -495,9 +495,9 @@ class TestDataApiClient(object):
         assert result == {"services": "result"}
         assert rmock.called
 
-    def test_find_users_by_supplier_id(self, data_client, rmock):
+    def test_find_users_by_supplier_code(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/users?supplier_id=1234",
+            "http://baseurl/users?supplier_code=1234",
             json=self.user(),
             status_code=200)
         user = data_client.find_users(1234)
@@ -564,7 +564,7 @@ class TestDataApiClient(object):
 
         assert user['id'] == "id"
         assert user['email_address'] == "email_address"
-        assert user['supplier']['supplier_id'] == 1234
+        assert user['supplier']['supplier_code'] == 1234
         assert user['supplier']['name'] == "name"
 
     def test_authenticate_user_returns_none_on_404(
@@ -693,16 +693,16 @@ class TestDataApiClient(object):
             "users": {"role": 'supplier'}
         }
 
-    def test_can_add_user_supplier_id(self, data_client, rmock):
+    def test_can_add_user_supplier_code(self, data_client, rmock):
         rmock.post(
             "http://baseurl/users/123",
             json={},
             status_code=200)
-        data_client.update_user(123, supplier_id=123, updater="test@example.com")
+        data_client.update_user(123, supplier_code=123, updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
             "updated_by": "test@example.com",
-            "users": {"supplierId": 123}
+            "users": {"supplierCode": 123}
         }
 
     def test_make_user_a_supplier(self, data_client, rmock):
@@ -710,12 +710,12 @@ class TestDataApiClient(object):
             "http://baseurl/users/123",
             json={},
             status_code=200)
-        data_client.update_user(123, supplier_id=123, role='supplier', updater="test@example.com")
+        data_client.update_user(123, supplier_code=123, role='supplier', updater="test@example.com")
         assert rmock.called
         assert rmock.last_request.json() == {
             "updated_by": "test@example.com",
             "users": {
-                "supplierId": 123,
+                "supplierCode": 123,
                 "role": "supplier"
             }
         }
@@ -796,7 +796,7 @@ class TestDataApiClient(object):
             'updated_at': "2015-05-05T05:05:05",
             'password_changed_at': "2015-05-05T05:05:05",
             'supplier': {
-                'supplier_id': 1234,
+                'supplier_code': 1234,
                 'name': 'name'
             }
         }}
@@ -858,11 +858,11 @@ class TestDataApiClient(object):
 
     def test_find_services_by_supplier(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/services?supplier_id=123",
+            "http://baseurl/services?supplier_code=123",
             json={"services": "result"},
             status_code=200)
 
-        result = data_client.find_services(supplier_id=123)
+        result = data_client.find_services(supplier_code=123)
 
         assert result == {"services": "result"}
         assert rmock.called
@@ -958,12 +958,12 @@ class TestDataApiClient(object):
     def test_register_framework_interest(self, data_client, rmock):
         rmock.put(
             "http://baseurl/suppliers/123/frameworks/g-cloud-15",
-            json={"frameworkInterest": {"supplierId": 123, "frameworkId": 19}},
+            json={"frameworkInterest": {"supplierCode": 123, "frameworkId": 19}},
             status_code=200)
 
         result = data_client.register_framework_interest(123, 'g-cloud-15', "g-15-user")
 
-        assert result == {"frameworkInterest": {"supplierId": 123, "frameworkId": 19}}
+        assert result == {"frameworkInterest": {"supplierCode": 123, "frameworkId": 19}}
         assert rmock.called
         assert rmock.request_history[0].json() == {'updated_by': 'g-15-user'}
 
@@ -1006,10 +1006,10 @@ class TestDataApiClient(object):
     def test_get_supplier_framework_info(self, data_client, rmock):
         rmock.get(
             "http://baseurl/suppliers/123/frameworks/g-cloud-7",
-            json={"frameworkInterest": {"supplierId": 123, "frameworkId": 2, "onFramework": False}},
+            json={"frameworkInterest": {"supplierCode": 123, "frameworkId": 2, "onFramework": False}},
             status_code=200)
         result = data_client.get_supplier_framework_info(123, 'g-cloud-7')
-        assert result == {"frameworkInterest": {"supplierId": 123, "frameworkId": 2, "onFramework": False}}
+        assert result == {"frameworkInterest": {"supplierCode": 123, "frameworkId": 2, "onFramework": False}}
         assert rmock.called
 
     def test_set_framework_result(self, data_client, rmock):
@@ -1157,7 +1157,7 @@ class TestDataApiClient(object):
 
     def test_find_draft_services(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/draft-services?supplier_id=2",
+            "http://baseurl/draft-services?supplier_code=2",
             json={"draft-services": "result"},
             status_code=200,
         )
@@ -1337,7 +1337,7 @@ class TestDataApiClient(object):
             'updated_by': 'user',
             'services': {
                 'frameworkSlug': 'g-cloud-7',
-                'supplierId': 2,
+                'supplierCode': 2,
                 'lot': 'iaas',
                 'serviceName': 'name',
             }
@@ -1708,7 +1708,7 @@ class TestDataApiClient(object):
 
     def test_is_supplier_eligible_for_brief(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/briefs/456/services?supplier_id=123",
+            "http://baseurl/briefs/456/services?supplier_code=123",
             json={"services": ["one"]},
             status_code=200)
 
@@ -1718,7 +1718,7 @@ class TestDataApiClient(object):
 
     def test_supplier_ineligible_for_brief(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/briefs/456/services?supplier_id=123",
+            "http://baseurl/briefs/456/services?supplier_code=123",
             json={"services": []},
             status_code=200)
 
@@ -1741,7 +1741,7 @@ class TestDataApiClient(object):
         assert rmock.last_request.json() == {
             "briefResponses": {
                 "briefId": 1,
-                "supplierId": 2,
+                "supplierCode": 2,
                 "essentialRequirements": [True, None, False],
             },
             "updated_by": "user@email.com"
@@ -1759,11 +1759,11 @@ class TestDataApiClient(object):
 
     def test_find_brief_responses(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/brief-responses?brief_id=1&supplier_id=2",
+            "http://baseurl/brief-responses?brief_id=1&supplier_code=2",
             json={"briefResponses": []},
             status_code=200)
 
-        result = data_client.find_brief_responses(brief_id=1, supplier_id=2)
+        result = data_client.find_brief_responses(brief_id=1, supplier_code=2)
 
         assert result == {"briefResponses": []}
 
@@ -1830,16 +1830,16 @@ class TestDataAPIClientIterMethods(object):
 
     def test_find_draft_services_iter(self, data_client, rmock):
         rmock.get(
-            'http://baseurl/draft-services?supplier_id=123',
+            'http://baseurl/draft-services?supplier_code=123',
             json={
-                'links': {'next': 'http://baseurl/draft-services?supplier_id=123&page=2'},
+                'links': {'next': 'http://baseurl/draft-services?supplier_code=123&page=2'},
                 'services': [{'id': 1}, {'id': 2}]
             },
             status_code=200)
         rmock.get(
-            'http://baseurl/draft-services?supplier_id=123&page=2',
+            'http://baseurl/draft-services?supplier_code=123&page=2',
             json={
-                'links': {'prev': 'http://baseurl/draft-services?supplier_id=123'},
+                'links': {'prev': 'http://baseurl/draft-services?supplier_code=123'},
                 'services': [{'id': 3}]
             },
             status_code=200)
@@ -1861,7 +1861,7 @@ class TestDataAPIClientIterMethods(object):
 
     def test_find_services_iter_additional_arguments(self, data_client, rmock):
         rmock.get(
-            'http://baseurl/services?supplier_id=123',
+            'http://baseurl/services?supplier_code=123',
             json={
                 'links': {},
                 'services': [{'id': 1}, {'id': 2}]
