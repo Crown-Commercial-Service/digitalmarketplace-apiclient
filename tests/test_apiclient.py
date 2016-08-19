@@ -1147,6 +1147,30 @@ class TestDataApiClient(object):
             'updated_by': 'user'
         }
 
+    def test_agree_framework_variation(self, data_client, rmock):
+        dummy_response_body = {
+            "agreedVariation": {
+                "agreedAt": "2016-01-23T12:34:56.000000Z",
+                "agreedUserId": 314,
+                "agreedUserEmail": "example@digital.gov.uk",
+                "agreedUserName": "Paddy Dignam",
+            },
+        }
+        rmock.put(
+            "http://baseurl/suppliers/321/frameworks/g-cloud-99/variation/banana-split",
+            json=dummy_response_body,
+            status_code=200)
+
+        result = data_client.agree_framework_variation(321, 'g-cloud-99', "banana-split", 314, "someuser")
+        assert result == dummy_response_body
+        assert rmock.called
+        assert [rh.json() for rh in rmock.request_history] == [{
+            "agreedVariation": {
+                "agreedUserId": 314,
+            },
+            "updated_by": "someuser",
+        }]
+
     def test_find_framework_suppliers(self, data_client, rmock):
         rmock.get(
             'http://baseurl/frameworks/g-cloud-7/suppliers',
