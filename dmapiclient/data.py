@@ -229,6 +229,16 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def agree_framework_variation(self, supplier_id, framework_slug, variation_slug, agreed_user_id, user):
+        return self._put_with_updated_by(
+            "/suppliers/{}/frameworks/{}/variation/{}".format(
+                supplier_id, framework_slug, variation_slug),
+            data={
+                "agreedVariation": {"agreedUserId": agreed_user_id},
+            },
+            user=user,
+        )
+
     def find_framework_suppliers(self, framework_slug, agreement_returned=None):
         params = {}
         if agreement_returned is not None:
