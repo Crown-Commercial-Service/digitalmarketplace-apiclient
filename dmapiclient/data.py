@@ -234,7 +234,7 @@ class DataAPIClient(BaseAPIClient):
             "/suppliers/{}/frameworks/{}/variation/{}".format(
                 supplier_id, framework_slug, variation_slug),
             data={
-                "agreedVariation": {"agreedUserId": agreed_user_id},
+                "agreedVariations": {"agreedUserId": agreed_user_id},
             },
             user=user,
         )
