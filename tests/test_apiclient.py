@@ -1156,7 +1156,7 @@ class TestDataApiClient(object):
                 "agreedUserName": "Paddy Dignam",
             },
         }
-        rmock.put(
+        rmock.post(
             "http://baseurl/suppliers/321/frameworks/g-cloud-99/variation/banana-split",
             json=dummy_response_body,
             status_code=200)
