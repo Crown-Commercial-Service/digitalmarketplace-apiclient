@@ -1149,14 +1149,14 @@ class TestDataApiClient(object):
 
     def test_agree_framework_variation(self, data_client, rmock):
         dummy_response_body = {
-            "agreedVariation": {
+            "agreedVariations": {
                 "agreedAt": "2016-01-23T12:34:56.000000Z",
                 "agreedUserId": 314,
                 "agreedUserEmail": "example@digital.gov.uk",
                 "agreedUserName": "Paddy Dignam",
             },
         }
-        rmock.put(
+        rmock.post(
             "http://baseurl/suppliers/321/frameworks/g-cloud-99/variation/banana-split",
             json=dummy_response_body,
             status_code=200)
@@ -1165,7 +1165,7 @@ class TestDataApiClient(object):
         assert result == dummy_response_body
         assert rmock.called
         assert [rh.json() for rh in rmock.request_history] == [{
-            "agreedVariation": {
+            "agreedVariations": {
                 "agreedUserId": 314,
             },
             "updated_by": "someuser",

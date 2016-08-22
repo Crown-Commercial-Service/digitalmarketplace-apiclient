@@ -230,11 +230,11 @@ class DataAPIClient(BaseAPIClient):
         )
 
     def agree_framework_variation(self, supplier_id, framework_slug, variation_slug, agreed_user_id, user):
-        return self._put_with_updated_by(
+        return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}/variation/{}".format(
                 supplier_id, framework_slug, variation_slug),
             data={
-                "agreedVariation": {"agreedUserId": agreed_user_id},
+                "agreedVariations": {"agreedUserId": agreed_user_id},
             },
             user=user,
         )
