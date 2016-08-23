@@ -166,6 +166,16 @@ class TestBaseApiClient(object):
 
         assert rmock.last_request.headers.get("User-Agent").startswith("DM-API-Client/")
 
+    def test_request_always_uses_base_url_scheme(self, base_client, rmock):
+        rmock.request(
+            "GET",
+            "http://baseurl/path/",
+            json={},
+            status_code=200)
+
+        base_client._request('GET', 'https://host/path/')
+        assert rmock.called
+
 
 class TestSearchApiClient(object):
     def test_init_app_sets_attributes(self, search_client):
