@@ -35,6 +35,7 @@ def make_iter_method(method_name, model_name, url_path):
         while True:
             if 'next' not in result['links']:
                 return
+
             result = backoff_decorator(self._get)(result['links']['next'])
             for model in result[model_name]:
                 yield model
@@ -77,6 +78,13 @@ class BaseAPIClient(object):
             return None
 
         url = urlparse.urljoin(self.base_url, url)
+
+        # Make sure we always preserve the base_url host and scheme
+        # eg when using next link from the API response we need to keep the scheme
+        # so that app requests don't try to switch from HTTP to HTTPS
+        url = urlparse.urlparse(url)
+        base_url = urlparse.urlparse(self.base_url)
+        url = url._replace(netloc=base_url.netloc, scheme=base_url.scheme).geturl()
 
         logger.debug("API request {method} {url}",
                      extra={
