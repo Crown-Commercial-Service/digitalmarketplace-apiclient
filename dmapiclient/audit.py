@@ -42,15 +42,19 @@ class AuditTypes(Enum):
     agree_framework_variation = "agree_framework_variation"
 
     # Framework agreements
+    create_agreement = "create_agreement"
+    update_agreement = "update_agreement"
     upload_signed_agreement = "upload_signed_agreement"
+    sign_agreement = "sign_agreement"
+    upload_countersigned_agreement = "upload_countersigned_agreement"
+    countersign_agreement = "countersign_agreement"
+    delete_countersigned_agreement = "delete_countersigned_agreement"
 
     # Framework lifecycle
     create_framework = "create_framework"
     framework_update = "framework_update"
 
     # Admin actions
-    upload_countersigned_agreement = "upload_countersigned_agreement"
-    delete_countersigned_agreement = "delete_countersigned_agreement"
     snapshot_framework_stats = "snapshot_framework_stats"
 
     @staticmethod
