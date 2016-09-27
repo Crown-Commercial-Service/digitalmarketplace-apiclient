@@ -638,3 +638,18 @@ class DataAPIClient(BaseAPIClient):
                 }
             },
             user=user)
+
+    # Agreements
+
+    def get_framework_agreement(self, framework_agreement_id):
+        return self._get(
+            "/agreements/{}".format(framework_agreement_id))
+
+    def update_framework_agreement(self, framework_agreement_id, framework_agreement, user):
+        return self._post_with_updated_by(
+            "/agreements/{}".format(framework_agreement_id),
+            data={
+                "agreement": framework_agreement,
+            },
+            user=user,
+        )
