@@ -1840,6 +1840,30 @@ class TestDataApiClient(object):
             "updated_by": "user@example.com",
         }
 
+    def test_get_framework_agreement(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/agreements/12345",
+            json={"agreement": {'details': 'here'}},
+            status_code=200)
+
+        result = data_client.get_framework_agreement(12345)
+
+        assert result == {"agreement": {'details': 'here'}}
+
+    def test_update_framework_agreement(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements/12345",
+            json={"agreement": {'details': 'here'}},
+            status_code=200)
+
+        result = data_client.update_framework_agreement(12345, {"new": "details"}, "user@example.com")
+
+        assert result == {"agreement": {'details': 'here'}}
+        assert rmock.last_request.json() == {
+            "agreement": {"new": "details"},
+            "updated_by": "user@example.com",
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):
