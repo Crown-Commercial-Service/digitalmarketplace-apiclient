@@ -1864,6 +1864,29 @@ class TestDataApiClient(object):
             "updated_by": "user@example.com",
         }
 
+    def test_temp_script_countersign_agreement(self, data_client, rmock):
+        # Test for temporary route. Can be deleted after script is run.
+        rmock.post(
+            "http://baseurl/agreements/12345/countersign-script",
+            json={"agreement": {'details': 'here'}},
+            status_code=200)
+
+        result = data_client.temp_script_countersign_agreement(
+            12345,
+            "example/path/file.pdf",
+            "2016-11-01T00:00:00.000000Z",
+            "user@example.com"
+        )
+
+        assert result == {"agreement": {'details': 'here'}}
+        assert rmock.last_request.json() == {
+            "agreement": {
+                "countersignedAgreementPath": "example/path/file.pdf",
+                "countersignedAgreementReturnedAt": "2016-11-01T00:00:00.000000Z"
+            },
+            "updated_by": "user@example.com",
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):
