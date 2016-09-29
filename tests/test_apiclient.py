@@ -1203,6 +1203,18 @@ class TestDataApiClient(object):
         assert result == {'supplierFrameworks': [{"agreementReturned": False}, {"agreementReturned": True}]}
         assert rmock.called
 
+    def test_put_signed_agreement_on_hold(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements/101/on-hold",
+            json={},
+            status_code=200
+        )
+
+        data_client.put_signed_agreement_on_hold(101, 'Chris')
+
+        assert rmock.call_count == 1
+        assert rmock.last_request.json() == {'updated_by': 'Chris'}
+
     def test_find_draft_services(self, data_client, rmock):
         rmock.get(
             "http://baseurl/draft-services?supplier_id=2",
