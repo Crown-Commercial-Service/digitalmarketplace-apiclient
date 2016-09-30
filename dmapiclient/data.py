@@ -654,22 +654,6 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def temp_script_countersign_agreement(
-        self, framework_agreement_id, countersigned_path, countersigned_at, user
-    ):
-        # Temporary route only to be used for a one off script
-        # Afterwards this route can be deleted
-        return self._post_with_updated_by(
-            "/agreements/{}/countersign-script".format(framework_agreement_id),
-            data={
-                "agreement": {
-                    "countersignedAgreementPath": countersigned_path,
-                    "countersignedAgreementReturnedAt": countersigned_at
-                }
-            },
-            user=user,
-        )
-
     def put_signed_agreement_on_hold(self, framework_agreement_id, user):
         return self._post_with_updated_by(
             "/agreements/{}/on-hold".format(framework_agreement_id),
