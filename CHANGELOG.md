@@ -2,6 +2,28 @@
 
 Records breaking changes from major version bumps
 
+## 7.0.0
+
+PR: [#31](https://github.com/alphagov/digitalmarketplace-apiclient/pull/45)
+
+### What changed
+
+Removed `temp_script_countersign_agreement` method.
+
+This route, which allowed the timestamp for countersigning an agreement to be arbitrarily set, only existed for a
+one-off script that has now been run on production.
+
+### Example app change
+
+Old
+```
+api_client.temp_script_countersign_agreement(framework_agreement_id, countersigned_path, countersigned_at, user)
+```
+
+New
+
+You can't do this any more.
+
 ## 6.0.0
 
 PR: [#31](https://github.com/alphagov/digitalmarketplace-apiclient/pull/31)
