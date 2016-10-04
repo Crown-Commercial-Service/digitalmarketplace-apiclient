@@ -676,3 +676,10 @@ class DataAPIClient(BaseAPIClient):
             data={},
             user=user
         )
+
+    def countersign_agreement(self, framework_agreement_id, user):
+        return self._post_with_updated_by(
+            "/agreements/{}/countersign".format(framework_agreement_id),
+            data={},
+            user=user
+        )
