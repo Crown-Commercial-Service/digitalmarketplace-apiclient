@@ -1206,24 +1206,26 @@ class TestDataApiClient(object):
     def test_put_signed_agreement_on_hold(self, data_client, rmock):
         rmock.post(
             "http://baseurl/agreements/101/on-hold",
-            json={},
+            json={'David made me put data in': True},
             status_code=200
         )
 
-        data_client.put_signed_agreement_on_hold(101, 'Chris')
+        result = data_client.put_signed_agreement_on_hold(101, 'Chris')
 
+        assert result == {'David made me put data in': True}
         assert rmock.call_count == 1
         assert rmock.last_request.json() == {'updated_by': 'Chris'}
 
     def test_countersign_agreement(self, data_client, rmock):
         rmock.post(
             "http://baseurl/agreements/101/countersign",
-            json={},
+            json={'David made me put data in': True},
             status_code=200
         )
 
-        data_client.countersign_agreement(101, 'Chris')
+        result = data_client.countersign_agreement(101, 'Chris')
 
+        assert result == {'David made me put data in': True}
         assert rmock.call_count == 1
         assert rmock.last_request.json() == {'updated_by': 'Chris'}
 
