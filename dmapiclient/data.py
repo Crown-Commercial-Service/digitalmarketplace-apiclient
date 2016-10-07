@@ -661,9 +661,9 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
-    def countersign_agreement(self, framework_agreement_id, user, user_id):
+    def approve_agreement_for_countersignature(self, framework_agreement_id, user, user_id):
         return self._post_with_updated_by(
-            "/agreements/{}/countersign".format(framework_agreement_id),
+            "/agreements/{}/approve".format(framework_agreement_id),
             data={
                 "userId": user_id
             },
