@@ -1216,18 +1216,18 @@ class TestDataApiClient(object):
         assert rmock.call_count == 1
         assert rmock.last_request.json() == {'updated_by': 'Chris'}
 
-    def test_countersign_agreement(self, data_client, rmock):
+    def test_approve_agreement_for_countersignature(self, data_client, rmock):
         rmock.post(
-            "http://baseurl/agreements/101/countersign",
+            "http://baseurl/agreements/101/approve",
             json={'David made me put data in': True},
             status_code=200
         )
 
-        result = data_client.countersign_agreement(101, 'Chris')
+        result = data_client.approve_agreement_for_countersignature(101, 'chris@example.com', '1234')
 
         assert result == {'David made me put data in': True}
         assert rmock.call_count == 1
-        assert rmock.last_request.json() == {'updated_by': 'Chris'}
+        assert rmock.last_request.json() == {'updated_by': 'chris@example.com', 'userId': '1234'}
 
     def test_find_draft_services(self, data_client, rmock):
         rmock.get(
