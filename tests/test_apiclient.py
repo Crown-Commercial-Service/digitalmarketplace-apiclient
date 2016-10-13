@@ -1227,7 +1227,7 @@ class TestDataApiClient(object):
 
         assert result == {'David made me put data in': True}
         assert rmock.call_count == 1
-        assert rmock.last_request.json() == {'updated_by': 'chris@example.com', 'userId': '1234'}
+        assert rmock.last_request.json() == {'updated_by': 'chris@example.com', 'agreement': {'userId': '1234'}}
 
     def test_find_draft_services(self, data_client, rmock):
         rmock.get(

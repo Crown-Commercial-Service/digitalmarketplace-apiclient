@@ -665,7 +665,7 @@ class DataAPIClient(BaseAPIClient):
         return self._post_with_updated_by(
             "/agreements/{}/approve".format(framework_agreement_id),
             data={
-                "userId": user_id
+                "agreement": {"userId": user_id}
             },
             user=user
         )
