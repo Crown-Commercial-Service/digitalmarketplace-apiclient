@@ -245,7 +245,7 @@ class DataAPIClient(BaseAPIClient):
                                    returned their framework agreement. If 'agreement_returned' is set then
                                    any value for 'statuses' will be ignored.
         :param statuses: A comma-separated list of the statuses of framework agreements that should be returned.
-                         Valid statuses are: draft, signed, on-hold, approved and countersigned.
+                         Valid statuses are: signed, on-hold, approved and countersigned.
         '''
         params = {}
         if agreement_returned is not None:
