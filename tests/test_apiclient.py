@@ -1876,6 +1876,20 @@ class TestDataApiClient(object):
 
         assert result == {"agreement": {'details': 'here'}}
 
+    def test_create_framework_agreement(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements",
+            json={"agreement": {'details': 'here'}},
+            status_code=201)
+
+        result = data_client.create_framework_agreement(10, 'g-cloud-8', "user@example.com")
+
+        assert result == {"agreement": {'details': 'here'}}
+        assert rmock.last_request.json() == {
+            "agreement": {"supplierId": 10, "frameworkSlug": "g-cloud-8"},
+            "updated_by": "user@example.com",
+        }
+
     def test_update_framework_agreement(self, data_client, rmock):
         rmock.post(
             "http://baseurl/agreements/12345",
