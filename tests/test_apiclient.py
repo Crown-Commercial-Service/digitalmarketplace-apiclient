@@ -1203,6 +1203,17 @@ class TestDataApiClient(object):
         assert result == {'supplierFrameworks': [{"agreementReturned": False}, {"agreementReturned": True}]}
         assert rmock.called
 
+    def test_find_framework_suppliers_with_statuses(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/frameworks/g-cloud-7/suppliers?status=signed,on-hold',
+            json={'supplierFrameworks': [{"agreementReturned": False}, {"agreementReturned": True}]},
+            status_code=200)
+
+        result = data_client.find_framework_suppliers('g-cloud-7', statuses='signed,on-hold')
+
+        assert result == {'supplierFrameworks': [{"agreementReturned": False}, {"agreementReturned": True}]}
+        assert rmock.called
+
     def test_put_signed_agreement_on_hold(self, data_client, rmock):
         rmock.post(
             "http://baseurl/agreements/101/on-hold",
