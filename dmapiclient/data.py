@@ -663,6 +663,14 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def sign_framework_agreement(self, framework_agreement_id, user, signed_agreement_details=None):
+        data = {"agreement": {"signedAgreementDetails": signed_agreement_details}} if signed_agreement_details else {}
+        return self._post_with_updated_by(
+            "/agreements/{}/sign".format(framework_agreement_id),
+            data=data,
+            user=user,
+        )
+
     def put_signed_agreement_on_hold(self, framework_agreement_id, user):
         return self._post_with_updated_by(
             "/agreements/{}/on-hold".format(framework_agreement_id),

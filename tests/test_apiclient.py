@@ -1904,6 +1904,33 @@ class TestDataApiClient(object):
             "updated_by": "user@example.com",
         }
 
+    def test_sign_framework_agreement_with_no_signed_agreement_details(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements/12345/sign",
+            json={"agreement": {'response': 'here'}},
+            status_code=200)
+
+        result = data_client.sign_framework_agreement(12345, "user@example.com")
+
+        assert result == {"agreement": {'response': 'here'}}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@example.com",
+        }
+
+    def test_sign_framework_agreement_with_signed_agreement_details(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements/12345/sign",
+            json={"agreement": {'response': 'here'}},
+            status_code=200)
+
+        result = data_client.sign_framework_agreement(12345, "user@example.com", {"uploaderUserId": 20})
+
+        assert result == {"agreement": {'response': 'here'}}
+        assert rmock.last_request.json() == {
+            "agreement": {"signedAgreementDetails": {"uploaderUserId": 20}},
+            "updated_by": "user@example.com",
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):
