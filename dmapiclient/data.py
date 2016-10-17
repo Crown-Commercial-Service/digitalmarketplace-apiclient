@@ -250,7 +250,7 @@ class DataAPIClient(BaseAPIClient):
         params = {}
         if agreement_returned is not None:
             params['agreement_returned'] = bool(agreement_returned)
-        elif statuses is not None:
+        if statuses is not None:
             params['status'] = statuses
         return self._get(
             '/frameworks/{}/suppliers'.format(framework_slug),
