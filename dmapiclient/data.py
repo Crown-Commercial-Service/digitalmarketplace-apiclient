@@ -637,6 +637,8 @@ class DataAPIClient(BaseAPIClient):
                 "supplier_id": supplier_id,
             })
 
+    find_brief_responses_iter = make_iter_method('find_brief_responses', 'briefResponses', 'brief-responses')
+
     def add_brief_clarification_question(self, brief_id, question, answer, user):
         return self._post_with_updated_by(
             "/briefs/{}/clarification-questions".format(brief_id),
