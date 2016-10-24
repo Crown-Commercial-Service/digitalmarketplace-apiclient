@@ -1975,6 +1975,20 @@ class TestDataAPIClientIterMethods(object):
             model_name='users',
             url_path='users')
 
+    def test_find_briefs_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='find_briefs_iter',
+            model_name='briefs',
+            url_path='briefs')
+
+    def test_find_brief_responses_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='find_brief_responses_iter',
+            model_name='briefResponses',
+            url_path='brief-responses')
+
     def test_find_audit_events_iter(self, data_client, rmock):
         self._test_find_iter(
             data_client, rmock,
