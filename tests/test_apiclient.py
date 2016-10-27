@@ -1843,6 +1843,21 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
+    def test_submit_brief_response(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/brief-responses/123/submit",
+            json={"briefResponses": "result"},
+            status_code=200,
+        )
+
+        result = data_client.submit_brief_response(123, "user@email.com")
+
+        assert result == {"briefResponses": "result"}
+
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
     def test_get_brief_response(self, data_client, rmock):
         rmock.get(
             "http://baseurl/brief-responses/123",
