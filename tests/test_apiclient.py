@@ -1822,7 +1822,29 @@ class TestDataApiClient(object):
 
         assert result is False
 
-    def test_create_brief_response(self, data_client, rmock):
+    def test_create_brief_response_with_page_questions(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/brief-responses",
+            json={"briefs": "result"},
+            status_code=201,
+        )
+
+        result = data_client.create_brief_response(
+            1, 2, {"essentialRequirements": [True, None, False]}, "user@email.com", page_questions=['question']
+        )
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "briefResponses": {
+                "briefId": 1,
+                "supplierId": 2,
+                "essentialRequirements": [True, None, False],
+            },
+            "page_questions": ['question'],
+            "updated_by": "user@email.com"
+        }
+
+    def test_create_brief_response_without_page_questions(self, data_client, rmock):
         rmock.post(
             "http://baseurl/brief-responses",
             json={"briefs": "result"},
@@ -1840,6 +1862,7 @@ class TestDataApiClient(object):
                 "supplierId": 2,
                 "essentialRequirements": [True, None, False],
             },
+            "page_questions": [],
             "updated_by": "user@email.com"
         }
 
