@@ -1893,11 +1893,11 @@ class TestDataApiClient(object):
 
     def test_find_brief_responses(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/brief-responses?brief_id=1&supplier_id=2",
+            "http://baseurl/brief-responses?brief_id=1&supplier_id=2&status=draft",
             json={"briefResponses": []},
             status_code=200)
 
-        result = data_client.find_brief_responses(brief_id=1, supplier_id=2)
+        result = data_client.find_brief_responses(brief_id=1, supplier_id=2, status='draft')
 
         assert result == {"briefResponses": []}
 
