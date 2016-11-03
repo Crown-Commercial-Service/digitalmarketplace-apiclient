@@ -615,12 +615,13 @@ class DataAPIClient(BaseAPIClient):
             params={"supplier_id": supplier_id}
         )['services']) > 0
 
-    def create_brief_response(self, brief_id, supplier_id, data, user):
+    def create_brief_response(self, brief_id, supplier_id, data, user, page_questions=None):
         data = dict(data, briefId=brief_id, supplierId=supplier_id)
         return self._post_with_updated_by(
             "/brief-responses",
             data={
-                "briefResponses": data
+                "briefResponses": data,
+                "page_questions": page_questions or [],
             },
             user=user,
         )
