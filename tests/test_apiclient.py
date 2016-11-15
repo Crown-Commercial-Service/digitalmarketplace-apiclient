@@ -1866,6 +1866,29 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
+    def test_update_brief_response(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/brief-responses/1234",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.update_brief_response(
+            1234,
+            {'email_address': 'test@example.com'},
+            'user@example.com',
+            ['email_address']
+        )
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "briefResponses": {
+                'email_address': 'test@example.com'
+            },
+            "page_questions": ['email_address'],
+            "updated_by": "user@example.com"
+        }
+
     def test_submit_brief_response(self, data_client, rmock):
         rmock.post(
             "http://baseurl/brief-responses/123/submit",

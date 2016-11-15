@@ -626,6 +626,16 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def update_brief_response(self, brief_response_id, data, user, page_questions=None):
+        return self._post_with_updated_by(
+            "/brief-responses/{}".format(brief_response_id),
+            data={
+                "briefResponses": data,
+                "page_questions": page_questions or [],
+            },
+            user=user,
+        )
+
     def submit_brief_response(self, brief_response_id, user):
         return self._post_with_updated_by(
             "/brief-responses/{}/submit".format(brief_response_id),
