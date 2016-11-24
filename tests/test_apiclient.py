@@ -176,6 +176,10 @@ class TestBaseApiClient(object):
         base_client._request('GET', 'https://host/path/')
         assert rmock.called
 
+    def test_null_api_does_nothing(self):
+        bad_client = BaseAPIClient(None, 'auth-token', True)
+        assert bad_client._request('GET', '/anything') is None
+
 
 class TestSearchApiClient(object):
     def test_init_app_sets_attributes(self, search_client):
