@@ -76,6 +76,9 @@ class BaseAPIClient(object):
     def _request(self, method, url, data=None, params=None):
         if not self.enabled:
             return None
+        if self.base_url is None:
+            logger.info("{} has no URL configured".format(self.__class__.__name__))
+            return None
 
         url = urlparse.urljoin(self.base_url, url)
 
