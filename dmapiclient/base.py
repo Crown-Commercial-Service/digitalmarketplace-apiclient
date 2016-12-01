@@ -8,11 +8,14 @@ except ImportError:
 
 import requests
 from flask import has_request_context, request, current_app
+
 import backoff
 from monotonic import monotonic
 
 from . import __version__
 from .errors import APIError, HTTPError, HTTPTemporaryError, InvalidResponse
+from .exceptions import ImproperlyConfigured
+
 
 logger = logging.getLogger(__name__)
 
@@ -76,9 +79,9 @@ class BaseAPIClient(object):
     def _request(self, method, url, data=None, params=None):
         if not self.enabled:
             return None
-        if self.base_url is None:
-            logger.info("{} has no URL configured".format(self.__class__.__name__))
-            return None
+
+        if not self.base_url:
+            raise ImproperlyConfigured("{} has no URL configured".format(self.__class__.__name__))
 
         url = urlparse.urljoin(self.base_url, url)
 

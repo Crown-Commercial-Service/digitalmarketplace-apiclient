@@ -13,6 +13,7 @@ from dmapiclient import APIError, HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmapiclient.errors import REQUEST_ERROR_MESSAGE
 from dmapiclient.audit import AuditTypes
+from dmapiclient.exceptions import ImproperlyConfigured
 
 
 @pytest.yield_fixture
@@ -176,9 +177,10 @@ class TestBaseApiClient(object):
         base_client._request('GET', 'https://host/path/')
         assert rmock.called
 
-    def test_null_api_does_nothing(self):
+    def test_null_api_throws(self):
         bad_client = BaseAPIClient(None, 'auth-token', True)
-        assert bad_client._request('GET', '/anything') is None
+        with pytest.raises(ImproperlyConfigured):
+            bad_client._request('GET', '/anything')
 
 
 class TestSearchApiClient(object):
