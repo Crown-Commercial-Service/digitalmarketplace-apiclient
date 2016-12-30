@@ -14,6 +14,8 @@ class SearchAPIClient(BaseAPIClient):
         self.auth_token = app.config['DM_SEARCH_API_AUTH_TOKEN']
         self.enabled = app.config['ES_ENABLED']
 
+        app.search_api_client = self
+
     def _url(self, index, path):
         return u"/{}/services/{}".format(index, path)
 
