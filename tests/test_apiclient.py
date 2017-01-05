@@ -196,6 +196,7 @@ class TestSearchApiClient(object):
         assert search_client.base_url == "http://example"
         assert search_client.auth_token == "example-token"
         assert not search_client.enabled
+        assert app.search_api_client is search_client
 
     def test_get_status(self, search_client, rmock):
         rmock.get(
@@ -385,6 +386,7 @@ class TestDataApiClient(object):
 
         assert data_client.base_url == "http://example"
         assert data_client.auth_token == "example-token"
+        assert app.data_api_client is data_client
 
     def test_get_status(self, data_client, rmock):
         rmock.get(
