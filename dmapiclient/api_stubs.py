@@ -55,7 +55,7 @@ def brief(status="draft",
             "clarificationQuestions": clarification_questions or [],
         }
     }
-    if status == "live":
+    if status in ("live", "closed"):
         brief['briefs']['publishedAt'] = "2016-03-29T10:11:14.000000Z"
         brief['briefs']['applicationsClosedAt'] = "2016-04-07T00:00:00.000000Z"
         brief['briefs']['clarificationQuestionsClosedAt'] = "2016-04-02T00:00:00.000000Z"
