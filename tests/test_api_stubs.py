@@ -128,3 +128,31 @@ def test_brief():
             "clarificationQuestions": [],
         }
     }
+
+    assert api_stubs.brief(
+        status='closed',
+        framework_slug='a-framework-slug',
+        lot_slug='a-lot-slug', user_id=234,
+        framework_name='A Framework Name') \
+        == {
+        "briefs": {
+            "id": 1234,
+            "title": "I need a thing to do a thing",
+            "frameworkSlug": "a-framework-slug",
+            "frameworkName": "A Framework Name",
+            "lotSlug": "a-lot-slug",
+            "status": "closed",
+            "users": [{"active": True,
+                       "role": "buyer",
+                       "emailAddress": "buyer@email.com",
+                       "id": 234,
+                       "name": "Buyer User"}],
+            "createdAt": "2016-03-29T10:11:12.000000Z",
+            "updatedAt": "2016-03-29T10:11:13.000000Z",
+            "publishedAt": "2016-03-29T10:11:14.000000Z",
+            "applicationsClosedAt": "2016-04-07T00:00:00.000000Z",
+            "clarificationQuestionsClosedAt": "2016-04-02T00:00:00.000000Z",
+            "clarificationQuestionsAreClosed": False,
+            "clarificationQuestions": [],
+        }
+    }
