@@ -101,12 +101,6 @@ class DataAPIClient(BaseAPIClient):
             "/suppliers/{}".format(supplier_id)
         )
 
-    def import_supplier(self, supplier_id, supplier):
-        return self._put(
-            "/suppliers/{}".format(supplier_id),
-            data={"suppliers": supplier},
-        )
-
     def create_supplier(self, supplier):
         return self._post(
             "/suppliers",
@@ -508,15 +502,6 @@ class DataAPIClient(BaseAPIClient):
         return self._get("/services", params=params)
 
     find_services_iter = make_iter_method('find_services', 'services', 'services')
-
-    def import_service(self, service_id, service, user):
-        return self._put_with_updated_by(
-            "/services/{}".format(service_id),
-            data={
-                "services": service,
-            },
-            user=user,
-        )
 
     def update_service(self, service_id, service, user):
         return self._post_with_updated_by(
