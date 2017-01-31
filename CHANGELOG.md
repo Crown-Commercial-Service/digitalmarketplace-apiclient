@@ -2,9 +2,40 @@
 
 Records breaking changes from major version bumps
 
+## 8.0.0
+
+PR: [#62](https://github.com/alphagov/digitalmarketplace-apiclient/pull/62)
+
+### What changed
+
+Removed `import_supplier` and `import_service` methods.
+
+These routes have been around since G6, when we were importing a bunch of complete suppliers and their related services. As they were all production-ready (they already had IDs and everything) we just needed a way to create a new object from a JSON blob.
+
+New services created through the app must start out as drafts, and for both services and suppliers IDs are assigned at creation time. This is what we are doing now and will continue doing going forward.
+
+Technically this a breaking change because we are removing functionality, but IRL there were only two scripts using them and those are being deleted.
+
+### Example app change
+
+Old
+```python
+# import suppler
+api_client.import_supplier(1, {"supplier": "data"})
+
+
+# import service
+api_client.import_service(1, {"service": "data"}, "paul@paul.paul")
+```
+
+New
+
+You can't do this any more.
+
+
 ## 7.0.0
 
-PR: [#31](https://github.com/alphagov/digitalmarketplace-apiclient/pull/45)
+PR: [#45](https://github.com/alphagov/digitalmarketplace-apiclient/pull/45)
 
 ### What changed
 
@@ -16,7 +47,7 @@ one-off script that has now been run on production.
 ### Example app change
 
 Old
-```
+```python
 api_client.temp_script_countersign_agreement(framework_agreement_id, countersigned_path, countersigned_at, user)
 ```
 
@@ -39,12 +70,12 @@ uses of the `update_brief_status` in our apps that set a status to something oth
 ### Example app change
 
 Old
-```
+```python
 api_client.update_brief_status(brief_id, 'live', user)
 ```
 
 New
-```
+```python
 api_client.publish_brief(brief_id, user)
 ```
 
@@ -103,12 +134,12 @@ user should be allowed to access a resource.
 ### Example app change
 
 Old
-```
+```python
 user = api_client.authenticate_user("email_address", "password", supplier=False)
 ```
 
 New
-```
+```python
 user = api_client.authenticate_user("email_address", "password")
 ```
 
@@ -130,14 +161,14 @@ changed to either imports from the main package namespace or the new package nam
 ### Example app change
 
 Old
-```
+```python
 from dmutils.apiclient import SearchAPIClient
 from dmutils.apiclient.base import BaseAPIClient
 from dmutils.audit import AuditTypes
 ```
 
 New
-```
+```python
 from dmapiclient import SearchAPIClient
 from dmapiclient.base import BaseAPIClient
 from dmapiclient.audit import AuditTypes
