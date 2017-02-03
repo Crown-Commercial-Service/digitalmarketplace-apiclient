@@ -1031,6 +1031,20 @@ class TestDataApiClient(object):
             'updated_by': 'user'
         }
 
+    def test_set_supplier_framework_prefill_declaration(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/8765/frameworks/breeches",
+            json={"frameworkInterest": {"prefillDeclarationFromFrameworkSlug": "pyjamas"}},
+            status_code=200)
+
+        result = data_client.set_supplier_framework_prefill_declaration(8765, "breeches", "pyjamas", "user")
+        assert result == {"frameworkInterest": {"prefillDeclarationFromFrameworkSlug": "pyjamas"}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            "frameworkInterest": {"prefillDeclarationFromFrameworkSlug": "pyjamas"},
+            "updated_by": 'user'
+        }
+
     def test_register_framework_agreement_returned_with_uploader_user_id(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/123/frameworks/g-cloud-8",
