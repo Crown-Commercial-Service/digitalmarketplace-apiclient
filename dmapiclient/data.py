@@ -140,6 +140,11 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def find_supplier_declarations(self, supplier_id):
+        return self._get(
+            "/suppliers/{}/frameworks".format(supplier_id)
+        )
+
     def get_supplier_declaration(self, supplier_id, framework_slug):
         response = self._get(
             "/suppliers/{}/frameworks/{}".format(supplier_id, framework_slug)
@@ -537,8 +542,6 @@ class DataAPIClient(BaseAPIClient):
 
     def find_frameworks(self):
         return self._get("/frameworks")
-
-    find_frameworks_iter = make_iter_method('find_frameworks', 'frameworks', 'frameworks')
 
     def get_framework(self, slug):
         return self._get("/frameworks/{}".format(slug))
