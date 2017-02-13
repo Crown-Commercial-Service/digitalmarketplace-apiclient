@@ -972,6 +972,24 @@ class TestDataApiClient(object):
         assert rmock.called
         assert rmock.request_history[0].json() == {'updated_by': 'g-15-user'}
 
+    def test_find_supplier_declarations(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/suppliers/123/frameworks",
+            json={"frameworkInterest": [
+                {"declaration": {"question": "answer"}},
+                {"declaration": {"question": "answer"}},
+            ]},
+            status_code=200
+        )
+
+        result = data_client.find_supplier_declarations(123)
+
+        assert result == {"frameworkInterest": [
+            {"declaration": {"question": "answer"}},
+            {"declaration": {"question": "answer"}},
+        ]}
+        assert rmock.called
+
     def test_get_supplier_declaration(self, data_client, rmock):
         rmock.get(
             "http://baseurl/suppliers/123/frameworks/g-cloud-7",
