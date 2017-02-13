@@ -34,6 +34,7 @@ class AuditTypes(Enum):
     submit_brief_response = "submit_brief_response"
     add_brief_clarification_question = "add_brief_clarification_question"
     delete_brief = "delete_brief"
+    update_brief_framework_id = "update_brief_framework_id"
 
     # Supplier actions
     register_framework_interest = "register_framework_interest"
