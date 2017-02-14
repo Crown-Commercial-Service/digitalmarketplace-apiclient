@@ -4,6 +4,8 @@ def framework(status="open", slug="g-cloud-7", name=None, clarification_question
         name = "G-Cloud 7"
     elif slug == "digital-outcomes-and-specialists":
         name = "Digital Outcomes and Specialists"
+    elif slug == "digital-outcomes-and-specialists-2":
+        name = "Digital Outcomes and Specialists 2"
     else:
         name = slug.replace("-", " ").title()
 
