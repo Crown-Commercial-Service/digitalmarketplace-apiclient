@@ -41,6 +41,7 @@ def test_brief():
             "title": "I need a thing to do a thing",
             "frameworkSlug": "digital-outcomes-and-specialists",
             "frameworkName": "Digital Outcomes and Specialists",
+            "frameworkFramework": "digital-outcomes-and-specialists",
             "lotSlug": "digital-specialists",
             "status": "draft",
             "users": [{"active": True,
@@ -58,13 +59,15 @@ def test_brief():
         status='live',
         framework_slug='a-framework-slug',
         lot_slug='a-lot-slug', user_id=234,
-        framework_name='A Framework Name') \
+        framework_name='A Framework Name',
+        framework_framework='a framework framework') \
         == {
         "briefs": {
             "id": 1234,
             "title": "I need a thing to do a thing",
             "frameworkSlug": "a-framework-slug",
             "frameworkName": "A Framework Name",
+            "frameworkFramework": "a framework framework",
             "lotSlug": "a-lot-slug",
             "status": "live",
             "users": [{"active": True,
@@ -89,6 +92,7 @@ def test_brief():
             "title": "I need a thing to do a thing",
             "frameworkSlug": "digital-outcomes-and-specialists",
             "frameworkName": "Digital Outcomes and Specialists",
+            "frameworkFramework": "digital-outcomes-and-specialists",
             "lotSlug": "digital-specialists",
             "status": "draft",
             "users": [{"active": True,
@@ -112,6 +116,7 @@ def test_brief():
             "title": "I need a thing to do a thing",
             "frameworkSlug": "digital-outcomes-and-specialists",
             "frameworkName": "Digital Outcomes and Specialists",
+            "frameworkFramework": "digital-outcomes-and-specialists",
             "lotSlug": "digital-specialists",
             "status": "live",
             "users": [{"active": True,
@@ -140,6 +145,7 @@ def test_brief():
             "title": "I need a thing to do a thing",
             "frameworkSlug": "a-framework-slug",
             "frameworkName": "A Framework Name",
+            "frameworkFramework": "digital-outcomes-and-specialists",
             "lotSlug": "a-lot-slug",
             "status": "closed",
             "users": [{"active": True,
