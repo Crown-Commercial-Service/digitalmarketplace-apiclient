@@ -22,7 +22,7 @@ setup(
     install_requires=[
         'Flask>=0.10',
         'backoff==1.0.7',
-        'enum34==1.1.2',
+        'enum34==1.1.6',
         'monotonic==0.3',
         'requests==2.7.0',
         'six==1.9.0'
