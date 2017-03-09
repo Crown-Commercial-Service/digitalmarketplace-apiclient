@@ -1264,6 +1264,25 @@ class TestDataApiClient(object):
         assert rmock.call_count == 1
         assert rmock.last_request.json() == {'updated_by': 'chris@example.com', 'agreement': {'userId': '1234'}}
 
+    def test_unapprove_agreement_for_countersignature(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements/7890/approve",
+            json={'something_else': 4321},
+            status_code=200,
+        )
+
+        result = data_client.unapprove_agreement_for_countersignature(7890, 'tactical.shorts@example.com', '6543')
+
+        assert result == {'something_else': 4321}
+        assert rmock.call_count == 1
+        assert rmock.last_request.json() == {
+            'updated_by': 'tactical.shorts@example.com',
+            'agreement': {
+                'userId': '6543',
+                'unapprove': True,
+            },
+        }
+
     def test_find_draft_services(self, data_client, rmock):
         rmock.get(
             "http://baseurl/draft-services?supplier_id=2",

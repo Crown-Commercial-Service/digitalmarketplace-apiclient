@@ -723,3 +723,15 @@ class DataAPIClient(BaseAPIClient):
             },
             user=user
         )
+
+    def unapprove_agreement_for_countersignature(self, framework_agreement_id, user, user_id):
+        return self._post_with_updated_by(
+            "/agreements/{}/approve".format(framework_agreement_id),
+            data={
+                "agreement": {
+                    "userId": user_id,
+                    "unapprove": True,
+                },
+            },
+            user=user
+        )
