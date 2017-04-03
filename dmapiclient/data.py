@@ -275,6 +275,8 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
+    find_framework_suppliers_iter = make_iter_method('find_framework_suppliers', 'supplierFrameworks')
+
     # Users
 
     def create_user(self, user):

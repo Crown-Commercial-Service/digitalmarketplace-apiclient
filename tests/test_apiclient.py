@@ -2107,6 +2107,30 @@ class TestDataAPIClientIterMethods(object):
             model_name='suppliers',
             url_path='suppliers')
 
+    def test_find_framework_suppliers_iter(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/frameworks/g-cloud-8/suppliers',
+            json={
+                'links': {'next': 'http://baseurl/frameworks/g-cloud-8/suppliers?page=2'},
+                'supplierFrameworks': [{'id': 1}, {'id': 2}]
+            },
+            status_code=200)
+        rmock.get(
+            'http://baseurl/frameworks/g-cloud-8/suppliers?page=2',
+            json={
+                'links': {'prev': 'http://baseurl/frameworks/g-cloud-8/suppliers'},
+                'supplierFrameworks': [{'id': 3}]
+            },
+            status_code=200)
+
+        result = data_client.find_framework_suppliers_iter('g-cloud-8')
+        results = list(result)
+
+        assert len(results) == 3
+        assert results[0]['id'] == 1
+        assert results[1]['id'] == 2
+        assert results[2]['id'] == 3
+
     def test_find_draft_services_iter(self, data_client, rmock):
         rmock.get(
             'http://baseurl/draft-services?supplier_id=123',
