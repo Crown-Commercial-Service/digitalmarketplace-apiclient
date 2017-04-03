@@ -47,7 +47,7 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
-    find_audit_events_iter = make_iter_method('find_audit_events', 'auditEvents', 'audit-events')
+    find_audit_events_iter = make_iter_method('find_audit_events', 'auditEvents')
 
     def acknowledge_audit_event(self, audit_event_id, user):
         return self._post_with_updated_by(
@@ -94,7 +94,7 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
-    find_suppliers_iter = make_iter_method('find_suppliers', 'suppliers', 'suppliers')
+    find_suppliers_iter = make_iter_method('find_suppliers', 'suppliers')
 
     def get_supplier(self, supplier_id):
         return self._get(
@@ -297,7 +297,7 @@ class DataAPIClient(BaseAPIClient):
             params['page'] = page
         return self._get("/users", params=params)
 
-    find_users_iter = make_iter_method('find_users', 'users', 'users')
+    find_users_iter = make_iter_method('find_users', 'users')
 
     def get_user(self, user_id=None, email_address=None):
         if user_id is not None and email_address is not None:
@@ -419,7 +419,7 @@ class DataAPIClient(BaseAPIClient):
 
         return self._get('/draft-services', params=params)
 
-    find_draft_services_iter = make_iter_method('find_draft_services', 'services', 'draft-services')
+    find_draft_services_iter = make_iter_method('find_draft_services', 'services')
 
     def get_draft_service(self, draft_id):
         return self._get(
@@ -522,7 +522,7 @@ class DataAPIClient(BaseAPIClient):
 
         return self._get("/services", params=params)
 
-    find_services_iter = make_iter_method('find_services', 'services', 'services')
+    find_services_iter = make_iter_method('find_services', 'services')
 
     def update_service(self, service_id, service, user):
         return self._post_with_updated_by(
@@ -607,7 +607,7 @@ class DataAPIClient(BaseAPIClient):
                     }
         )
 
-    find_briefs_iter = make_iter_method('find_briefs', 'briefs', 'briefs')
+    find_briefs_iter = make_iter_method('find_briefs', 'briefs')
 
     def delete_brief(self, brief_id, user):
         return self._delete_with_updated_by(
@@ -663,7 +663,7 @@ class DataAPIClient(BaseAPIClient):
                 "status": status
             })
 
-    find_brief_responses_iter = make_iter_method('find_brief_responses', 'briefResponses', 'brief-responses')
+    find_brief_responses_iter = make_iter_method('find_brief_responses', 'briefResponses')
 
     def add_brief_clarification_question(self, brief_id, question, answer, user):
         return self._post_with_updated_by(
