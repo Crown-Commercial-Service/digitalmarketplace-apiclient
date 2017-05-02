@@ -575,6 +575,13 @@ class DataAPIClient(BaseAPIClient):
             user=updated_by,
         )
 
+    def copy_brief(self, brief_id, updated_by):
+        return self._post_with_updated_by(
+            "/briefs/{}/copy".format(brief_id),
+            data={},
+            user=updated_by,
+        )
+
     def update_brief(self, brief_id, brief, updated_by, page_questions=None):
         return self._post_with_updated_by(
             "/briefs/{}".format(brief_id),
