@@ -1471,6 +1471,18 @@ class TestDataApiClient(object):
             }
         }
 
+    def test_get_audit_event(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/audit-events/123",
+            json={"audit-event": "result"},
+            status_code=200,
+        )
+
+        result = data_client.get_audit_event(123)
+
+        assert result == {"audit-event": "result"}
+        assert rmock.called
+
     def test_find_audit_events(self, data_client, rmock):
         rmock.get(
             "http://baseurl/audit-events",

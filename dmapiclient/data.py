@@ -47,6 +47,11 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
+    def get_audit_event(self, audit_event_id):
+        return self._get(
+            "/audit-events/{}".format(audit_event_id)
+        )
+
     find_audit_events_iter = make_iter_method('find_audit_events', 'auditEvents')
 
     def acknowledge_audit_event(self, audit_event_id, user):
