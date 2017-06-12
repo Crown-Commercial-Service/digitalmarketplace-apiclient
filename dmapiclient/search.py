@@ -43,6 +43,11 @@ class SearchAPIClient(BaseAPIClient):
                 raise
         return None
 
+    def _add_filters_to_params(self, params, filters):
+        """In-place transformation of filter keys and storage in params."""
+        for filter_name, filter_values in six.iteritems(filters):
+            params[u'filter_{}'.format(filter_name)] = filter_values
+
     def search_services(self, q=None, page=None, index=DEFAULT_SEARCH_INDEX, **filters):
         params = {}
         if q is not None:
@@ -51,8 +56,19 @@ class SearchAPIClient(BaseAPIClient):
         if page:
             params['page'] = page
 
-        for filter_name, filter_values in six.iteritems(filters):
-            params[u'filter_{}'.format(filter_name)] = filter_values
+        self._add_filters_to_params(params, filters)
 
         response = self._get(self._url(index, "search"), params=params)
+        return response
+
+    def aggregate_services(self, q=None, index=DEFAULT_SEARCH_INDEX, aggregations=[], **filters):
+        params = {}
+        if q is not None:
+            params['q'] = q
+
+        self._add_filters_to_params(params, filters)
+
+        params['aggregations'] = aggregations
+
+        response = self._get(self._url(index, "aggregations"), params=params)
         return response

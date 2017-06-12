@@ -300,17 +300,32 @@ class TestSearchApiClient(object):
             search_client.index("12345", service)
 
     def test_search_services(self, search_client, rmock):
+        expected_response = {'services': "myresponse"}
         rmock.get(
             'http://baseurl/g-cloud/services/search?q=foo&'
             'filter_minimumContractPeriod=a&'
             'filter_something=a&filter_something=b',
-            json={'services': "myresponse"},
+            json=expected_response,
             status_code=200)
         result = search_client.search_services(
             q='foo',
             minimumContractPeriod=['a'],
             something=['a', 'b'])
-        assert result == {'services': "myresponse"}
+        assert result == expected_response
+
+    def test_aggregate_services(self, search_client, rmock):
+        expected_response = {'aggregations': "myresponse"}
+        rmock.get(
+            'http://baseurl/g-cloud/services/aggregations?q=foo&'
+            'filter_minimumContractPeriod=a&'
+            'filter_something=a&filter_something=b',
+            json=expected_response,
+            status_code=200)
+        result = search_client.aggregate_services(
+            q='foo',
+            minimumContractPeriod=['a'],
+            something=['a', 'b'])
+        assert result == expected_response
 
     def test_search_given_index(self, search_client, rmock):
         rmock.get(
