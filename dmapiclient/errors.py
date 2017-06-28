@@ -29,13 +29,13 @@ class HTTPError(APIError):
     @staticmethod
     def create(e):
         error = HTTPError(e.response)
-        if error.status_code in [503, 504]:
+        if error.status_code in [502, 503, 504]:
             error = HTTPTemporaryError(e.response)
         return error
 
 
 class HTTPTemporaryError(HTTPError):
-    """Specific instance of HTTPError for temporary 503 and 504 errors
+    """Specific instance of HTTPError for temporary 502, 503 and 504 errors
 
     Used for detecting whether failed requests should be retried.
     """
