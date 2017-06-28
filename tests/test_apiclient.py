@@ -2000,11 +2000,13 @@ class TestDataApiClient(object):
 
     def test_find_brief_responses(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/brief-responses?brief_id=1&supplier_id=2&status=draft",
+            "http://baseurl/brief-responses?brief_id=1&supplier_id=2&status=draft&framework=digital-outcomes-and-specialists-2",  # noqa
             json={"briefResponses": []},
             status_code=200)
 
-        result = data_client.find_brief_responses(brief_id=1, supplier_id=2, status='draft')
+        result = data_client.find_brief_responses(
+            brief_id=1, supplier_id=2, status='draft', framework='digital-outcomes-and-specialists-2'
+        )
 
         assert result == {"briefResponses": []}
 
