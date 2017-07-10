@@ -1546,8 +1546,12 @@ class TestDataApiClient(object):
         assert rmock.called
 
     def test_find_audit_events_with_all_params(self, data_client, rmock):
+        url = (
+            "http://baseurl/audit-events?page=123&audit-type=contact_update&audit-date=2010-01-01"
+            "&acknowledged=all&object-type=foo&object-id=123&latest_first=True"
+        )
         rmock.get(
-            "http://baseurl/audit-events?page=123&audit-type=contact_update&audit-date=2010-01-01&acknowledged=all&object-type=foo&object-id=123&latest_first=True",  # noqa
+            url,
             json={"audit-event": "result"},
             status_code=200,
         )
@@ -1566,7 +1570,7 @@ class TestDataApiClient(object):
 
     def test_find_audit_events_with_no_none_params(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/audit-events?page=123&audit-type=contact_update&acknowledged=all",  # noqa
+            "http://baseurl/audit-events?page=123&audit-type=contact_update&acknowledged=all",
             json={"audit-event": "result"},
             status_code=200,
         )
@@ -1590,7 +1594,7 @@ class TestDataApiClient(object):
 
     def test_acknowledge_audit_event(self, data_client, rmock):
         rmock.post(
-            "http://baseurl/audit-events/123/acknowledge",  # noqa
+            "http://baseurl/audit-events/123/acknowledge",
             json={"audit-event": "result"},
             status_code=200,
         )
@@ -1999,12 +2003,18 @@ class TestDataApiClient(object):
         assert result == {"briefResponses": "result"}
 
     def test_find_brief_responses(self, data_client, rmock):
+        url = (
+            "http://baseurl/brief-responses?brief_id=1&supplier_id=2&status=draft&"
+            "framework=digital-outcomes-and-specialists-2"
+        )
         rmock.get(
-            "http://baseurl/brief-responses?brief_id=1&supplier_id=2&status=draft",
+            url,
             json={"briefResponses": []},
             status_code=200)
 
-        result = data_client.find_brief_responses(brief_id=1, supplier_id=2, status='draft')
+        result = data_client.find_brief_responses(
+            brief_id=1, supplier_id=2, status='draft', framework='digital-outcomes-and-specialists-2'
+        )
 
         assert result == {"briefResponses": []}
 
