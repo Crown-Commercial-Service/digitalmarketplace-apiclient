@@ -43,7 +43,7 @@ class DataAPIClient(BaseAPIClient):
         if latest_first is not None:
             params['latest_first'] = latest_first
         if earliest_for_each_object is not None:
-            params['earliest-for-each-object'] = earliest_for_each_object
+            params['earliest_for_each_object'] = earliest_for_each_object
 
         return self._get(
             "/audit-events",
@@ -61,6 +61,13 @@ class DataAPIClient(BaseAPIClient):
         return self._post_with_updated_by(
             "/audit-events/{}/acknowledge".format(audit_event_id),
             data={},
+            user=user,
+        )
+
+    def acknowledge_service_update_including_previous(self, service_id, audit_event_id, user):
+        return self._post_with_updated_by(
+            "/services/{}/updates/acknowledge".format(service_id),
+            data={"latest_audit_id": audit_event_id},
             user=user,
         )
 

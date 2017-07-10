@@ -1610,6 +1610,25 @@ class TestDataApiClient(object):
             'updated_by': 'user'
         }
 
+    def test_acknowledge_service_update_including_previous(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/services/123/updates/acknowledge",
+            json={"auditEvents": [{"id": 120}, {"id": 123}]},
+            status_code=200,
+        )
+
+        result = data_client.acknowledge_service_update_including_previous(
+            service_id=123,
+            audit_event_id=456,
+            user='user')
+
+        assert rmock.called
+        assert result == {"auditEvents": [{"id": 120}, {"id": 123}]}
+        assert rmock.request_history[0].json() == {
+            "latest_audit_id": 456,
+            'updated_by': 'user'
+        }
+
     def test_create_audit_event(self, data_client, rmock):
         rmock.post(
             "http://baseurl/audit-events",
