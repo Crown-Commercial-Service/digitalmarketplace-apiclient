@@ -1873,6 +1873,17 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"briefs": [{"biscuit": "tasty"}]}
 
+    def test_find_briefs_with_clarification_questions(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/briefs?with_clarification_questions=True",
+            json={"briefs": [{"biscuit": "tasty"}]},
+            status_code=200)
+
+        result = data_client.find_briefs(with_clarification_questions=True)
+
+        assert rmock.called
+        assert result == {"briefs": [{"biscuit": "tasty"}]}
+
     def test_delete_brief(self, data_client, rmock):
         rmock.delete(
             "http://baseurl/briefs/2",
