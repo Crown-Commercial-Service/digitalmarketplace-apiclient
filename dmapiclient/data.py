@@ -67,7 +67,7 @@ class DataAPIClient(BaseAPIClient):
     def acknowledge_service_update_including_previous(self, service_id, audit_event_id, user):
         return self._post_with_updated_by(
             "/services/{}/updates/acknowledge".format(service_id),
-            data={"latest_audit_id": audit_event_id},
+            data={"latestAuditEventId": audit_event_id},
             user=user,
         )
 

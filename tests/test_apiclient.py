@@ -1547,8 +1547,8 @@ class TestDataApiClient(object):
 
     def test_find_audit_events_with_all_params(self, data_client, rmock):
         url = (
-            "http://baseurl/audit-events?page=123&audit-type=contact_update&audit-date=2010-01-01"
-            "&acknowledged=all&object-type=foo&object-id=123&latest_first=True&earliest-for-each-object=True"
+            "http://baseurl/audit-events?object-type=foo&object-id=34&acknowledged=all&latest_first=True"
+            "&audit-date=2010-01-01&page=12&audit-type=contact_update&per_page=23&earliest_for_each_object=True"
         )
         rmock.get(
             url,
@@ -1557,12 +1557,13 @@ class TestDataApiClient(object):
         )
 
         result = data_client.find_audit_events(
-            page=123,
             audit_type=AuditTypes.contact_update,
-            acknowledged='all',
             audit_date='2010-01-01',
+            page=12,
+            per_page=23,
+            acknowledged='all',
             object_type='foo',
-            object_id=123,
+            object_id=34,
             latest_first=True,
             earliest_for_each_object=True)
 
@@ -1625,7 +1626,7 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"auditEvents": [{"id": 120}, {"id": 123}]}
         assert rmock.request_history[0].json() == {
-            "latest_audit_id": 456,
+            "latestAuditEventId": 456,
             'updated_by': 'user'
         }
 
