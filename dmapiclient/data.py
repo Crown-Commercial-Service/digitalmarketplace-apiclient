@@ -20,7 +20,8 @@ class DataAPIClient(BaseAPIClient):
             acknowledged=None,
             object_type=None,
             object_id=None,
-            latest_first=None):
+            latest_first=None,
+            earliest_for_each_object=None):
 
         params = {}
         if audit_type:
@@ -41,6 +42,8 @@ class DataAPIClient(BaseAPIClient):
             params['object-id'] = object_id
         if latest_first is not None:
             params['latest_first'] = latest_first
+        if earliest_for_each_object is not None:
+            params['earliest_for_each_object'] = earliest_for_each_object
 
         return self._get(
             "/audit-events",
@@ -58,6 +61,13 @@ class DataAPIClient(BaseAPIClient):
         return self._post_with_updated_by(
             "/audit-events/{}/acknowledge".format(audit_event_id),
             data={},
+            user=user,
+        )
+
+    def acknowledge_service_update_including_previous(self, service_id, audit_event_id, user):
+        return self._post_with_updated_by(
+            "/services/{}/updates/acknowledge".format(service_id),
+            data={"latestAuditEventId": audit_event_id},
             user=user,
         )
 
