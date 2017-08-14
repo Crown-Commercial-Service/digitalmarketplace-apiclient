@@ -17,7 +17,7 @@ Originally was part of [Digital Marketplace Utils](https://github.com/alphagov/d
 Install Python dependencies with pip
 
 ```
-pip install -r requirements_for_test.txt
+pip install -r requirements-dev.txt
 ```
 
 Run the tests
