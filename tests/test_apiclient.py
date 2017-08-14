@@ -1836,7 +1836,7 @@ class TestDataApiClient(object):
 
         assert result == {"briefs": "result"}
         assert rmock.last_request.json() == {
-            "brief_response_id": 456,
+            "briefResponseId": 456,
             "updated_by": "user@email.com"
         }
 
@@ -1853,7 +1853,7 @@ class TestDataApiClient(object):
 
         assert result == {"briefs": "result"}
         assert rmock.last_request.json() == {
-            "award_details": {
+            "awardDetails": {
                 "awardedContractStartDate": "2020-12-31",
                 "contractValue": "99.95",
             },
