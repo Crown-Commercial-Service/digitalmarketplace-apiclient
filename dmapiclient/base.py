@@ -75,10 +75,7 @@ class BaseAPIClient(object):
         data = dict(data, updated_by=user)
         return self._delete(url, data)
 
-    def _request(self, method, url, data=None, params=None):
-        if not self.enabled:
-            return None
-
+    def _build_url(self, url, params):
         if not self.base_url:
             raise ImproperlyConfigured("{} has no URL configured".format(self.__class__.__name__))
 
@@ -90,6 +87,17 @@ class BaseAPIClient(object):
         url = urlparse.urlparse(url)
         base_url = urlparse.urlparse(self.base_url)
         url = url._replace(netloc=base_url.netloc, scheme=base_url.scheme).geturl()
+
+        r = requests.PreparedRequest()
+        r.prepare_url(url=url, params=params)
+
+        return r.url
+
+    def _request(self, method, url, data=None, params=None):
+        if not self.enabled:
+            return None
+
+        url = self._build_url(url, params)
 
         logger.debug("API request {method} {url}",
                      extra={
@@ -107,7 +115,7 @@ class BaseAPIClient(object):
         try:
             response = requests.request(
                 method, url,
-                headers=headers, json=data, params=params)
+                headers=headers, json=data)
             response.raise_for_status()
         except requests.RequestException as e:
             api_error = HTTPError.create(e)

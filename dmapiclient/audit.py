@@ -60,6 +60,10 @@ class AuditTypes(Enum):
     # Admin actions
     snapshot_framework_stats = "snapshot_framework_stats"
 
+    # Projects
+    create_project = "create_project"
+    create_project_search = "create_project_search"
+
     @staticmethod
     def is_valid_audit_type(test_audit_type):
 

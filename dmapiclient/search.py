@@ -13,6 +13,26 @@ class SearchAPIClient(BaseAPIClient):
     def _url(self, index, path):
         return u"/{}/services/{}".format(index, path)
 
+    def get_url(self, path, index, q, page=None, aggregations=[], **filters):
+        params = {}
+        if q is not None:
+            params['q'] = q
+
+        if aggregations:
+            params['aggregations'] = aggregations
+        elif page:
+            params['page'] = page
+
+        self._add_filters_to_params(params, filters)
+
+        return self._build_url(url=self._url(index=index, path=path), params=params)
+
+    def get_search_url(self, index, q='', page=None, **filters):
+        return self.get_url(path='search', index=index, q=q, page=page, **filters)
+
+    def get_aggregations_url(self, index, q='', aggregations=[], **filters):
+        return self.get_url(path='aggregations', index=index, q=q, aggregations=aggregations, **filters)
+
     def create_index(self, index):
         return self._put(
             '/{}'.format(index),
@@ -45,26 +65,15 @@ class SearchAPIClient(BaseAPIClient):
             params[u'filter_{}'.format(filter_name)] = filter_values
 
     def search_services(self, index, q=None, page=None, **filters):
-        params = {}
-        if q is not None:
-            params['q'] = q
-
-        if page:
-            params['page'] = page
-
-        self._add_filters_to_params(params, filters)
-
-        response = self._get(self._url(index, "search"), params=params)
+        response = self._get(self.get_search_url(index=index,
+                                                 q=q,
+                                                 page=page,
+                                                 **filters))
         return response
 
     def aggregate_services(self, index, q=None, aggregations=[], **filters):
-        params = {}
-        if q is not None:
-            params['q'] = q
-
-        self._add_filters_to_params(params, filters)
-
-        params['aggregations'] = aggregations
-
-        response = self._get(self._url(index, "aggregations"), params=params)
+        response = self._get(self.get_aggregations_url(index=index,
+                                                       q=q,
+                                                       aggregations=aggregations,
+                                                       **filters))
         return response
