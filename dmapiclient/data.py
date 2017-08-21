@@ -607,6 +607,20 @@ class DataAPIClient(BaseAPIClient):
             user=updated_by,
         )
 
+    def update_brief_award_brief_response(self, brief_id, brief_response_id, updated_by):
+        return self._post_with_updated_by(
+            "/briefs/{}/award".format(brief_id),
+            data={"briefResponseId": brief_response_id},
+            user=updated_by,
+        )
+
+    def update_brief_award_details(self, brief_id, brief_response_id, award_details, updated_by):
+        return self._post_with_updated_by(
+            "/briefs/{}/award/{}/contract-details".format(brief_id, brief_response_id),
+            data={"awardDetails": award_details},
+            user=updated_by,
+        )
+
     def publish_brief(self, brief_id, user):
         return self._post_with_updated_by(
             "/briefs/{}/publish".format(brief_id),

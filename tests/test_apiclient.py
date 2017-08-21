@@ -1825,6 +1825,41 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
+    def test_update_brief_award_brief_response(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/123/award",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.update_brief_award_brief_response(123, 456, "user@email.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "briefResponseId": 456,
+            "updated_by": "user@email.com"
+        }
+
+    def test_update_brief_award_details(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/123/award/456/contract-details",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.update_brief_award_details(
+            123, 456, {"awardedContractStartDate": "2020-12-31", "contractValue": "99.95"}, "user@email.com"
+        )
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "awardDetails": {
+                "awardedContractStartDate": "2020-12-31",
+                "contractValue": "99.95",
+            },
+            "updated_by": "user@email.com"
+        }
+
     def test_publish_brief(self, data_client, rmock):
         rmock.post(
             "http://baseurl/briefs/123/publish",
