@@ -4,10 +4,6 @@ from .base import BaseAPIClient
 from .errors import HTTPError
 
 
-# TODO remove default value once apps pass the index value to SearchAPIClient method calls
-DEFAULT_SEARCH_INDEX = 'g-cloud'
-
-
 class SearchAPIClient(BaseAPIClient):
     def init_app(self, app):
         self.base_url = app.config['DM_SEARCH_API_URL']
@@ -17,9 +13,9 @@ class SearchAPIClient(BaseAPIClient):
     def _url(self, index, path):
         return u"/{}/services/{}".format(index, path)
 
-    def create_index(self, index_name):
+    def create_index(self, index):
         return self._put(
-            '/{}'.format(index_name),
+            '/{}'.format(index),
             data={'type': 'index'}
         )
 
@@ -29,11 +25,11 @@ class SearchAPIClient(BaseAPIClient):
             data={'type': 'alias', 'target': target_index}
         )
 
-    def index(self, service_id, service, index=DEFAULT_SEARCH_INDEX):
+    def index(self, index, service_id, service):
         url = self._url(index, service_id)
         return self._put(url, data={'service': service})
 
-    def delete(self, service_id, index=DEFAULT_SEARCH_INDEX):
+    def delete(self, index, service_id):
         url = self._url(index, service_id)
 
         try:
@@ -48,7 +44,7 @@ class SearchAPIClient(BaseAPIClient):
         for filter_name, filter_values in six.iteritems(filters):
             params[u'filter_{}'.format(filter_name)] = filter_values
 
-    def search_services(self, q=None, page=None, index=DEFAULT_SEARCH_INDEX, **filters):
+    def search_services(self, index, q=None, page=None, **filters):
         params = {}
         if q is not None:
             params['q'] = q
@@ -61,7 +57,7 @@ class SearchAPIClient(BaseAPIClient):
         response = self._get(self._url(index, "search"), params=params)
         return response
 
-    def aggregate_services(self, q=None, index=DEFAULT_SEARCH_INDEX, aggregations=[], **filters):
+    def aggregate_services(self, index, q=None, aggregations=[], **filters):
         params = {}
         if q is not None:
             params['q'] = q
