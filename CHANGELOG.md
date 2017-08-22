@@ -2,6 +2,24 @@
 
 Records breaking changes from major version bumps
 
+## 9.0.0
+
+PR: [#86](https://github.com/alphagov/digitalmarketplace-apiclient/pull/86)
+
+Remove the default index from the Search API Client; it is now a required argument.
+
+### Example app cange
+
+Old
+```python
+search_api_client.search_services(q='hosting')
+```
+
+New
+```python
+search_api_client.search_services(index='g-cloud-9', q='hosting')
+```
+
 ## 8.0.0
 
 PR: [#62](https://github.com/alphagov/digitalmarketplace-apiclient/pull/62)
