@@ -2170,9 +2170,9 @@ class TestDataApiClient(object):
     @pytest.mark.parametrize('user_id, page, expected_query_string',
                              (
                                  (None, None, ''),
-                                 (123, None, '?user_id=123'),
+                                 (123, None, '?user-id=123'),
                                  (None, 2, '?page=2'),
-                                 (123, 2, '?user_id=123&page=2'),
+                                 (123, 2, '?user-id=123&page=2'),
                              ))
     def test_find_projects(self, data_client, rmock, user_id, page, expected_query_string):
         rmock.get('/direct-award/projects{}'.format(expected_query_string),
@@ -2183,7 +2183,7 @@ class TestDataApiClient(object):
         assert result == {"project": "ok"}
 
     def test_get_project(self, data_client, rmock):
-        rmock.get('/direct-award/projects/1?user_id=123',
+        rmock.get('/direct-award/projects/1?user-id=123',
                   json={"project": "ok"},
                   status_code=200)
 
@@ -2204,7 +2204,7 @@ class TestDataApiClient(object):
         assert rmock.last_request.json() == {
             "project": {
                 "name": "my project",
-                "user_id": 123
+                "userId": 123
             },
             "updated_by": "user@email.com"
         }
@@ -2212,9 +2212,9 @@ class TestDataApiClient(object):
     @pytest.mark.parametrize('user_id, page, expected_query_string',
                              (
                                  (None, None, ''),
-                                 (123, None, '?user_id=123'),
+                                 (123, None, '?user-id=123'),
                                  (None, 2, '?page=2'),
-                                 (123, 2, '?user_id=123&page=2'),
+                                 (123, 2, '?user-id=123&page=2'),
                              ))
     def test_find_project_searches(self, data_client, rmock, user_id, page, expected_query_string):
         rmock.get('/direct-award/projects/1/searches{}'.format(expected_query_string),
@@ -2237,14 +2237,14 @@ class TestDataApiClient(object):
         assert result == {"search": "result"}
         assert rmock.last_request.json() == {
             "search": {
-                "search_url": "search-url",
-                "user_id": 123
+                "searchUrl": "search-url",
+                "userId": 123
             },
             "updated_by": "user@email.com"
         }
 
     def test_get_project_search(self, data_client, rmock):
-        rmock.get('/direct-award/projects/1/searches/2?user_id=123',
+        rmock.get('/direct-award/projects/1/searches/2?user-id=123',
                   json={"search": "ok"},
                   status_code=200)
 
@@ -2406,7 +2406,7 @@ class TestDataAPIClientIterMethods(object):
 
     def test_find_direct_award_project_searches_iter(self, data_client, rmock):
         rmock.get(
-            'http://baseurl/direct-award/projects/1/searches?user_id=123',
+            'http://baseurl/direct-award/projects/1/searches?user-id=123',
             json={
                 'links': {},
                 'searches': [{'id': 1}, {'id': 2}]

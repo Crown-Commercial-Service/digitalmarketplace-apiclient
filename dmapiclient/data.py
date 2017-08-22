@@ -785,7 +785,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/direct-award/projects",
             params={
-                "user_id": user_id,
+                "user-id": user_id,
                 "page": page
             }
         )
@@ -795,7 +795,7 @@ class DataAPIClient(BaseAPIClient):
     def get_direct_award_project(self, user_id, project_id):
         return self._get(
             "/direct-award/projects/{}".format(project_id),
-            params={"user_id": user_id})
+            params={"user-id": user_id})
 
     def create_direct_award_project(self, user_id, user_email, project_name):
         return self._post_with_updated_by(
@@ -803,7 +803,7 @@ class DataAPIClient(BaseAPIClient):
             data={
                 "project": {
                     "name": project_name,
-                    "user_id": user_id
+                    "userId": user_id
                 }
             },
             user=user_email
@@ -813,7 +813,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/direct-award/projects/{}/searches".format(project_id),
             params={
-                "user_id": user_id,
+                "user-id": user_id,
                 "page": page
             }
         )
@@ -825,8 +825,8 @@ class DataAPIClient(BaseAPIClient):
             "/direct-award/projects/{}/searches".format(project_id),
             data={
                 "search": {
-                    "search_url": search_url,
-                    "user_id": user_id
+                    "searchUrl": search_url,
+                    "userId": user_id
                 }
             },
             user=user_email
@@ -836,7 +836,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/direct-award/projects/{}/searches/{}".format(project_id, search_id),
             params={
-                "user_id": user_id
+                "user-id": user_id
             }
         )
 
