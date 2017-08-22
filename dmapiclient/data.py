@@ -778,3 +778,67 @@ class DataAPIClient(BaseAPIClient):
             },
             user=user
         )
+
+    # Direct Award Projects
+
+    def find_direct_award_projects(self, user_id=None, page=None):
+        return self._get(
+            "/direct-award/projects",
+            params={
+                "user_id": user_id,
+                "page": page
+            }
+        )
+
+    find_direct_award_projects_iter = make_iter_method('find_direct_award_projects', 'projects')
+
+    def get_direct_award_project(self, user_id, project_id):
+        return self._get(
+            "/direct-award/projects/{}".format(project_id),
+            params={"user_id": user_id})
+
+    def create_direct_award_project(self, user_id, user_email, project_name):
+        return self._post_with_updated_by(
+            "/direct-award/projects",
+            data={
+                "project": {
+                    "name": project_name,
+                    "user_id": user_id
+                }
+            },
+            user=user_email
+        )
+
+    def find_direct_award_project_searches(self, user_id, project_id, page=None):
+        return self._get(
+            "/direct-award/projects/{}/searches".format(project_id),
+            params={
+                "user_id": user_id,
+                "page": page
+            }
+        )
+
+    find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'projects')
+
+    def create_direct_award_project_search(self, user_id, user_email, project_id, search_url):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/searches".format(project_id),
+            data={
+                "search": {
+                    "search_url": search_url,
+                    "user_id": user_id
+                }
+            },
+            user=user_email
+        )
+
+    def get_direct_award_project_search(self, user_id, project_id, search_id):
+        return self._get(
+            "/direct-award/projects/{}/searches/{}".format(project_id, search_id),
+            params={
+                "user_id": user_id
+            }
+        )
+
+    def find_direct_award_project_services(self, user_id, project_id):
+        raise NotImplementedError()
