@@ -369,6 +369,19 @@ class TestSearchApiClient(object):
         with open(file_path) as f:
             return json.load(f)
 
+    @pytest.mark.parametrize('search_api_url, expected_frontend_params',
+                             (
+                                 ('http://localhost/search', []),
+                                 ('http://localhost/search?lot=cloud-hosting', [('lot', 'cloud-hosting')]),
+                                 ('http://localhost/search?filter_phoneSupport=true', [('phoneSupport', 'true')]),
+                                 ('http://localhost/search?filter_governmentSecurityClearances=dv%2Csc',
+                                  [('governmentSecurityClearances', 'dv,sc')]),
+                                 ('http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthenticat'\
+                                  'ion=pka', [('userAuthentication', 'two_factor'), ('userAuthentication', 'pka')])
+                              ))
+    def test_deconstruct_url(self, search_client, rmock, search_api_url, expected_frontend_params):
+        assert search_client.deconstruct_url(search_api_url) == expected_frontend_params
+
 
 class TestDataApiClient(object):
     def test_request_id_is_added_if_available(self, data_client, rmock, app):
