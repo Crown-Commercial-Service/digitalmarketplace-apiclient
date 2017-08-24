@@ -376,7 +376,7 @@ class TestSearchApiClient(object):
                                  ('http://localhost/search?filter_phoneSupport=true', [('phoneSupport', 'true')]),
                                  ('http://localhost/search?filter_governmentSecurityClearances=dv%2Csc',
                                   [('governmentSecurityClearances', 'dv,sc')]),
-                                 ('http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthenticat'\
+                                 ('http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthenticat'
                                   'ion=pka', [('userAuthentication', 'two_factor'), ('userAuthentication', 'pka')])
                               ))
     def test_deconstruct_url(self, search_client, rmock, search_api_url, expected_frontend_params):

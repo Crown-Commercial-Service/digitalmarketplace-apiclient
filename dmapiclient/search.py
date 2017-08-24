@@ -1,5 +1,9 @@
 import six
-from urllib.parse import urlparse, parse_qsl
+try:
+    from urllib.parse import urlparse, parse_qsl
+except ImportError:
+    from urlparse import urlparse, parse_qsl
+
 
 from .base import BaseAPIClient
 from .errors import HTTPError
@@ -91,8 +95,6 @@ class SearchAPIClient(BaseAPIClient):
             if e.status_code != 404:
                 raise
         return None
-
-
 
     def search_services(self, index, q=None, page=None, **filters):
         response = self._get(self.get_search_url(index=index,
