@@ -369,6 +369,26 @@ class TestSearchApiClient(object):
         with open(file_path) as f:
             return json.load(f)
 
+    @pytest.mark.parametrize('search_api_url, expected_frontend_params',
+                             (
+                                 ('http://localhost/search', []),
+                                 ('http://localhost/search?lot=cloud-hosting', [('lot', 'cloud-hosting')]),
+                                 ('http://localhost/search?filter_phoneSupport=true', [('phoneSupport', 'true')]),
+                                 ('http://localhost/search?filter_governmentSecurityClearances=dv%2Csc',
+                                  [('governmentSecurityClearances', 'dv,sc')]),
+                                 ('http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthenticat'
+                                  'ion=pka', [('userAuthentication', 'two_factor'), ('userAuthentication', 'pka')])
+                              ))
+    def test_get_frontend_params_from_search_api_url(self, search_client, rmock, search_api_url,
+                                                     expected_frontend_params):
+        assert search_client.get_frontend_params_from_search_api_url(search_api_url) == expected_frontend_params
+
+    def test_get_search_url(self, search_client):
+        assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
+
+    def test_get_aggregations_url(self, search_client):
+        assert search_client.get_aggregations_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/aggregations'
+
 
 class TestDataApiClient(object):
     def test_request_id_is_added_if_available(self, data_client, rmock, app):
