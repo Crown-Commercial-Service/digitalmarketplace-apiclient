@@ -383,6 +383,12 @@ class TestSearchApiClient(object):
                                                      expected_frontend_params):
         assert search_client.get_frontend_params_from_search_api_url(search_api_url) == expected_frontend_params
 
+    def test_get_search_url(self, search_client):
+        assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
+
+    def test_get_aggregations_url(self, search_client):
+        assert search_client.get_aggregations_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/aggregations'
+
 
 class TestDataApiClient(object):
     def test_request_id_is_added_if_available(self, data_client, rmock, app):
