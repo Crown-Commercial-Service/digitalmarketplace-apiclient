@@ -379,8 +379,9 @@ class TestSearchApiClient(object):
                                  ('http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthenticat'
                                   'ion=pka', [('userAuthentication', 'two_factor'), ('userAuthentication', 'pka')])
                               ))
-    def test_deconstruct_url(self, search_client, rmock, search_api_url, expected_frontend_params):
-        assert search_client.deconstruct_url(search_api_url) == expected_frontend_params
+    def test_get_frontend_params_from_search_api_url(self, search_client, rmock, search_api_url,
+                                                     expected_frontend_params):
+        assert search_client.get_frontend_params_from_search_api_url(search_api_url) == expected_frontend_params
 
 
 class TestDataApiClient(object):

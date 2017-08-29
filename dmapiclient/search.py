@@ -52,7 +52,7 @@ class SearchAPIClient(BaseAPIClient):
 
         return self._build_url(url=self._url(index=index, path=path), params=params)
 
-    def deconstruct_url(self, search_api_url):
+    def get_frontend_params_from_search_api_url(self, search_api_url):
         """
         Converts a searchAPI url to url params a frontend understands
         :param search_api_url: Fully qualified searchAPI url
@@ -64,10 +64,10 @@ class SearchAPIClient(BaseAPIClient):
 
         return frontend_params
 
-    def get_search_url(self, index, q='', page=None, **filters):
+    def get_search_url(self, index, q=None, page=None, **filters):
         return self.get_url(path='search', index=index, q=q, page=page, **filters)
 
-    def get_aggregations_url(self, index, q='', aggregations=[], **filters):
+    def get_aggregations_url(self, index, q=None, aggregations=[], **filters):
         return self.get_url(path='aggregations', index=index, q=q, aggregations=aggregations, **filters)
 
     def create_index(self, index):
