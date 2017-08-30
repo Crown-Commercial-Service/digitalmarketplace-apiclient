@@ -1897,6 +1897,34 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
+    def test_cancel_brief(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/123/cancel",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.cancel_brief(123, "user@email.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
+    def test_update_brief_as_unsuccessful(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/123/unsuccessful",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.update_brief_as_unsuccessful(123, "user@email.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
     def test_get_brief(self, data_client, rmock):
         rmock.get(
             "http://baseurl/briefs/123",
