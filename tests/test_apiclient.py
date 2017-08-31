@@ -2203,11 +2203,11 @@ class TestDataApiClient(object):
         assert result == {"project": "ok"}
 
     def test_get_project(self, data_client, rmock):
-        rmock.get('/direct-award/projects/1?user-id=123',
+        rmock.get('/direct-award/projects/1',
                   json={"project": "ok"},
                   status_code=200)
 
-        result = data_client.get_direct_award_project(user_id=123, project_id=1)
+        result = data_client.get_direct_award_project(project_id=1)
         assert result == {"project": "ok"}
 
     def test_create_project(self, data_client, rmock):

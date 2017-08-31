@@ -2,6 +2,23 @@
 
 Records breaking changes from major version bumps
 
+## 10.0.0
+
+PR: [#90](https://github.com/alphagov/digitalmarketplace-apiclient/pull/90)
+
+Removes an unused parameter from the get_direct_award_project endpint.
+
+Old
+```python
+data_api_client.get_direct_award_project(user_id=123, project_id=123)
+```
+
+New
+```python
+data_api_client.get_direct_award_project(project_id=123)
+```
+
+
 ## 9.0.0
 
 PR: [#86](https://github.com/alphagov/digitalmarketplace-apiclient/pull/86)
