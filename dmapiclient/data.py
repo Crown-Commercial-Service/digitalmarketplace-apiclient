@@ -628,6 +628,20 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def cancel_brief(self, brief_id, user):
+        return self._post_with_updated_by(
+            "/briefs/{}/cancel".format(brief_id),
+            data={},
+            user=user,
+        )
+
+    def update_brief_as_unsuccessful(self, brief_id, user):
+        return self._post_with_updated_by(
+            "/briefs/{}/unsuccessful".format(brief_id),
+            data={},
+            user=user,
+        )
+
     def get_brief(self, brief_id):
         return self._get(
             "/briefs/{}".format(brief_id))
