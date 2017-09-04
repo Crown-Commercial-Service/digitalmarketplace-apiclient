@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import re
 import six
 try:
     from urllib.parse import urlparse, parse_qsl
@@ -17,6 +20,15 @@ class SearchAPIClient(BaseAPIClient):
 
     def _url(self, index, path):
         return u"/{}/services/{}".format(index, path)
+
+    def _url_reverse(self, url):
+        url = urlparse(url)
+        try:
+            index, path = re.match(r'^/(?P<index>.+)/services/(?P<path>.+)$', url.path).groups()
+        except AttributeError:
+            return None, None
+        else:
+            return index, path
 
     def _add_filters_prefix_to_params(self, params, filters):
         """In-place transformation of filter keys and storage in params."""
@@ -63,6 +75,9 @@ class SearchAPIClient(BaseAPIClient):
         frontend_params = self._remove_filters_prefix_from_params(query)
 
         return frontend_params
+
+    def get_index_from_search_api_url(self, search_api_url):
+        return self._url_reverse(search_api_url)[0]
 
     def get_search_url(self, index, q=None, page=None, **filters):
         return self.get_url(path='search', index=index, q=q, page=page, **filters)

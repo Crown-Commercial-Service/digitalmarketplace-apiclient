@@ -389,6 +389,17 @@ class TestSearchApiClient(object):
     def test_get_aggregations_url(self, search_client):
         assert search_client.get_aggregations_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/aggregations'
 
+    @pytest.mark.parametrize('search_api_url, expected_index',
+                             (
+                                 ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
+                                 ('http://localhost/g-cloud-9/services/search', 'g-cloud-9'),
+                                 ('https://search-api.preview.marketplace.team/g-cloud-9/services/search', 'g-cloud-9'),
+                                 ('https://search-api.preview.marketplace.team/g-cloud-8/services/search', 'g-cloud-8'),
+                                 ('https://some.broken.url.com/that/does/not/match', None)
+                             ))
+    def test_get_index_from_search_api_url(self, search_client, search_api_url, expected_index):
+        assert search_client.get_index_from_search_api_url(search_api_url) == expected_index
+
 
 class TestDataApiClient(object):
     def test_request_id_is_added_if_available(self, data_client, rmock, app):
