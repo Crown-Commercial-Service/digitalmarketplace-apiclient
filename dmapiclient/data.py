@@ -854,3 +854,10 @@ class DataAPIClient(BaseAPIClient):
 
     def find_direct_award_project_services(self, user_id, project_id):
         raise NotImplementedError()
+
+    def lock_direct_award_project(self, user_email, project_id):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/lock".format(project_id),
+            data={},
+            user=user_email,
+        )

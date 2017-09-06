@@ -400,6 +400,17 @@ class TestSearchApiClient(object):
     def test_get_index_from_search_api_url(self, search_client, search_api_url, expected_index):
         assert search_client.get_index_from_search_api_url(search_api_url) == expected_index
 
+    def test_search_service_from_url(self, search_client, rmock):
+        rmock.get(
+            'http://baseurl/g-cloud/services/search?lot=cloud-hosting&page=1',
+            json={'services': "myresponse"},
+            status_code=200)
+        result = search_client.search_services_from_url(
+            search_api_url='https://baseurl/g-cloud/services/search?lot=cloud-hosting',
+            page=1
+        )
+        assert result == {'services': "myresponse"}
+
 
 class TestDataApiClient(object):
     def test_request_id_is_added_if_available(self, data_client, rmock, app):
@@ -2233,7 +2244,7 @@ class TestDataApiClient(object):
                                  (None, 2, '?page=2'),
                                  (123, 2, '?user-id=123&page=2'),
                              ))
-    def test_find_projects(self, data_client, rmock, user_id, page, expected_query_string):
+    def test_find_direct_award_projects(self, data_client, rmock, user_id, page, expected_query_string):
         rmock.get('/direct-award/projects{}'.format(expected_query_string),
                   json={"project": "ok"},
                   status_code=200)
@@ -2241,7 +2252,7 @@ class TestDataApiClient(object):
         result = data_client.find_direct_award_projects(user_id=user_id, page=page)
         assert result == {"project": "ok"}
 
-    def test_get_project(self, data_client, rmock):
+    def test_get_direct_award_project(self, data_client, rmock):
         rmock.get('/direct-award/projects/1',
                   json={"project": "ok"},
                   status_code=200)
@@ -2249,7 +2260,7 @@ class TestDataApiClient(object):
         result = data_client.get_direct_award_project(project_id=1)
         assert result == {"project": "ok"}
 
-    def test_create_project(self, data_client, rmock):
+    def test_create_direct_award_project(self, data_client, rmock):
         rmock.post(
             "http://baseurl/direct-award/projects",
             json={"project": "result"},
@@ -2275,7 +2286,7 @@ class TestDataApiClient(object):
                                  (None, 2, '?page=2'),
                                  (123, 2, '?user-id=123&page=2'),
                              ))
-    def test_find_project_searches(self, data_client, rmock, user_id, page, expected_query_string):
+    def test_find_direct_award_project_searches(self, data_client, rmock, user_id, page, expected_query_string):
         rmock.get('/direct-award/projects/1/searches{}'.format(expected_query_string),
                   json={"searches": "ok"},
                   status_code=200)
@@ -2283,7 +2294,7 @@ class TestDataApiClient(object):
         result = data_client.find_direct_award_project_searches(user_id=user_id, project_id=1, page=page)
         assert result == {"searches": "ok"}
 
-    def test_create_project_search(self, data_client, rmock):
+    def test_create_direct_award_project_search(self, data_client, rmock):
         rmock.post(
             "http://baseurl/direct-award/projects/1/searches",
             json={"search": "result"},
@@ -2302,13 +2313,25 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
-    def test_get_project_search(self, data_client, rmock):
+    def test_get_direct_award_project_search(self, data_client, rmock):
         rmock.get('/direct-award/projects/1/searches/2?user-id=123',
                   json={"search": "ok"},
                   status_code=200)
 
         result = data_client.get_direct_award_project_search(user_id=123, project_id=1, search_id=2)
         assert result == {"search": "ok"}
+
+    def test_lock_direct_award_project(self, data_client, rmock):
+        rmock.post('/direct-award/projects/1/lock',
+                   json={"project": "ok"},
+                   status_code=200)
+
+        result = data_client.lock_direct_award_project(user_email="user@email.com", project_id=1)
+
+        assert result == {"project": "ok"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
 
 
 class TestDataAPIClientIterMethods(object):
@@ -2480,3 +2503,37 @@ class TestDataAPIClientIterMethods(object):
     def test_find_direct_award_project_services(self, data_client, rmock):
         with pytest.raises(NotImplementedError):
             data_client.find_direct_award_project_services(user_id=123, project_id=1)
+
+
+class TestSearchAPIClientIterMethods(object):
+    def _test_find_iter(self, search_client, rmock, method_name, model_name, url_path, **kwargs):
+        rmock.get(
+            'http://baseurl/{}'.format(url_path),
+            json={
+                'links': {'next': 'http://baseurl/{}?page=2'.format(url_path)},
+                model_name: [{'id': 1}, {'id': 2}]
+            },
+            status_code=200)
+        rmock.get(
+            'http://baseurl/{}?page=2'.format(url_path),
+            json={
+                'links': {'prev': 'http://baseurl/{}'.format(url_path)},
+                model_name: [{'id': 3}]
+            },
+            status_code=200)
+
+        result = getattr(search_client, method_name)(**kwargs)
+        results = list(result)
+
+        assert len(results) == 3
+        assert results[0]['id'] == 1
+        assert results[1]['id'] == 2
+        assert results[2]['id'] == 3
+
+    def test_search_services_from_url_iter(self, search_client, rmock):
+        self._test_find_iter(
+            search_client, rmock,
+            method_name='search_services_from_url_iter',
+            model_name='services',
+            url_path='g-cloud/services/search',
+            search_api_url='http://baseurl/g-cloud/services/search')
