@@ -3,12 +3,13 @@
 import re
 import six
 try:
-    from urllib.parse import urlparse, parse_qsl
+    from urllib.parse import urlparse, urlencode, urlunparse, parse_qs, parse_qsl
 except ImportError:
-    from urlparse import urlparse, parse_qsl
+    from urlparse import urlparse, urlunparse, parse_qs, parse_qsl
+    from urllib import urlencode
 
 
-from .base import BaseAPIClient
+from .base import BaseAPIClient, make_iter_method
 from .errors import HTTPError
 
 
@@ -118,6 +119,19 @@ class SearchAPIClient(BaseAPIClient):
                                                  **filters))
 
         return response
+
+    def search_services_from_url(self, search_api_url, page=None):
+        scheme, netloc, path, params, query, fragment = urlparse(search_api_url)
+        query_params = parse_qsl(query)
+        if page:
+            query_params.append(('page', page))
+        query = urlencode(query_params)
+
+        paged_search_api_url = urlunparse((scheme, netloc, path, params, query, fragment))
+
+        return self._get(paged_search_api_url)
+
+    search_services_from_url_iter = make_iter_method('search_services_from_url', 'services')
 
     def aggregate_services(self, index, q=None, aggregations=[], **filters):
         response = self._get(self.get_aggregations_url(index=index,
