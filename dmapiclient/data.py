@@ -357,17 +357,19 @@ class DataAPIClient(BaseAPIClient):
             if e.status_code not in [400, 403, 404]:
                 raise
 
-    def update_user_password(self, user_id, new_password, updater="no logged-in user"):
+    def update_user_password(self, user_id, new_password, unlock_user=False, updater="no logged-in user"):
+        user_fields = {"password": new_password}
+        if unlock_user:
+            user_fields['locked'] = False
+
         try:
             self._post_with_updated_by(
                 '/users/{}'.format(user_id),
-                data={
-                    "users": {"password": new_password},
-                },
+                data={"users": user_fields},
                 user=updater,
             )
             return True
-        except HTTPError as e:
+        except HTTPError:
             return False
 
     def update_user(self,
@@ -408,8 +410,8 @@ class DataAPIClient(BaseAPIClient):
             user=updater,
         )
 
-        logger.info("Updated user {user_id} fields {params}",
-                    extra={"user_id": user_id, "params": params})
+        logger.info("Updated user {user_id} fields: {params}",
+                    extra={"user_id": user_id, "params": u", ".join(u"{}={}".format(k, v) for k, v in params.items())})
         return user
 
     def export_users(self, framework_slug):

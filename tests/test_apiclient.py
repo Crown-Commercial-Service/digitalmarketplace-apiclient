@@ -730,10 +730,25 @@ class TestDataApiClient(object):
             "http://baseurl/users/123",
             json={},
             status_code=200)
-        assert data_client.update_user_password(123, "newpassword", "test@example.com")
+        assert data_client.update_user_password(123, "newpassword", updater="test@example.com")
         assert rmock.last_request.json() == {
             "users": {
                 "password": "newpassword"
+            },
+            "updated_by": "test@example.com"
+        }
+
+    def test_update_user_password_and_unlock_user(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/users/123",
+            json={},
+            status_code=200)
+        assert data_client.update_user_password(123, "newpassword", unlock_user=True, updater="test@example.com")
+        assert rmock.last_request.json() == {
+            "users": {
+                "password": "newpassword",
+                "locked": False
+
             },
             "updated_by": "test@example.com"
         }
