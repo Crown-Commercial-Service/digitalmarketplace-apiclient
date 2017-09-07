@@ -2,6 +2,32 @@
 
 Records breaking changes from major version bumps
 
+## 11.0.0
+
+PR: [#93](https://github.com/alphagov/digitalmarketplace-apiclient/pull/93)
+
+### What changed
+
+`DataApiClient.update_user_password` now has an additional `unlock_user` argument. When set to `True` it will unlock the user (clear the "5 failed login attempts") as well as reset the password.
+
+### Example app change
+
+Old
+```python
+api_client.update_user_password(1, 'newpassword', 'updater-email@example.com')
+```
+
+New
+
+```python
+api_client.update_user_password(1, 'newpassword', updater='updater-email@example.com')
+```
+
+```python
+api_client.update_user_password(1, 'newpassword', unlock_user=True, updater='updater-email@example.com')
+```
+
+
 ## 10.0.0
 
 PR: [#90](https://github.com/alphagov/digitalmarketplace-apiclient/pull/90)
