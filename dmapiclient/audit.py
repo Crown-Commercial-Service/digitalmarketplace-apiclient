@@ -65,6 +65,9 @@ class AuditTypes(Enum):
     create_project_search = "create_project_search"
     lock_project = "lock_project"
 
+    # Mailing list actions
+    mailing_list_subscription = "mailing_list_subscription"
+
     @staticmethod
     def is_valid_audit_type(test_audit_type):
 
