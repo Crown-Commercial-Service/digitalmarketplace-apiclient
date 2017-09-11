@@ -51,7 +51,7 @@ class SearchAPIClient(BaseAPIClient):
 
         return frontend_params
 
-    def get_url(self, path, index, q, page=None, aggregations=[], **filters):
+    def get_url(self, path, index, q, page=None, aggregations=[], id_only=False, **filters):
         params = {}
         if q is not None:
             params['q'] = q
@@ -60,6 +60,9 @@ class SearchAPIClient(BaseAPIClient):
             params['aggregations'] = aggregations
         elif page:
             params['page'] = page
+
+        if id_only:
+            params['idOnly'] = id_only
 
         self._add_filters_prefix_to_params(params, filters)
 
@@ -79,12 +82,6 @@ class SearchAPIClient(BaseAPIClient):
 
     def get_index_from_search_api_url(self, search_api_url):
         return self._url_reverse(search_api_url)[0]
-
-    def get_search_url(self, index, q=None, page=None, **filters):
-        return self.get_url(path='search', index=index, q=q, page=page, **filters)
-
-    def get_aggregations_url(self, index, q=None, aggregations=[], **filters):
-        return self.get_url(path='aggregations', index=index, q=q, aggregations=aggregations, **filters)
 
     def create_index(self, index):
         return self._put(
@@ -112,21 +109,21 @@ class SearchAPIClient(BaseAPIClient):
                 raise
         return None
 
-    def search_services(self, index, q=None, page=None, **filters):
-        response = self._get(self.get_search_url(index=index,
-                                                 q=q,
-                                                 page=page,
-                                                 **filters))
-
+    def search_services(self, index, q=None, page=None, id_only=False, **filters):
+        response = self._get(self.get_url(path='search', index=index, q=q, page=page, id_only=id_only, **filters))
         return response
 
-    def search_services_from_url(self, search_api_url, page=None):
+    def search_services_from_url(self, search_api_url, id_only=False, page=None):
         scheme, netloc, path, params, query, fragment = urlparse(search_api_url)
+
         query_params = parse_qsl(query)
         if page:
             query_params.append(('page', page))
-        query = urlencode(query_params)
 
+        if id_only:
+            query_params.append(('idOnly', True))
+
+        query = urlencode(query_params)
         paged_search_api_url = urlunparse((scheme, netloc, path, params, query, fragment))
 
         return self._get(paged_search_api_url)
@@ -134,8 +131,5 @@ class SearchAPIClient(BaseAPIClient):
     search_services_from_url_iter = make_iter_method('search_services_from_url', 'services')
 
     def aggregate_services(self, index, q=None, aggregations=[], **filters):
-        response = self._get(self.get_aggregations_url(index=index,
-                                                       q=q,
-                                                       aggregations=aggregations,
-                                                       **filters))
+        response = self._get(self.get_url(path='aggregations', index=index, q=q, aggregations=aggregations, **filters))
         return response
