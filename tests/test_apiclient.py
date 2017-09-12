@@ -363,6 +363,14 @@ class TestSearchApiClient(object):
         assert result == {'services': "myresponse"}
         assert rmock.last_request.query == 'page=10'
 
+    def test_search_services_id_only(self, search_client, rmock):
+        rmock.get(
+            'http://baseurl/g-cloud/services/search?idOnly=True',
+            json={'services': "myresponse"},
+            status_code=200)
+        result = search_client.search_services(index='g-cloud', id_only=True)
+        assert result == {'services': "myresponse"}
+
     @staticmethod
     def load_example_listing(name):
         file_path = os.path.join("example_listings", "{}.json".format(name))
@@ -383,11 +391,16 @@ class TestSearchApiClient(object):
                                                      expected_frontend_params):
         assert search_client.get_frontend_params_from_search_api_url(search_api_url) == expected_frontend_params
 
-    def test_get_search_url(self, search_client):
-        assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
-
-    def test_get_aggregations_url(self, search_client):
-        assert search_client.get_aggregations_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/aggregations'
+    @pytest.mark.parametrize('path, index',
+                             (
+                                 ('search', 'g-cloud-9'),
+                                 ('search', 'g-cloud-8'),
+                                 ('aggregations', 'g-cloud-9'),
+                                 ('aggregations', 'g-cloud-8'),
+                             ))
+    def test_get_url(self, search_client, path, index):
+        expected_url = 'http://baseurl/{}/services/{}'.format(index, path)
+        assert search_client.get_url(path=path, index=index, q=None) == expected_url
 
     @pytest.mark.parametrize('search_api_url, expected_index',
                              (
@@ -407,6 +420,18 @@ class TestSearchApiClient(object):
             status_code=200)
         result = search_client.search_services_from_url(
             search_api_url='https://baseurl/g-cloud/services/search?lot=cloud-hosting',
+            page=1
+        )
+        assert result == {'services': "myresponse"}
+
+    def test_search_service_from_url_id_only(self, search_client, rmock):
+        rmock.get(
+            'http://baseurl/g-cloud/services/search?lot=cloud-hosting&page=1&idOnly=True',
+            json={'services': "myresponse"},
+            status_code=200)
+        result = search_client.search_services_from_url(
+            search_api_url='https://baseurl/g-cloud/services/search?lot=cloud-hosting',
+            id_only=True,
             page=1
         )
         assert result == {'services': "myresponse"}
