@@ -402,6 +402,9 @@ class TestSearchApiClient(object):
         expected_url = 'http://baseurl/{}/services/{}'.format(index, path)
         assert search_client.get_url(path=path, index=index, q=None) == expected_url
 
+    def test_get_search_url(self, search_client):
+        assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
+
     @pytest.mark.parametrize('search_api_url, expected_index',
                              (
                                  ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
@@ -2304,19 +2307,23 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
-    @pytest.mark.parametrize('user_id, page, expected_query_string',
+    @pytest.mark.parametrize('user_id, page, active, expected_query_string',
                              (
-                                 (None, None, ''),
-                                 (123, None, '?user-id=123'),
-                                 (None, 2, '?page=2'),
-                                 (123, 2, '?user-id=123&page=2'),
+                                 (None, None, None, ''),
+                                 (None, None, True, '?only-active=True'),
+                                 (None, None, False, '?only-active=False'),
+                                 (123, None, None, '?user-id=123'),
+                                 (None, 2, None, '?page=2'),
+                                 (None, 2, False, '?page=2&only-active=False'),
+                                 (123, 2, True, '?user-id=123&page=2&only-active=True'),
                              ))
-    def test_find_direct_award_project_searches(self, data_client, rmock, user_id, page, expected_query_string):
+    def test_find_direct_award_project_searches(self, data_client, rmock, user_id, page, active, expected_query_string):
         rmock.get('/direct-award/projects/1/searches{}'.format(expected_query_string),
                   json={"searches": "ok"},
                   status_code=200)
 
-        result = data_client.find_direct_award_project_searches(user_id=user_id, project_id=1, page=page)
+        result = data_client.find_direct_award_project_searches(user_id=user_id, project_id=1, page=page,
+                                                                only_active=active)
         assert result == {"searches": "ok"}
 
     def test_create_direct_award_project_search(self, data_client, rmock):
