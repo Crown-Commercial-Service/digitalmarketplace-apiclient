@@ -821,13 +821,18 @@ class DataAPIClient(BaseAPIClient):
             user=user_email
         )
 
-    def find_direct_award_project_searches(self, user_id, project_id, page=None):
+    def find_direct_award_project_searches(self, user_id, project_id, page=None, only_active=None):
+        params = {
+                "user-id": user_id,
+                "page": page,
+        }
+
+        if only_active is not None:
+            params.update({'only-active': only_active})
+
         return self._get(
             "/direct-award/projects/{}/searches".format(project_id),
-            params={
-                "user-id": user_id,
-                "page": page
-            }
+            params=params
         )
 
     find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'projects')
