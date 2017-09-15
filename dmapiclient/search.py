@@ -83,6 +83,9 @@ class SearchAPIClient(BaseAPIClient):
     def get_index_from_search_api_url(self, search_api_url):
         return self._url_reverse(search_api_url)[0]
 
+    def get_search_url(self, index, q=None, page=None, **filters):
+        return self.get_url(path='search', index=index, q=q, page=page, **filters)
+
     def create_index(self, index):
         return self._put(
             '/{}'.format(index),
@@ -110,7 +113,7 @@ class SearchAPIClient(BaseAPIClient):
         return None
 
     def search_services(self, index, q=None, page=None, id_only=False, **filters):
-        response = self._get(self.get_url(path='search', index=index, q=q, page=page, id_only=id_only, **filters))
+        response = self._get(self.get_search_url(index=index, q=q, page=page, id_only=id_only, **filters))
         return response
 
     def search_services_from_url(self, search_api_url, id_only=False, page=None):

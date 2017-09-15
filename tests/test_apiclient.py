@@ -402,6 +402,9 @@ class TestSearchApiClient(object):
         expected_url = 'http://baseurl/{}/services/{}'.format(index, path)
         assert search_client.get_url(path=path, index=index, q=None) == expected_url
 
+    def test_get_search_url(self, search_client):
+        assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
+
     @pytest.mark.parametrize('search_api_url, expected_index',
                              (
                                  ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
