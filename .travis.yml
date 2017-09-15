@@ -3,9 +3,9 @@ python:
   - "2.7"
   - "3.6"
 install:
-  - pip install -r requirements-dev.txt
+  - make requirements-dev
 script:
-  - ./scripts/run_tests.sh --cov=dmapiclient --cov-report=term-missing
+  - PYTEST_ARGS='--cov=dmapiclient --cov-report=term-missing' make test
 after_success:
   - coveralls
 notifications:
