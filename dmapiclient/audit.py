@@ -64,6 +64,7 @@ class AuditTypes(Enum):
     create_project = "create_project"
     create_project_search = "create_project_search"
     lock_project = "lock_project"
+    downloaded_project = "downloaded_project"
 
     # Mailing list actions
     mailing_list_subscription = "mailing_list_subscription"

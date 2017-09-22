@@ -2365,6 +2365,18 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
+    def test_record_direct_award_project_download(self, data_client, rmock):
+        rmock.post('/direct-award/projects/1/record-download',
+                   json={"project": "ok"},
+                   status_code=200)
+
+        result = data_client.record_direct_award_project_download(user_email="user@email.com", project_id=1)
+
+        assert result == {"project": "ok"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):

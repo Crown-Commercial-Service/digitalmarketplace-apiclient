@@ -874,3 +874,10 @@ class DataAPIClient(BaseAPIClient):
             data={},
             user=user_email,
         )
+
+    def record_direct_award_project_download(self, user_email, project_id):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/record-download".format(project_id),
+            data={},
+            user=user_email,
+        )
