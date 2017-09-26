@@ -857,12 +857,27 @@ class DataAPIClient(BaseAPIClient):
             }
         )
 
-    def find_direct_award_project_services(self, user_id, project_id):
-        raise NotImplementedError()
+    def get_direct_award_project_services(self, user_id, project_id, fields=[]):
+        return self._get(
+            "/direct-award/projects/{}/services".format(project_id),
+            params={
+                "user-id": user_id,
+                "fields": ','.join(fields)
+            }
+        )
+
+    get_direct_award_project_services_iter = make_iter_method('get_direct_award_project_services', 'services')
 
     def lock_direct_award_project(self, user_email, project_id):
         return self._post_with_updated_by(
             "/direct-award/projects/{}/lock".format(project_id),
+            data={},
+            user=user_email,
+        )
+
+    def record_direct_award_project_download(self, user_email, project_id):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/record-download".format(project_id),
             data={},
             user=user_email,
         )

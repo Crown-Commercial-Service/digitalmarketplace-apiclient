@@ -2365,6 +2365,18 @@ class TestDataApiClient(object):
             "updated_by": "user@email.com"
         }
 
+    def test_record_direct_award_project_download(self, data_client, rmock):
+        rmock.post('/direct-award/projects/1/record-download',
+                   json={"project": "ok"},
+                   status_code=200)
+
+        result = data_client.record_direct_award_project_download(user_email="user@email.com", project_id=1)
+
+        assert result == {"project": "ok"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):
@@ -2532,9 +2544,35 @@ class TestDataAPIClientIterMethods(object):
         assert set(result.keys()) == {'links', 'searches'}
         assert len(result['searches']) == 2
 
-    def test_find_direct_award_project_services(self, data_client, rmock):
-        with pytest.raises(NotImplementedError):
-            data_client.find_direct_award_project_services(user_id=123, project_id=1)
+    def test_get_direct_award_project_services(self, data_client, rmock):
+        rmock.get('/direct-award/projects/1/services?user-id=123',
+                  json={"services": "ok"},
+                  status_code=200)
+
+        result = data_client.get_direct_award_project_services(user_id=123, project_id=1)
+        assert result == {"services": "ok"}
+
+    def test_get_direct_award_project_services_specific_fields(self, data_client, rmock):
+        rmock.get('/direct-award/projects/1/services?user-id=123&fields=id,price',
+                  json={"services": "ok"},
+                  status_code=200)
+
+        result = data_client.get_direct_award_project_services(user_id=123, project_id=1, fields=['id', 'price'])
+        assert result == {"services": "ok"}
+
+    def test_get_direct_award_project_services_iter(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/direct-award/projects/1/services?user-id=123',
+            json={
+                'links': {},
+                'services': [{'id': 1}, {'id': 2}]
+            },
+            status_code=200)
+
+        result = data_client.get_direct_award_project_services(user_id=123, project_id=1)
+
+        assert set(result.keys()) == {'links', 'services'}
+        assert len(result['services']) == 2
 
 
 class TestSearchAPIClientIterMethods(object):
