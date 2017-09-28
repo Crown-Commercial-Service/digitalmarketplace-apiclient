@@ -113,7 +113,7 @@ def service():
         "datacentreTier": "TIA-942 Tier 3",
         "datacentresSpecifyLocation": True,
         "datacentresEUCode": False,
-        }
+    }
 
 
 class TestBaseApiClient(object):
@@ -200,7 +200,7 @@ class TestSearchApiClient(object):
             "DM_SEARCH_API_URL": "http://example",
             "DM_SEARCH_API_AUTH_TOKEN": "example-token",
             "ES_ENABLED": False,
-            }
+        }
         search_client.init_app(app)
 
         assert search_client.base_url == "http://example"
@@ -284,7 +284,7 @@ class TestSearchApiClient(object):
             }},
             status_code=400)
         with pytest.raises(HTTPError):
-            result = search_client.delete(index='g-cloud', service_id="12345")
+            search_client.delete(index='g-cloud', service_id="12345")
 
     def test_delete_returns_none_if_404(
             self, search_client, rmock):
@@ -377,16 +377,21 @@ class TestSearchApiClient(object):
         with open(file_path) as f:
             return json.load(f)
 
-    @pytest.mark.parametrize('search_api_url, expected_frontend_params',
-                             (
-                                 ('http://localhost/search', []),
-                                 ('http://localhost/search?lot=cloud-hosting', [('lot', 'cloud-hosting')]),
-                                 ('http://localhost/search?filter_phoneSupport=true', [('phoneSupport', 'true')]),
-                                 ('http://localhost/search?filter_governmentSecurityClearances=dv%2Csc',
-                                  [('governmentSecurityClearances', 'dv,sc')]),
-                                 ('http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthenticat'
-                                  'ion=pka', [('userAuthentication', 'two_factor'), ('userAuthentication', 'pka')])
-                              ))
+    @pytest.mark.parametrize(
+        'search_api_url, expected_frontend_params',
+        (
+            ('http://localhost/search', []),
+            ('http://localhost/search?lot=cloud-hosting', [('lot', 'cloud-hosting')]),
+            ('http://localhost/search?filter_phoneSupport=true', [('phoneSupport', 'true')]),
+            (
+                'http://localhost/search?filter_governmentSecurityClearances=dv%2Csc',
+                [('governmentSecurityClearances', 'dv,sc')]
+            ),
+            (
+                'http://localhost/search?filter_userAuthentication=two_factor&filter_userAuthentication=pka',
+                [('userAuthentication', 'two_factor'), ('userAuthentication', 'pka')]
+            )
+        ))
     def test_get_frontend_params_from_search_api_url(self, search_client, rmock, search_api_url,
                                                      expected_frontend_params):
         assert search_client.get_frontend_params_from_search_api_url(search_api_url) == expected_frontend_params
@@ -468,7 +473,7 @@ class TestDataApiClient(object):
         app.config = {
             "DM_DATA_API_URL": "http://example",
             "DM_DATA_API_AUTH_TOKEN": "example-token",
-            }
+        }
         data_client.init_app(app)
 
         assert data_client.base_url == "http://example"
