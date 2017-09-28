@@ -3,9 +3,9 @@
 import re
 import six
 try:
-    from urllib.parse import urlparse, urlencode, urlunparse, parse_qs, parse_qsl
+    from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 except ImportError:
-    from urlparse import urlparse, urlunparse, parse_qs, parse_qsl
+    from urlparse import urlparse, urlunparse, parse_qsl
     from urllib import urlencode
 
 

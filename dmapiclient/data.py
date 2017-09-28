@@ -196,12 +196,12 @@ class DataAPIClient(BaseAPIClient):
         )
 
     def set_supplier_framework_prefill_declaration(
-            self,
-            supplier_id,
-            framework_slug,
-            prefill_declaration_from_framework_slug,
-            user,
-            ):
+        self,
+        supplier_id,
+        framework_slug,
+        prefill_declaration_from_framework_slug,
+        user,
+    ):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -367,7 +367,7 @@ class DataAPIClient(BaseAPIClient):
                 user=updater,
             )
             return True
-        except HTTPError as e:
+        except HTTPError:
             return False
 
     def update_user(self,
@@ -823,8 +823,8 @@ class DataAPIClient(BaseAPIClient):
 
     def find_direct_award_project_searches(self, user_id, project_id, page=None, only_active=None):
         params = {
-                "user-id": user_id,
-                "page": page,
+            "user-id": user_id,
+            "page": page,
         }
 
         if only_active is not None:
