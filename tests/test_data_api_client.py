@@ -1227,6 +1227,7 @@ class TestAuditEventMethods(object):
         url = (
             "http://baseurl/audit-events?object-type=foo&object-id=34&acknowledged=all&latest_first=True"
             "&audit-date=2010-01-01&page=12&audit-type=contact_update&per_page=23&earliest_for_each_object=True"
+            "&user=ruby.cohen@example.com"
         )
         rmock.get(
             url,
@@ -1242,6 +1243,7 @@ class TestAuditEventMethods(object):
             acknowledged='all',
             object_type='foo',
             object_id=34,
+            user="ruby.cohen@example.com",
             latest_first=True,
             earliest_for_each_object=True)
 

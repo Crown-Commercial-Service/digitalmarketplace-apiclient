@@ -21,7 +21,9 @@ class DataAPIClient(BaseAPIClient):
             object_type=None,
             object_id=None,
             latest_first=None,
-            earliest_for_each_object=None):
+            earliest_for_each_object=None,
+            user=None,
+    ):
 
         params = {}
         if audit_type:
@@ -40,6 +42,8 @@ class DataAPIClient(BaseAPIClient):
             params['object-type'] = object_type
         if object_id is not None:
             params['object-id'] = object_id
+        if user is not None:
+            params['user'] = user
         if latest_first is not None:
             params['latest_first'] = latest_first
         if earliest_for_each_object is not None:
