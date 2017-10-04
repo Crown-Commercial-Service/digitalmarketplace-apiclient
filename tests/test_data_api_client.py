@@ -161,9 +161,24 @@ class TestServiceMethods(object):
         assert result == {"services": "result"}
         assert rmock.called
 
+    def test_revert_service(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/services/123/revert",
+            json={},
+            status_code=200,
+        )
+
+        data_client.revert_service(123, 314159, "jollypoldy@example.com")
+
+        assert tuple(req.json() for req in rmock.request_history) == (
+            {
+                "archivedServiceId": 314159,
+                "updated_by": "jollypoldy@example.com",
+            },
+        )
+
 
 class TestUserMethods(object):
-
     @staticmethod
     def user():
         return {'users': {

@@ -570,6 +570,13 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def revert_service(self, service_id, archived_service_id, user):
+        return self._post_with_updated_by(
+            "/services/{}/revert".format(service_id),
+            data={"archivedServiceId": int(archived_service_id)},
+            user=user,
+        )
+
     def find_frameworks(self):
         return self._get("/frameworks")
 
