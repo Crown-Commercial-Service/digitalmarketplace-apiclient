@@ -503,6 +503,23 @@ class TestBuyerDomainMethods(object):
         assert rmock.called
         assert result is False
 
+    def test_create_buyer_email_domain(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/buyer-email-domain",
+            json={"buyerEmailDomains": "result"},
+            status_code=201,
+        )
+
+        result = data_client.create_buyer_email_domain(
+            "whatever.org", "user@email.com"
+        )
+
+        assert result == {"buyerEmailDomains": "result"}
+        assert rmock.last_request.json() == {
+            "buyerEmailDomains": {"domainName": "whatever.org"},
+            "updated_by": "user@email.com"
+        }
+
 
 class TestSupplierMethods(object):
     def test_find_suppliers_with_no_prefix(self, data_client, rmock):

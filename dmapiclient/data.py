@@ -422,6 +422,15 @@ class DataAPIClient(BaseAPIClient):
             "/users/check-buyer-email", params={'email_address': email_address}
         )['valid']
 
+    def create_buyer_email_domain(self, buyer_email_domain, user):
+        return self._post_with_updated_by(
+            "/buyer-email-domain",
+            data={
+                "buyerEmailDomains": {"domainName": buyer_email_domain}
+            },
+            user=user,
+        )
+
     # Services
 
     def find_draft_services(self, supplier_id, service_id=None, framework=None):
