@@ -75,6 +75,8 @@ class TestDataApiClient(object):
         assert result['status'] == "ok"
         assert rmock.called
 
+
+class TestServiceMethods(object):
     def test_get_archived_service(self, data_client, rmock):
         rmock.get(
             "http://baseurl/archived-services/123",
@@ -175,6 +177,27 @@ class TestDataApiClient(object):
 
         assert result == {"services": "result"}
         assert rmock.called
+
+
+class TestUserMethods(object):
+
+    @staticmethod
+    def user():
+        return {'users': {
+            'id': 'id',
+            'email_address': 'email_address',
+            'name': 'name',
+            'role': 'supplier',
+            'active': 'active',
+            'locked': False,
+            'created_at': "2015-05-05T05:05:05",
+            'updated_at': "2015-05-05T05:05:05",
+            'password_changed_at': "2015-05-05T05:05:05",
+            'supplier': {
+                'supplier_id': 1234,
+                'name': 'name'
+            }
+        }}
 
     def test_find_users_by_supplier_id(self, data_client, rmock):
         rmock.get(
@@ -460,6 +483,8 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result == {"users": "result"}
 
+
+class TestBuyerDomainMethods(object):
     def test_is_email_address_with_valid_buyer_domain_true(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users/check-buyer-email?email_address=kev%40gov.uk",
@@ -478,24 +503,8 @@ class TestDataApiClient(object):
         assert rmock.called
         assert result is False
 
-    @staticmethod
-    def user():
-        return {'users': {
-            'id': 'id',
-            'email_address': 'email_address',
-            'name': 'name',
-            'role': 'supplier',
-            'active': 'active',
-            'locked': False,
-            'created_at': "2015-05-05T05:05:05",
-            'updated_at': "2015-05-05T05:05:05",
-            'password_changed_at': "2015-05-05T05:05:05",
-            'supplier': {
-                'supplier_id': 1234,
-                'name': 'name'
-            }
-        }}
 
+class TestSupplierMethods(object):
     def test_find_suppliers_with_no_prefix(self, data_client, rmock):
         rmock.get(
             "http://baseurl/suppliers",
@@ -916,6 +925,8 @@ class TestDataApiClient(object):
         assert result == {'supplierFrameworks': [{"agreementReturned": False}, {"agreementReturned": True}]}
         assert rmock.called
 
+
+class TestAgreementMethods(object):
     def test_put_signed_agreement_on_hold(self, data_client, rmock):
         rmock.post(
             "http://baseurl/agreements/101/on-hold",
@@ -961,6 +972,8 @@ class TestDataApiClient(object):
             },
         }
 
+
+class TestDraftServiceMethods(object):
     def test_find_draft_services(self, data_client, rmock):
         rmock.get(
             "http://baseurl/draft-services?supplier_id=2&service_id=1234567890123456&framework=g-cloud-6",
@@ -1149,6 +1162,8 @@ class TestDataApiClient(object):
             }
         }
 
+
+class TestAuditEventMethods(object):
     def test_get_audit_event(self, data_client, rmock):
         rmock.get(
             "http://baseurl/audit-events/123",
@@ -1380,6 +1395,8 @@ class TestDataApiClient(object):
             data_client.create_audit_event(
                 "thing_happened", "a user", {"key": "value"}, "suppliers", "123")
 
+
+class TestFrameworkMethods(object):
     def test_get_interested_suppliers(self, data_client, rmock):
         rmock.get(
             'http://baseurl/frameworks/g-cloud-11/interest',
@@ -1433,6 +1450,8 @@ class TestDataApiClient(object):
         assert result == {'frameworks': {'g-cloud-11': 'yes'}}
         assert rmock.called
 
+
+class TestBriefMethods(object):
     def test_create_brief(self, data_client, rmock):
         rmock.post(
             "http://baseurl/briefs",
@@ -1668,6 +1687,22 @@ class TestDataApiClient(object):
 
         assert result is False
 
+    def test_add_brief_clarification_question(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/1/clarification-questions",
+            json={"briefs": "result"},
+            status_code=200)
+
+        result = data_client.add_brief_clarification_question(1, "Why?", "Because", "user@example.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "clarificationQuestion": {"question": "Why?", "answer": "Because"},
+            "updated_by": "user@example.com",
+        }
+
+
+class TestBriefResponseMethods(object):
     def test_create_brief_response_with_page_questions(self, data_client, rmock):
         rmock.post(
             "http://baseurl/brief-responses",
@@ -1776,20 +1811,8 @@ class TestDataApiClient(object):
 
         assert result == {"briefResponses": []}
 
-    def test_add_brief_clarification_question(self, data_client, rmock):
-        rmock.post(
-            "http://baseurl/briefs/1/clarification-questions",
-            json={"briefs": "result"},
-            status_code=200)
 
-        result = data_client.add_brief_clarification_question(1, "Why?", "Because", "user@example.com")
-
-        assert result == {"briefs": "result"}
-        assert rmock.last_request.json() == {
-            "clarificationQuestion": {"question": "Why?", "answer": "Because"},
-            "updated_by": "user@example.com",
-        }
-
+class TestFrameworkAgreementMethods(object):
     def test_get_framework_agreement(self, data_client, rmock):
         rmock.get(
             "http://baseurl/agreements/12345",
@@ -1855,6 +1878,8 @@ class TestDataApiClient(object):
             "updated_by": "user@example.com",
         }
 
+
+class TestDirectAwardMethods(object):
     @pytest.mark.parametrize('user_id, page, expected_query_string',
                              (
                                  (None, None, ''),
