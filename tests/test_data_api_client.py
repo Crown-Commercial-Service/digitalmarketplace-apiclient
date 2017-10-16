@@ -1880,21 +1880,25 @@ class TestFrameworkAgreementMethods(object):
 
 
 class TestDirectAwardMethods(object):
-    @pytest.mark.parametrize('user_id, page, latest_first, expected_query_string',
+    @pytest.mark.parametrize('user_id, page, latest_first, with_users, expected_query_string',
                              (
-                                 (None, None, None, ''),
-                                 (123, None, None, '?user-id=123'),
-                                 (None, 2, None, '?page=2'),
-                                 (None, None, True, '?latest-first=True'),
-                                 (123, 2, None, '?user-id=123&page=2'),
-                                 (123, 2, False, '?user-id=123&page=2&latest-first=False'),
+                                 (None, None, None, None, ''),
+                                 (123, None, None, False, '?user-id=123'),
+                                 (None, 2, None, False, '?page=2'),
+                                 (None, None, True, False, '?latest-first=True'),
+                                 (None, None, None, True, '?include=users'),
+                                 (123, 2, True, True, '?user-id=123&page=2&latest-first=True&include=users'),
                              ))
-    def test_find_direct_award_projects(self, data_client, rmock, user_id, page, latest_first, expected_query_string):
+    def test_find_direct_award_projects(
+        self, data_client, rmock, user_id, page, latest_first, with_users, expected_query_string
+    ):
         rmock.get('/direct-award/projects{}'.format(expected_query_string),
                   json={"project": "ok"},
                   status_code=200)
 
-        result = data_client.find_direct_award_projects(user_id=user_id, page=page, latest_first=latest_first)
+        result = data_client.find_direct_award_projects(
+            user_id=user_id, page=page, latest_first=latest_first, with_users=with_users
+        )
         assert result == {"project": "ok"}
 
     def test_get_direct_award_project(self, data_client, rmock):
