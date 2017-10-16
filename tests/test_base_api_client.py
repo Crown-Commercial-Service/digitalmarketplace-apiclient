@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import requests
-import requests_mock
 import pytest
 import mock
 
@@ -9,22 +8,6 @@ from dmapiclient import HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmapiclient.errors import REQUEST_ERROR_MESSAGE
 from dmapiclient.exceptions import ImproperlyConfigured
-
-
-@pytest.yield_fixture
-def rmock():
-    with requests_mock.mock() as rmock:
-        real_register_uri = rmock.register_uri
-
-        def register_uri_with_complete_qs(*args, **kwargs):
-            if 'complete_qs' not in kwargs:
-                kwargs['complete_qs'] = True
-
-            return real_register_uri(*args, **kwargs)
-
-        rmock.register_uri = register_uri_with_complete_qs
-
-        yield rmock
 
 
 @pytest.yield_fixture
