@@ -851,7 +851,7 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
-    find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'projects')
+    find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'searches')
 
     def create_direct_award_project_search(self, user_id, user_email, project_id, search_url):
         return self._post_with_updated_by(
