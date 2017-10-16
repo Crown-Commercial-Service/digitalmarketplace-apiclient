@@ -837,7 +837,7 @@ class DataAPIClient(BaseAPIClient):
             user=user_email
         )
 
-    def find_direct_award_project_searches(self, user_id, project_id, page=None, only_active=None):
+    def find_direct_award_project_searches(self, project_id, user_id=None, page=None, only_active=None):
         params = {
             "user-id": user_id,
             "page": page,
@@ -873,13 +873,14 @@ class DataAPIClient(BaseAPIClient):
             }
         )
 
-    def get_direct_award_project_services(self, user_id, project_id, fields=[]):
+    def get_direct_award_project_services(self, project_id, user_id=None, fields=[]):
+        params = {"user-id": user_id}
+        if fields:
+            params.update({"fields": ','.join(fields)})
+
         return self._get(
             "/direct-award/projects/{}/services".format(project_id),
-            params={
-                "user-id": user_id,
-                "fields": ','.join(fields)
-            }
+            params=params
         )
 
     get_direct_award_project_services_iter = make_iter_method('get_direct_award_project_services', 'services')

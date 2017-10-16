@@ -2166,11 +2166,11 @@ class TestDataAPIClientIterMethods(object):
         assert len(result['searches']) == 2
 
     def test_get_direct_award_project_services(self, data_client, rmock):
-        rmock.get('/direct-award/projects/1/services?user-id=123',
+        rmock.get('/direct-award/projects/1/services',
                   json={"services": "ok"},
                   status_code=200)
 
-        result = data_client.get_direct_award_project_services(user_id=123, project_id=1)
+        result = data_client.get_direct_award_project_services(project_id=1)
         assert result == {"services": "ok"}
 
     def test_get_direct_award_project_services_specific_fields(self, data_client, rmock):
@@ -2183,14 +2183,14 @@ class TestDataAPIClientIterMethods(object):
 
     def test_get_direct_award_project_services_iter(self, data_client, rmock):
         rmock.get(
-            'http://baseurl/direct-award/projects/1/services?user-id=123',
+            'http://baseurl/direct-award/projects/1/services',
             json={
                 'links': {},
                 'services': [{'id': 1}, {'id': 2}]
             },
             status_code=200)
 
-        result = data_client.get_direct_award_project_services(user_id=123, project_id=1)
+        result = data_client.get_direct_award_project_services(project_id=1)
 
         assert set(result.keys()) == {'links', 'services'}
         assert len(result['services']) == 2
