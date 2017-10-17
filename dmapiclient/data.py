@@ -424,7 +424,7 @@ class DataAPIClient(BaseAPIClient):
 
     def create_buyer_email_domain(self, buyer_email_domain, user):
         return self._post_with_updated_by(
-            "/buyer-email-domain",
+            "/buyer-email-domains",
             data={
                 "buyerEmailDomains": {"domainName": buyer_email_domain}
             },
