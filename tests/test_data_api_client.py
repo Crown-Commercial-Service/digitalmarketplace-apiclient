@@ -488,7 +488,7 @@ class TestBuyerDomainMethods(object):
 
     def test_create_buyer_email_domain(self, data_client, rmock):
         rmock.post(
-            "http://baseurl/buyer-email-domain",
+            "http://baseurl/buyer-email-domains",
             json={"buyerEmailDomains": "result"},
             status_code=201,
         )
