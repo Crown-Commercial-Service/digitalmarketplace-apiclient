@@ -804,13 +804,18 @@ class DataAPIClient(BaseAPIClient):
 
     # Direct Award Projects
 
-    def find_direct_award_projects(self, user_id=None, page=None):
+    def find_direct_award_projects(self, user_id=None, page=None, latest_first=None):
+        params = {
+            "user-id": user_id,
+            "page": page
+        }
+
+        if latest_first is not None:
+            params['latest-first'] = latest_first
+
         return self._get(
             "/direct-award/projects",
-            params={
-                "user-id": user_id,
-                "page": page
-            }
+            params=params,
         )
 
     find_direct_award_projects_iter = make_iter_method('find_direct_award_projects', 'projects')
