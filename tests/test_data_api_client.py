@@ -1878,6 +1878,7 @@ class TestFrameworkAgreementMethods(object):
             "updated_by": "user@example.com",
         }
 
+
 class TestDirectAwardMethods(object):
     @pytest.mark.parametrize('user_id, page, latest_first, expected_query_string',
                              (
