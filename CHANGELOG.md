@@ -2,6 +2,28 @@
 
 Records breaking changes from major version bumps
 
+## 11.0.0
+
+PR: [#105](https://github.com/alphagov/digitalmarketplace-apiclient/pull/105)
+
+Gives `user_id` parameter a default for `find_direct_award_project_searches` and `get_direct_award_project_services`,
+which changes the order of their positional parameters.
+
+The old/new examples below are calling the methods with no `user_id` and a `project_id` of 123.
+
+Old
+```
+data_api_client.get_direct_award_project_services(None, 123)
+data_api_client.find_direct_award_project_searches(None, 123)
+```
+
+New
+```
+data_api_client.get_direct_award_project_services(123)
+data_api_client.find_direct_award_project_searches(123)
+```
+
+
 ## 10.0.0
 
 PR: [#90](https://github.com/alphagov/digitalmarketplace-apiclient/pull/90)
