@@ -804,7 +804,7 @@ class DataAPIClient(BaseAPIClient):
 
     # Direct Award Projects
 
-    def find_direct_award_projects(self, user_id=None, page=None, latest_first=None):
+    def find_direct_award_projects(self, user_id=None, page=None, latest_first=None, with_users=False):
         params = {
             "user-id": user_id,
             "page": page
@@ -812,6 +812,8 @@ class DataAPIClient(BaseAPIClient):
 
         if latest_first is not None:
             params['latest-first'] = latest_first
+        if with_users:
+            params['include'] = "users"
 
         return self._get(
             "/direct-award/projects",
@@ -835,7 +837,7 @@ class DataAPIClient(BaseAPIClient):
             user=user_email
         )
 
-    def find_direct_award_project_searches(self, user_id, project_id, page=None, only_active=None):
+    def find_direct_award_project_searches(self, project_id, user_id=None, page=None, only_active=None):
         params = {
             "user-id": user_id,
             "page": page,
@@ -849,7 +851,7 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
-    find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'projects')
+    find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'searches')
 
     def create_direct_award_project_search(self, user_id, user_email, project_id, search_url):
         return self._post_with_updated_by(
@@ -871,16 +873,20 @@ class DataAPIClient(BaseAPIClient):
             }
         )
 
-    def get_direct_award_project_services(self, user_id, project_id, fields=[]):
+    def get_direct_award_project_services(self, project_id, user_id=None, fields=[]):
+        params = {"user-id": user_id}
+        if fields:
+            params.update({"fields": ','.join(fields)})
+
         return self._get(
             "/direct-award/projects/{}/services".format(project_id),
-            params={
-                "user-id": user_id,
-                "fields": ','.join(fields)
-            }
+            params=params
         )
 
     get_direct_award_project_services_iter = make_iter_method('get_direct_award_project_services', 'services')
+
+    # This is here to maintain compatability with the ModelTrawler class used by the get-model-data script.
+    find_direct_award_project_services_iter = get_direct_award_project_services_iter
 
     def lock_direct_award_project(self, user_email, project_id):
         return self._post_with_updated_by(
