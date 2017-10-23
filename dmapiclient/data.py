@@ -644,6 +644,13 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def withdraw_brief(self, brief_id, user):
+        return self._post_with_updated_by(
+            "/briefs/{}/withdraw".format(brief_id),
+            data={},
+            user=user,
+        )
+
     def update_brief_as_unsuccessful(self, brief_id, user):
         return self._post_with_updated_by(
             "/briefs/{}/unsuccessful".format(brief_id),

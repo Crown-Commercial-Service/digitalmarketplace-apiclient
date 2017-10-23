@@ -1570,6 +1570,20 @@ class TestBriefMethods(object):
             "updated_by": "user@email.com"
         }
 
+    def test_withdraw_brief(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/briefs/123/withdraw",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.withdraw_brief(123, "user@email.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
     def test_update_brief_as_unsuccessful(self, data_client, rmock):
         rmock.post(
             "http://baseurl/briefs/123/unsuccessful",
