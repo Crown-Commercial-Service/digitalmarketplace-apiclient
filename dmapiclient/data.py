@@ -664,7 +664,7 @@ class DataAPIClient(BaseAPIClient):
 
     def find_briefs(
         self, user_id=None, status=None, framework=None, lot=None, page=None, human=None, with_users=None,
-        with_clarification_questions=None
+        with_clarification_questions=None, closed_on=None, withdrawn_on=None
     ):
         return self._get(
             "/briefs",
@@ -675,7 +675,9 @@ class DataAPIClient(BaseAPIClient):
                     "page": page,
                     "human": human,
                     "with_users": with_users,
-                    "with_clarification_questions": with_clarification_questions
+                    "with_clarification_questions": with_clarification_questions,
+                    "closed_on": closed_on,
+                    "withdrawn_on": withdrawn_on
                     }
         )
 
