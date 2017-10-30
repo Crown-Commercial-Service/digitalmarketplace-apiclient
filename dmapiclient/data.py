@@ -21,29 +21,26 @@ class DataAPIClient(BaseAPIClient):
             object_type=None,
             object_id=None,
             latest_first=None,
-            earliest_for_each_object=None):
+            earliest_for_each_object=None,
+            user=None,
+    ):
 
-        params = {}
+        params = {
+            "acknowledged": acknowledged,
+            "audit-date": audit_date,
+            "earliest_for_each_object": earliest_for_each_object,
+            "latest_first": latest_first,
+            "object-id": object_id,
+            "object-type": object_type,
+            "page": page,
+            "per_page": per_page,
+            "user": user,
+        }
+
         if audit_type:
             if not isinstance(audit_type, AuditTypes):
                 raise TypeError("Must be an AuditTypes")
             params["audit-type"] = audit_type.value
-        if page is not None:
-            params['page'] = page
-        if per_page is not None:
-            params['per_page'] = per_page
-        if audit_date is not None:
-            params['audit-date'] = audit_date
-        if acknowledged is not None:
-            params['acknowledged'] = acknowledged
-        if object_type is not None:
-            params['object-type'] = object_type
-        if object_id is not None:
-            params['object-id'] = object_id
-        if latest_first is not None:
-            params['latest_first'] = latest_first
-        if earliest_for_each_object is not None:
-            params['earliest_for_each_object'] = earliest_for_each_object
 
         return self._get(
             "/audit-events",
@@ -563,6 +560,13 @@ class DataAPIClient(BaseAPIClient):
         return self._post_with_updated_by(
             "/services/{}/status/{}".format(service_id, status),
             data={},
+            user=user,
+        )
+
+    def revert_service(self, service_id, archived_service_id, user):
+        return self._post_with_updated_by(
+            "/services/{}/revert".format(service_id),
+            data={"archivedServiceId": int(archived_service_id)},
             user=user,
         )
 
