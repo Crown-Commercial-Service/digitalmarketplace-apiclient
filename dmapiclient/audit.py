@@ -21,8 +21,9 @@ class AuditTypes(Enum):
     delete_draft_service = "delete_draft_service"
 
     # Live service lifecycle events
-    update_service = "update_service"
     import_service = "import_service"
+    update_service = "update_service"
+    update_service_admin = "update_service_admin"
     update_service_status = "update_service_status"
 
     # Brief lifecycle events
