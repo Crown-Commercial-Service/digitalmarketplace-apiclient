@@ -148,6 +148,19 @@ class TestServiceMethods(object):
         assert result == {"services": "result"}
         assert rmock.called
 
+    def test_update_service_by_admin(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/services/123?by_admin=True",
+            json={"services": "result"},
+            status_code=200,
+        )
+
+        result = data_client.update_service(
+            123, {"foo": "bar"}, "person", by_admin=True)
+
+        assert result == {"services": "result"}
+        assert rmock.called
+
     def test_update_service_status(self, data_client, rmock):
         rmock.post(
             "http://baseurl/services/123/status/published",
