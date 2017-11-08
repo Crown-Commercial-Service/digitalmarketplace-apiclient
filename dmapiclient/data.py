@@ -547,9 +547,9 @@ class DataAPIClient(BaseAPIClient):
 
     find_services_iter = make_iter_method('find_services', 'services')
 
-    def update_service(self, service_id, service, user):
+    def update_service(self, service_id, service, user, user_role=''):
         return self._post_with_updated_by(
-            "/services/{}".format(service_id),
+            "/services/{}{}".format(service_id, "?user-role={}".format(user_role) if user_role else ""),
             data={
                 "services": service,
             },
