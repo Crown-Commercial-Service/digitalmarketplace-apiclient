@@ -108,12 +108,13 @@ class TestSearchApiClient(object):
             json={"status": "ok"},
             status_code=200)
 
-        result = search_client.create_index('new-index')
+        result = search_client.create_index('new-index', 'some-mapping')
 
         assert rmock.called
         assert result['status'] == "ok"
         assert rmock.last_request.json() == {
-            "type": "index"
+            "type": "index",
+            "mapping": "some-mapping",
         }
 
     def test_set_alias(self, search_client, rmock):
