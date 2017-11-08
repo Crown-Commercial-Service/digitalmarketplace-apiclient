@@ -86,10 +86,10 @@ class SearchAPIClient(BaseAPIClient):
     def get_search_url(self, index, q=None, page=None, **filters):
         return self.get_url(path='search', index=index, q=q, page=page, **filters)
 
-    def create_index(self, index):
+    def create_index(self, index, mapping):
         return self._put(
             '/{}'.format(index),
-            data={'type': 'index'}
+            data={'type': 'index', 'mapping': mapping}
         )
 
     def set_alias(self, alias_name, target_index):

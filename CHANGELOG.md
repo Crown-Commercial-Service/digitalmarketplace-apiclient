@@ -2,6 +2,16 @@
 
 Records breaking changes from major version bumps
 
+## 12.0.0
+
+PR: [#111](https://github.com/alphagov/digitalmarketplace-apiclient/pull/111)
+
+`mapping` parameter is now required for Search API index creation, as we must be
+able to distinguish between the 'services' mapping and the forthcoming potential
+`briefs` mapping. We might also in future have multiple mappings to cover a new
+non-compatible G-Cloud index, for advance preparation of the new index in advance
+of the framework going live.
+
 ## 11.0.0
 
 PR: [#105](https://github.com/alphagov/digitalmarketplace-apiclient/pull/105)
