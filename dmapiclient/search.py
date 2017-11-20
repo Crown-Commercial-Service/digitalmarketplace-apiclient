@@ -25,7 +25,10 @@ class SearchAPIClient(BaseAPIClient):
     def _url_reverse(self, url):
         url = urlparse(url)
         try:
-            index, object_type, path = re.match(r'^/(?P<index>[^/]+)/(?P<object_type>[^/]+)/(?P<path>[^/]+)$', url.path).groups()
+            index, object_type, path = re.match(
+                r'^/(?P<index>[^/]+)/(?P<object_type>[^/]+)/(?P<path>[^/]+)$',
+                url.path
+            ).groups()
         except AttributeError:
             return None, None, None
         else:
