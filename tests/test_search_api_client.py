@@ -77,6 +77,59 @@ def service():
     }
 
 
+@pytest.fixture
+def brief():
+    """A stripped down DOS2 brief"""
+    return {
+         'applicationsClosedAt': '2017-12-04T23:59:59.000000Z',
+         'clarificationQuestions': [],
+         'clarificationQuestionsAreClosed': False,
+         'clarificationQuestionsClosedAt': '2017-11-27T23:59:59.000000Z',
+         'clarificationQuestionsPublishedBy': '2017-12-01T23:59:59.000000Z',
+         'contractLength': '3 weeks',
+         'createdAt': '2017-11-20T17:11:44.827229Z',
+         'culturalFitCriteria': ['CULTURAL', 'FIT'],
+         'culturalWeighting': 5,
+         'essentialRequirements': ['MS Paint', 'GIMP'],
+         'evaluationType': ['Reference', 'Interview'],
+         'existingTeam': 'Nice people.',
+         'frameworkFramework': 'digital-outcomes-and-specialists',
+         'frameworkName': 'Digital Outcomes and Specialists 2',
+         'frameworkSlug': 'digital-outcomes-and-specialists-2',
+         'frameworkStatus': 'live',
+         'id': 1,
+         'isACopy': False,
+         'links': {'framework': 'http://127.0.0.1:5000/frameworks/digital-outcomes-and-specialists-2',
+                   'self': 'http://127.0.0.1:5000/briefs/1'},
+         'location': 'Wales',
+         'lot': 'digital-specialists',
+         'lotName': 'Digital specialists',
+         'lotSlug': 'digital-specialists',
+         'niceToHaveRequirements': ['LISP'],
+         'numberOfSuppliers': 3,
+         'organisation': 'Org.org',
+         'priceWeighting': 85,
+         'publishedAt': '2017-11-20T17:11:44.812563Z',
+         'requirementsLength': '2 weeks',
+         'securityClearance': 'Developed vetting required.',
+         'specialistRole': 'developer',
+         'specialistWork': 'All the things',
+         'startDate': '31-12-2016',
+         'status': 'live',
+         'summary': 'Doing some stuff to help out.',
+         'technicalWeighting': 10,
+         'updatedAt': '2017-11-20T17:11:44.827236Z',
+         'users': [{'active': True,
+                    'emailAddress': 'test+1@digital.gov.uk',
+                    'id': 1,
+                    'name': 'my name',
+                    'phoneNumber': None,
+                    'role': 'buyer'}],
+         'workingArrangements': 'Just get the work done.',
+         'workplaceAddress': 'Aviation House'
+    }
+
+
 class TestSearchApiClient(object):
     def test_init_app_sets_attributes(self, search_client):
         app = mock.Mock()
@@ -132,13 +185,18 @@ class TestSearchApiClient(object):
             "target": 'target'
         }
 
-    def test_post_to_index_with_type_and_service_id(
-            self, search_client, rmock, service):
+    def test_post_to_index_with_type_and_id(
+            self, search_client, rmock, brief):
         rmock.put(
-            'http://baseurl/g-cloud/services/12345',
+            'http://baseurl/briefs-digital-outcomes-and-specialists-2/briefs/12345',
             json={'message': 'acknowledged'},
             status_code=200)
-        result = search_client.index(index='g-cloud', service_id="12345", service=service)
+        result = search_client.index(
+            index_name='briefs-digital-outcomes-and-specialists-2',
+            object_type='briefs',
+            object_id="12345",
+            serialized_object=brief
+        )
         assert result == {'message': 'acknowledged'}
 
     def test_delete_to_delete_method_service_id(
@@ -179,14 +237,19 @@ class TestSearchApiClient(object):
 
         assert search_client.delete(index='g-cloud', service_id="12345") is None
 
-    def test_should_not_call_search_api_is_es_disabled(
+    def test_should_not_call_search_api_if_es_disabled(
             self, search_client, rmock, service):
         search_client.enabled = False
         rmock.put(
             'http://baseurl/g-cloud/services/12345',
             json={'message': 'acknowledged'},
             status_code=200)
-        result = search_client.index(index='g-cloud', service_id="12345", service=service)
+        result = search_client.index(
+            index_name='g-cloud',
+            object_type='services',
+            object_id="12345",
+            serialized_object=service
+        )
         assert result is None
         assert not rmock.called
 
@@ -197,7 +260,12 @@ class TestSearchApiClient(object):
                 'http://baseurl/g-cloud/services/12345',
                 json={'error': 'some error'},
                 status_code=400)
-            search_client.index(index='g-cloud', service_id="12345", service=service)
+            search_client.index(
+                index_name='g-cloud',
+                object_type='services',
+                object_id="12345",
+                serialized_object=service
+            )
 
     def test_search_services(self, search_client, rmock):
         expected_response = {'services': "myresponse"}
@@ -295,14 +363,18 @@ class TestSearchApiClient(object):
     def test_get_search_url(self, search_client):
         assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
 
-    @pytest.mark.parametrize('search_api_url, expected_index',
-                             (
-                                 ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
-                                 ('http://localhost/g-cloud-9/services/search', 'g-cloud-9'),
-                                 ('https://search-api.preview.marketplace.team/g-cloud-9/services/search', 'g-cloud-9'),
-                                 ('https://search-api.preview.marketplace.team/g-cloud-8/services/search', 'g-cloud-8'),
-                                 ('https://some.broken.url.com/that/does/not/match', None)
-                             ))
+    @pytest.mark.parametrize(
+        'search_api_url, expected_index',
+        (
+            ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
+            ('http://localhost/g-cloud-9/services/search', 'g-cloud-9'),
+            ('http://localhost/briefs-digital-outcomes-and-specialists-2/briefs/search', 'briefs-digital-outcomes-and-specialists-2'),  # NOQA
+            ('https://search-api.preview.marketplace.team/g-cloud-9/services/search', 'g-cloud-9'),
+            ('https://search-api.preview.marketplace.team/g-cloud-8/services/search', 'g-cloud-8'),
+            ('https://search-api.preview.marketplace.team/briefs-digital-outcomes-and-specialists-2/briefs/search', 'briefs-digital-outcomes-and-specialists-2'),  # NOQA
+            ('https://some.broken.url.com/that/does/not/match', None)
+        )
+    )
     def test_get_index_from_search_api_url(self, search_client, search_api_url, expected_index):
         assert search_client.get_index_from_search_api_url(search_api_url) == expected_index
 
