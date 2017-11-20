@@ -98,7 +98,8 @@ class SearchAPIClient(BaseAPIClient):
             data={'type': 'alias', 'target': target_index}
         )
 
-    def index(self, url, serialized_object):
+    def index(self, index_name, object_type, object_id, serialized_object):
+        url = '/{}/{}/{}'.format(index_name, object_type, object_id)
         return self._put(url, data={'document': serialized_object})
 
     def delete(self, index, service_id):
