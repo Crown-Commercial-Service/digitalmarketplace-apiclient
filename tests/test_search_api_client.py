@@ -199,7 +199,7 @@ class TestSearchApiClient(object):
             'briefs-digital-outcomes-and-specialists-2',
             "12345",
             brief,
-            object_type='briefs',
+            doc_type='briefs',
         )
         assert result == {'message': 'acknowledged'}
 
@@ -263,9 +263,9 @@ class TestSearchApiClient(object):
             status_code=200)
         result = search_client.index(
             index_name='g-cloud',
-            object_type='services',
             object_id="12345",
-            serialized_object=service
+            serialized_object=service,
+            doc_type='services',
         )
         assert result is None
         assert not rmock.called
@@ -279,9 +279,9 @@ class TestSearchApiClient(object):
                 status_code=400)
             search_client.index(
                 index_name='g-cloud',
-                object_type='services',
                 object_id="12345",
-                serialized_object=service
+                serialized_object=service,
+                doc_type='services',
             )
 
     def test_search_services(self, search_client, rmock):
