@@ -532,6 +532,29 @@ class TestBuyerDomainMethods(object):
         }
 
 
+class TestEmailVaildForAdminMethod(object):
+
+    def test_email_address_with_valid_admin_domain_is_true(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/users/valid-admin-email?email_address=kev%40gov.uk",
+            json={"valid": True},
+            status_code=200
+        )
+        result = data_client.email_is_valid_for_admin_user('kev@gov.uk')
+        assert rmock.called
+        assert result is True
+
+    def test_email_address_with_invalid_admin_domain_is_false(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/users/valid-admin-email?email_address=kev%40not-gov.uk",
+            json={"valid": False},
+            status_code=200
+        )
+        result = data_client.email_is_valid_for_admin_user('kev@not-gov.uk')
+        assert rmock.called
+        assert result is False
+
+
 class TestSupplierMethods(object):
     def test_find_suppliers_with_no_prefix(self, data_client, rmock):
         rmock.get(
