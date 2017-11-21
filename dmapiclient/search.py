@@ -101,7 +101,7 @@ class SearchAPIClient(BaseAPIClient):
             data={'type': 'alias', 'target': target_index}
         )
 
-    def index(self, index_name, object_type, object_id, serialized_object):
+    def index(self, index_name, object_id, serialized_object, object_type='services'):
         url = '/{}/{}/{}'.format(index_name, object_type, object_id)
         return self._put(url, data={'document': serialized_object})
 

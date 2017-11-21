@@ -196,10 +196,23 @@ class TestSearchApiClient(object):
             json={'message': 'acknowledged'},
             status_code=200)
         result = search_client.index(
-            index_name='briefs-digital-outcomes-and-specialists-2',
+            'briefs-digital-outcomes-and-specialists-2',
+            "12345",
+            brief,
             object_type='briefs',
-            object_id="12345",
-            serialized_object=brief
+        )
+        assert result == {'message': 'acknowledged'}
+
+    def test_post_to_index_without_type_defaults_to_services(
+            self, search_client, rmock, brief):
+        rmock.put(
+            'http://baseurl/g-cloud-9/services/12345',
+            json={'message': 'acknowledged'},
+            status_code=200)
+        result = search_client.index(
+            'g-cloud-9',
+            "12345",
+            brief
         )
         assert result == {'message': 'acknowledged'}
 
