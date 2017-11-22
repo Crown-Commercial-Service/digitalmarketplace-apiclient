@@ -428,6 +428,11 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def email_is_valid_for_admin_user(self, email_address):
+        return self._get(
+            "/users/valid-admin-email", params={'email_address': email_address}
+        )['valid']
+
     # Services
 
     def find_draft_services(self, supplier_id, service_id=None, framework=None):
