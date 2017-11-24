@@ -14,126 +14,6 @@ def search_client():
     return SearchAPIClient('http://baseurl', 'auth-token', True)
 
 
-@pytest.fixture
-def service():
-    """A stripped down G6-IaaS service"""
-    return {
-        "id": "1234567890123456",
-        "supplierId": 1,
-        "lot": "IaaS",
-        "title": "My Iaas Service",
-        "lastUpdated": "2014-12-23T14:46:17Z",
-        "lastUpdatedByEmail": "supplier@digital.cabinet-office.gov.uk",
-        "lastCompleted": "2014-12-23T14:46:22Z",
-        "lastCompletedByEmail": "supplier@digital.cabinet-office.gov.uk",
-        "serviceTypes": [
-            "Compute",
-            "Storage"
-        ],
-        "serviceName": "My Iaas Service",
-        "serviceSummary": "IaaS Service Summary",
-        "serviceBenefits": [
-            "Free lollipop to every 10th customer",
-            "It's just lovely"
-        ],
-        "serviceFeatures": [
-            "[To be completed]",
-            "This is my second \"feture\""
-        ],
-        "minimumContractPeriod": "Month",
-        "terminationCost": True,
-        "priceInterval": "",
-        "trialOption": True,
-        "priceUnit": "Person",
-        "educationPricing": True,
-        "vatIncluded": False,
-        "priceString": "£10.0067 per person",
-        "priceMin": 10.0067,
-        "freeOption": False,
-        "openStandardsSupported": True,
-        "supportForThirdParties": False,
-        "supportResponseTime": "3 weeks.",
-        "incidentEscalation": True,
-        "serviceOffboarding": True,
-        "serviceOnboarding": False,
-        "analyticsAvailable": False,
-        "persistentStorage": True,
-        "elasticCloud": True,
-        "guaranteedResources": False,
-        "selfServiceProvisioning": False,
-        "openSource": False,
-        "apiType": "SOAP, Rest | JSON",
-        "apiAccess": True,
-        "networksConnected": [
-            "Public Services Network (PSN)",
-            "Government Secure intranet (GSi)"
-        ],
-        "offlineWorking": True,
-        "dataExtractionRemoval": False,
-        "dataBackupRecovery": True,
-        "datacentreTier": "TIA-942 Tier 3",
-        "datacentresSpecifyLocation": True,
-        "datacentresEUCode": False,
-    }
-
-
-@pytest.fixture
-def brief():
-    """A stripped down DOS2 brief"""
-    return {
-        'applicationsClosedAt': '2017-12-04T23:59:59.000000Z',
-        'clarificationQuestions': [],
-        'clarificationQuestionsAreClosed': False,
-        'clarificationQuestionsClosedAt': '2017-11-27T23:59:59.000000Z',
-        'clarificationQuestionsPublishedBy': '2017-12-01T23:59:59.000000Z',
-        'contractLength': '3 weeks',
-        'createdAt': '2017-11-20T17:11:44.827229Z',
-        'culturalFitCriteria': ['CULTURAL', 'FIT'],
-        'culturalWeighting': 5,
-        'essentialRequirements': ['MS Paint', 'GIMP'],
-        'evaluationType': ['Reference', 'Interview'],
-        'existingTeam': 'Nice people.',
-        'frameworkFramework': 'digital-outcomes-and-specialists',
-        'frameworkName': 'Digital Outcomes and Specialists 2',
-        'frameworkSlug': 'digital-outcomes-and-specialists-2',
-        'frameworkStatus': 'live',
-        'id': 1,
-        'isACopy': False,
-        'links': {
-            'framework': 'http://127.0.0.1:5000/frameworks/digital-outcomes-and-specialists-2',
-            'self': 'http://127.0.0.1:5000/briefs/1'
-        },
-        'location': 'Wales',
-        'lot': 'digital-specialists',
-        'lotName': 'Digital specialists',
-        'lotSlug': 'digital-specialists',
-        'niceToHaveRequirements': ['LISP'],
-        'numberOfSuppliers': 3,
-        'organisation': 'Org.org',
-        'priceWeighting': 85,
-        'publishedAt': '2017-11-20T17:11:44.812563Z',
-        'requirementsLength': '2 weeks',
-        'securityClearance': 'Developed vetting required.',
-        'specialistRole': 'developer',
-        'specialistWork': 'All the things',
-        'startDate': '31-12-2016',
-        'status': 'live',
-        'summary': 'Doing some stuff to help out.',
-        'technicalWeighting': 10,
-        'updatedAt': '2017-11-20T17:11:44.827236Z',
-        'users': [{
-            'active': True,
-            'emailAddress': 'test+1@digital.gov.uk',
-            'id': 1,
-            'name': 'my name',
-            'phoneNumber': None,
-            'role': 'buyer'
-        }],
-        'workingArrangements': 'Just get the work done.',
-        'workplaceAddress': 'Aviation House'
-    }
-
-
 class TestSearchApiClient(object):
     def test_init_app_sets_attributes(self, search_client):
         app = mock.Mock()
@@ -190,7 +70,7 @@ class TestSearchApiClient(object):
         }
 
     def test_post_to_index_with_type_and_id(
-            self, search_client, rmock, brief):
+            self, search_client, rmock):
         rmock.put(
             'http://baseurl/briefs-digital-outcomes-and-specialists-2/briefs/12345',
             json={'message': 'acknowledged'},
@@ -198,13 +78,13 @@ class TestSearchApiClient(object):
         result = search_client.index(
             'briefs-digital-outcomes-and-specialists-2',
             "12345",
-            brief,
+            {'serialized': 'brief'},
             doc_type='briefs',
         )
         assert result == {'message': 'acknowledged'}
 
     def test_post_to_index_without_type_defaults_to_services(
-            self, search_client, rmock, brief):
+            self, search_client, rmock):
         rmock.put(
             'http://baseurl/g-cloud-9/services/12345',
             json={'message': 'acknowledged'},
@@ -212,7 +92,7 @@ class TestSearchApiClient(object):
         result = search_client.index(
             'g-cloud-9',
             "12345",
-            brief
+            {'serialized': 'service'},
         )
         assert result == {'message': 'acknowledged'}
 
@@ -255,7 +135,7 @@ class TestSearchApiClient(object):
         assert search_client.delete(index='g-cloud', service_id="12345") is None
 
     def test_should_not_call_search_api_if_es_disabled(
-            self, search_client, rmock, service):
+            self, search_client, rmock):
         search_client.enabled = False
         rmock.put(
             'http://baseurl/g-cloud/services/12345',
@@ -264,14 +144,14 @@ class TestSearchApiClient(object):
         result = search_client.index(
             index_name='g-cloud',
             object_id="12345",
-            serialized_object=service,
+            serialized_object={'serialized': 'service'},
             doc_type='services',
         )
         assert result is None
         assert not rmock.called
 
     def test_should_raise_error_on_failure(
-            self, search_client, rmock, service):
+            self, search_client, rmock):
         with pytest.raises(APIError):
             rmock.put(
                 'http://baseurl/g-cloud/services/12345',
@@ -280,7 +160,7 @@ class TestSearchApiClient(object):
             search_client.index(
                 index_name='g-cloud',
                 object_id="12345",
-                serialized_object=service,
+                serialized_object={'serialized': 'service'},
                 doc_type='services',
             )
 
