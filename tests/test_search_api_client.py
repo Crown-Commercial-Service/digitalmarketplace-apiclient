@@ -14,69 +14,6 @@ def search_client():
     return SearchAPIClient('http://baseurl', 'auth-token', True)
 
 
-@pytest.fixture
-def service():
-    """A stripped down G6-IaaS service"""
-    return {
-        "id": "1234567890123456",
-        "supplierId": 1,
-        "lot": "IaaS",
-        "title": "My Iaas Service",
-        "lastUpdated": "2014-12-23T14:46:17Z",
-        "lastUpdatedByEmail": "supplier@digital.cabinet-office.gov.uk",
-        "lastCompleted": "2014-12-23T14:46:22Z",
-        "lastCompletedByEmail": "supplier@digital.cabinet-office.gov.uk",
-        "serviceTypes": [
-            "Compute",
-            "Storage"
-        ],
-        "serviceName": "My Iaas Service",
-        "serviceSummary": "IaaS Service Summary",
-        "serviceBenefits": [
-            "Free lollipop to every 10th customer",
-            "It's just lovely"
-        ],
-        "serviceFeatures": [
-            "[To be completed]",
-            "This is my second \"feture\""
-        ],
-        "minimumContractPeriod": "Month",
-        "terminationCost": True,
-        "priceInterval": "",
-        "trialOption": True,
-        "priceUnit": "Person",
-        "educationPricing": True,
-        "vatIncluded": False,
-        "priceString": "£10.0067 per person",
-        "priceMin": 10.0067,
-        "freeOption": False,
-        "openStandardsSupported": True,
-        "supportForThirdParties": False,
-        "supportResponseTime": "3 weeks.",
-        "incidentEscalation": True,
-        "serviceOffboarding": True,
-        "serviceOnboarding": False,
-        "analyticsAvailable": False,
-        "persistentStorage": True,
-        "elasticCloud": True,
-        "guaranteedResources": False,
-        "selfServiceProvisioning": False,
-        "openSource": False,
-        "apiType": "SOAP, Rest | JSON",
-        "apiAccess": True,
-        "networksConnected": [
-            "Public Services Network (PSN)",
-            "Government Secure intranet (GSi)"
-        ],
-        "offlineWorking": True,
-        "dataExtractionRemoval": False,
-        "dataBackupRecovery": True,
-        "datacentreTier": "TIA-942 Tier 3",
-        "datacentresSpecifyLocation": True,
-        "datacentresEUCode": False,
-    }
-
-
 class TestSearchApiClient(object):
     def test_init_app_sets_attributes(self, search_client):
         app = mock.Mock()
@@ -132,13 +69,31 @@ class TestSearchApiClient(object):
             "target": 'target'
         }
 
-    def test_post_to_index_with_type_and_service_id(
-            self, search_client, rmock, service):
+    def test_post_to_index_with_type_and_id(
+            self, search_client, rmock):
         rmock.put(
-            'http://baseurl/g-cloud/services/12345',
+            'http://baseurl/briefs-digital-outcomes-and-specialists-2/briefs/12345',
             json={'message': 'acknowledged'},
             status_code=200)
-        result = search_client.index(index='g-cloud', service_id="12345", service=service)
+        result = search_client.index(
+            'briefs-digital-outcomes-and-specialists-2',
+            "12345",
+            {'serialized': 'brief'},
+            doc_type='briefs',
+        )
+        assert result == {'message': 'acknowledged'}
+
+    def test_post_to_index_without_type_defaults_to_services(
+            self, search_client, rmock):
+        rmock.put(
+            'http://baseurl/g-cloud-9/services/12345',
+            json={'message': 'acknowledged'},
+            status_code=200)
+        result = search_client.index(
+            'g-cloud-9',
+            "12345",
+            {'serialized': 'service'},
+        )
         assert result == {'message': 'acknowledged'}
 
     def test_delete_to_delete_method_service_id(
@@ -179,25 +134,35 @@ class TestSearchApiClient(object):
 
         assert search_client.delete(index='g-cloud', service_id="12345") is None
 
-    def test_should_not_call_search_api_is_es_disabled(
-            self, search_client, rmock, service):
+    def test_should_not_call_search_api_if_es_disabled(
+            self, search_client, rmock):
         search_client.enabled = False
         rmock.put(
             'http://baseurl/g-cloud/services/12345',
             json={'message': 'acknowledged'},
             status_code=200)
-        result = search_client.index(index='g-cloud', service_id="12345", service=service)
+        result = search_client.index(
+            index_name='g-cloud',
+            object_id="12345",
+            serialized_object={'serialized': 'service'},
+            doc_type='services',
+        )
         assert result is None
         assert not rmock.called
 
     def test_should_raise_error_on_failure(
-            self, search_client, rmock, service):
+            self, search_client, rmock):
         with pytest.raises(APIError):
             rmock.put(
                 'http://baseurl/g-cloud/services/12345',
                 json={'error': 'some error'},
                 status_code=400)
-            search_client.index(index='g-cloud', service_id="12345", service=service)
+            search_client.index(
+                index_name='g-cloud',
+                object_id="12345",
+                serialized_object={'serialized': 'service'},
+                doc_type='services',
+            )
 
     def test_search_services(self, search_client, rmock):
         expected_response = {'services': "myresponse"}
@@ -295,14 +260,18 @@ class TestSearchApiClient(object):
     def test_get_search_url(self, search_client):
         assert search_client.get_search_url('g-cloud-9') == 'http://baseurl/g-cloud-9/services/search'
 
-    @pytest.mark.parametrize('search_api_url, expected_index',
-                             (
-                                 ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
-                                 ('http://localhost/g-cloud-9/services/search', 'g-cloud-9'),
-                                 ('https://search-api.preview.marketplace.team/g-cloud-9/services/search', 'g-cloud-9'),
-                                 ('https://search-api.preview.marketplace.team/g-cloud-8/services/search', 'g-cloud-8'),
-                                 ('https://some.broken.url.com/that/does/not/match', None)
-                             ))
+    @pytest.mark.parametrize(
+        'search_api_url, expected_index',
+        (
+            ('http://localhost/g-cloud-8/services/search', 'g-cloud-8'),
+            ('http://localhost/g-cloud-9/services/search', 'g-cloud-9'),
+            ('http://localhost/briefs-digital-outcomes-and-specialists-2/briefs/search', 'briefs-digital-outcomes-and-specialists-2'),  # NOQA
+            ('https://search-api.preview.marketplace.team/g-cloud-9/services/search', 'g-cloud-9'),
+            ('https://search-api.preview.marketplace.team/g-cloud-8/services/search', 'g-cloud-8'),
+            ('https://search-api.preview.marketplace.team/briefs-digital-outcomes-and-specialists-2/briefs/search', 'briefs-digital-outcomes-and-specialists-2'),  # NOQA
+            ('https://some.broken.url.com/that/does/not/match', None)
+        )
+    )
     def test_get_index_from_search_api_url(self, search_client, search_api_url, expected_index):
         assert search_client.get_index_from_search_api_url(search_api_url) == expected_index
 
