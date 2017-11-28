@@ -373,6 +373,7 @@ class DataAPIClient(BaseAPIClient):
                     active=None,
                     role=None,
                     supplier_id=None,
+                    name=None,
                     updater="no logged-in user"):
         fields = {}
         if locked is not None:
@@ -393,6 +394,11 @@ class DataAPIClient(BaseAPIClient):
         if supplier_id is not None:
             fields.update({
                 'supplierId': supplier_id
+            })
+
+        if name is not None:
+            fields.update({
+                'name': name
             })
 
         params = {
