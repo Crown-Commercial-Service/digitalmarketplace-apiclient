@@ -2,6 +2,13 @@
 
 Records breaking changes from major version bumps
 
+## 13.0.0
+
+PR: [#115](https://github.com/alphagov/digitalmarketplace-apiclient/pull/115)
+
+`name` parameter has been added to `update_user` method,  so any code calling
+this method with positional parameters needs to be updated to use this version.
+
 ## 12.0.0
 
 PR: [#111](https://github.com/alphagov/digitalmarketplace-apiclient/pull/111)
