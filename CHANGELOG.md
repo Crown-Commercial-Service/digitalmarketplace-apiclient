@@ -2,6 +2,23 @@
 
 Records breaking changes from major version bumps
 
+## 14.0.0
+
+PR: [#116](https://github.com/alphagov/digitalmarketplace-apiclient/pull/116)
+
+`aggregate_services` method on the search-api-client has been generalized to `aggregate_docs` to allow for aggregating
+briefs too. It takes an extra argument, `doc_type`.
+
+Old:
+```
+search_api_client.aggregate_services(index=index, q=q, aggregations=aggregations)
+```
+
+New:
+```
+search_api_client.aggregate_docs(index=index, doc_type='services', q=q, aggregations=aggregations)
+```
+
 ## 13.0.0
 
 PR: [#115](https://github.com/alphagov/digitalmarketplace-apiclient/pull/115)
