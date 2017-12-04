@@ -116,11 +116,15 @@ class SearchAPIClient(BaseAPIClient):
         return None
 
     def search_services(self, index, q=None, page=None, id_only=False, **filters):
-        response = self._get(self.get_search_url(index=index, doc_type='services', q=q, page=page, id_only=id_only, **filters))
+        response = self._get(
+            self.get_search_url(index=index, doc_type='services', q=q, page=page, id_only=id_only, **filters)
+        )
         return response
 
     def search_briefs(self, index, q=None, page=None, id_only=False, **filters):
-        response = self._get(self.get_search_url(index=index, doc_type='briefs', q=q, page=page, id_only=id_only, **filters))
+        response = self._get(
+            self.get_search_url(index=index, doc_type='briefs', q=q, page=page, id_only=id_only, **filters)
+        )
         return response
 
     def search_services_from_url(self, search_api_url, id_only=False, page=None):
@@ -141,5 +145,7 @@ class SearchAPIClient(BaseAPIClient):
     search_services_from_url_iter = make_iter_method('search_services_from_url', 'services')
 
     def aggregate_docs(self, index, doc_type, q=None, aggregations=[], **filters):
-        response = self._get(self.get_url(path='aggregations', index=index, doc_type=doc_type, q=q, aggregations=aggregations, **filters))
+        response = self._get(
+            self.get_url(path='aggregations', index=index, doc_type=doc_type, q=q, aggregations=aggregations, **filters)
+        )
         return response

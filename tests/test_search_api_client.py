@@ -165,7 +165,7 @@ class TestSearchApiClient(object):
             )
 
     def test_search_services(self, search_client, rmock):
-        expected_response = {'services': "myresponse"}
+        expected_response = {'documents': "myresponse"}
         rmock.get(
             'http://baseurl/g-cloud/services/search?q=foo&'
             'filter_minimumContractPeriod=a&'
@@ -179,47 +179,87 @@ class TestSearchApiClient(object):
             something=['a', 'b'])
         assert result == expected_response
 
-    def test_aggregate_services(self, search_client, rmock):
-        expected_response = {'aggregations': "myresponse"}
+    def test_search_briefs(self, search_client, rmock):
+        expected_response = {'documents': "myresponse"}
         rmock.get(
-            'http://baseurl/g-cloud/services/aggregations?q=foo&aggregations=serviceCategories&'
-            'filter_minimumContractPeriod=a&'
-            'filter_something=a&filter_something=b',
+            'http://baseurl/briefs-digital-outcomes-and-specialists/briefs/search?q=foo&'
+            'filter_lot=digital-outcomes&'
+            'filter_location=Scotland',
             json=expected_response,
             status_code=200)
-        result = search_client.aggregate_services(
-            index='g-cloud',
+        result = search_client.search_briefs(
+            index='briefs-digital-outcomes-and-specialists',
+            q='foo',
+            lot=['digital-outcomes'],
+            location=['Scotland'])
+        assert result == expected_response
+
+    @pytest.mark.parametrize(
+        'index, doc_type', (
+            ('briefs-digital-outcomes-and-specialists', 'briefs'),
+            ('g-cloud', 'services')
+        )
+    )
+    def test_aggregate_docs(self, search_client, rmock, index, doc_type):
+        expected_response = {'aggregations': "myresponse"}
+        rmock.get(
+            'http://baseurl/{}/{}/aggregations?q=foo&aggregations=serviceCategories&'
+            'filter_minimumContractPeriod=a&'
+            'filter_something=a&filter_something=b'.format(index, doc_type),
+            json=expected_response,
+            status_code=200)
+        result = search_client.aggregate_docs(
+            index=index,
+            doc_type=doc_type,
             q='foo',
             minimumContractPeriod=['a'],
             aggregations=['serviceCategories'],
             something=['a', 'b'])
         assert result == expected_response
 
-    def test_search_services_with_blank_query(self, search_client, rmock):
+    @pytest.mark.parametrize(
+        'index, doc_type', (
+            ('briefs-digital-outcomes-and-specialists', 'briefs'),
+            ('g-cloud', 'services')
+        )
+    )
+    def test_search_with_blank_query(self, search_client, rmock, index, doc_type):
         rmock.get(
-            'http://baseurl/g-cloud/services/search',
-            json={'services': "myresponse"},
+            'http://baseurl/{}/{}/search'.format(index, doc_type),
+            json={'documents': "myresponse"},
             status_code=200)
-        result = search_client.search_services(index='g-cloud')
-        assert result == {'services': "myresponse"}
+        result = eval("search_client.search_{}(index='{}')".format(doc_type, index))
+        assert result == {'documents': "myresponse"}
         assert rmock.last_request.query == ''
 
-    def test_search_services_with_pagination(self, search_client, rmock):
+    @pytest.mark.parametrize(
+        'index, doc_type', (
+            ('briefs-digital-outcomes-and-specialists', 'briefs'),
+            ('g-cloud', 'services')
+        )
+    )
+    def test_search_with_pagination(self, search_client, rmock, doc_type, index):
         rmock.get(
-            'http://baseurl/g-cloud/services/search?page=10',
-            json={'services': "myresponse"},
+            'http://baseurl/{}/{}/search?page=10'.format(index, doc_type),
+            json={'documents': "myresponse"},
             status_code=200)
-        result = search_client.search_services(index='g-cloud', page=10)
-        assert result == {'services': "myresponse"}
+        result = eval("search_client.search_{}(index='{}', page=10)".format(doc_type, index))
+        assert result == {'documents': "myresponse"}
         assert rmock.last_request.query == 'page=10'
 
-    def test_search_services_id_only(self, search_client, rmock):
+    @pytest.mark.parametrize(
+        'index, doc_type', (
+            ('briefs-digital-outcomes-and-specialists', 'briefs'),
+            ('g-cloud', 'services')
+        )
+    )
+    def test_search_services_id_only(self, search_client, rmock, doc_type, index):
         rmock.get(
-            'http://baseurl/g-cloud/services/search?idOnly=True',
-            json={'services': "myresponse"},
+            'http://baseurl/{}/{}/search?idOnly=True'.format(index, doc_type),
+            json={'documents': "myresponse"},
             status_code=200)
-        result = search_client.search_services(index='g-cloud', id_only=True)
-        assert result == {'services': "myresponse"}
+        result = eval("search_client.search_{}(index='{}', id_only=True)".format(doc_type, index))
+        assert result == {'documents': "myresponse"}
 
     @staticmethod
     def load_example_listing(name):
