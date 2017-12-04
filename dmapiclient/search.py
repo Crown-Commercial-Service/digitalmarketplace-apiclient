@@ -140,6 +140,6 @@ class SearchAPIClient(BaseAPIClient):
 
     search_services_from_url_iter = make_iter_method('search_services_from_url', 'services')
 
-    def aggregate_services(self, index, q=None, aggregations=[], **filters):
-        response = self._get(self.get_url(path='aggregations', index=index, q=q, aggregations=aggregations, **filters))
+    def aggregate_docs(self, index, doc_type, q=None, aggregations=[], **filters):
+        response = self._get(self.get_url(path='aggregations', index=index, doc_type=doc_type, q=q, aggregations=aggregations, **filters))
         return response
