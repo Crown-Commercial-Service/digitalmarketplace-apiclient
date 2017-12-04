@@ -116,7 +116,11 @@ class SearchAPIClient(BaseAPIClient):
         return None
 
     def search_services(self, index, q=None, page=None, id_only=False, **filters):
-        response = self._get(self.get_search_url(index=index, q=q, page=page, id_only=id_only, **filters))
+        response = self._get(self.get_search_url(index=index, doc_type='services', q=q, page=page, id_only=id_only, **filters))
+        return response
+
+    def search_briefs(self, index, q=None, page=None, id_only=False, **filters):
+        response = self._get(self.get_search_url(index=index, doc_type='briefs', q=q, page=page, id_only=id_only, **filters))
         return response
 
     def search_services_from_url(self, search_api_url, id_only=False, page=None):
