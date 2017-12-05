@@ -243,7 +243,7 @@ class TestSearchApiClient(object):
             'http://baseurl/{}/{}/search?page=10'.format(index, doc_type),
             json={'documents': "myresponse"},
             status_code=200)
-        result = eval("search_client.search_{}(index='{}', page=10)".format(doc_type, index))
+        result = getattr(search_client, "search_{}".format(doc_type))(index, page=10)
         assert result == {'documents': "myresponse"}
         assert rmock.last_request.query == 'page=10'
 

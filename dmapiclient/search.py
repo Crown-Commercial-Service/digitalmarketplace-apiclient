@@ -86,7 +86,7 @@ class SearchAPIClient(BaseAPIClient):
     def get_index_from_search_api_url(self, search_api_url):
         return self._url_reverse(search_api_url)[0]
 
-    def get_search_url(self, index, doc_type='services', q=None, page=None, **filters):
+    def get_search_url(self, index, q=None, page=None, doc_type='services', **filters):
         return self.get_url(path='search', index=index, doc_type=doc_type, q=q, page=page, **filters)
 
     def create_index(self, index, mapping):
