@@ -157,7 +157,7 @@ class SearchAPIClient(BaseAPIClient):
             for service in result.get('documents') or result.get('services'):
                 yield service
 
-    def aggregate_docs(self, index, doc_type, q=None, aggregations=[], **filters):
+    def aggregate(self, index, doc_type, q=None, aggregations=[], **filters):
         response = self._get(
             self.get_url(path='aggregations', index=index, doc_type=doc_type, q=q, aggregations=aggregations, **filters)
         )

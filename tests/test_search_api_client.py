@@ -191,7 +191,7 @@ class TestSearchApiClient(object):
             ('g-cloud', 'services')
         )
     )
-    def test_aggregate_docs(self, search_client, rmock, index, doc_type):
+    def test_aggregate(self, search_client, rmock, index, doc_type):
         expected_response = {'aggregations': "myresponse"}
         rmock.get(
             'http://baseurl/{}/{}/aggregations?q=foo&aggregations=serviceCategories&'
@@ -199,7 +199,7 @@ class TestSearchApiClient(object):
             'filter_something=a&filter_something=b'.format(index, doc_type),
             json=expected_response,
             status_code=200)
-        result = search_client.aggregate_docs(
+        result = search_client.aggregate(
             index=index,
             doc_type=doc_type,
             q='foo',
