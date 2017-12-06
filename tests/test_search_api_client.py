@@ -164,34 +164,25 @@ class TestSearchApiClient(object):
                 doc_type='services',
             )
 
-    def test_search_services(self, search_client, rmock):
+    @pytest.mark.parametrize(
+        'index, doc_type',
+        (
+            ('briefs-digital-outcomes-and-speciaists', 'briefs'),
+            ('g-cloud-9', 'services')
+        )
+    )
+    def test_search(self, search_client, rmock, index, doc_type):
         expected_response = {'documents': "myresponse"}
         rmock.get(
-            'http://baseurl/g-cloud/services/search?q=foo&'
-            'filter_minimumContractPeriod=a&'
-            'filter_something=a&filter_something=b',
+            'http://baseurl/{}/{}/search?q=foo&'
+            'filter_something=a&filter_something=b'.format(index, doc_type),
             json=expected_response,
             status_code=200)
-        result = search_client.search_services(
-            index='g-cloud',
+        result = search_client.search(
+            index=index,
+            doc_type=doc_type,
             q='foo',
-            minimumContractPeriod=['a'],
             something=['a', 'b'])
-        assert result == expected_response
-
-    def test_search_briefs(self, search_client, rmock):
-        expected_response = {'documents': "myresponse"}
-        rmock.get(
-            'http://baseurl/briefs-digital-outcomes-and-specialists/briefs/search?q=foo&'
-            'filter_lot=digital-outcomes&'
-            'filter_location=Scotland',
-            json=expected_response,
-            status_code=200)
-        result = search_client.search_briefs(
-            index='briefs-digital-outcomes-and-specialists',
-            q='foo',
-            lot=['digital-outcomes'],
-            location=['Scotland'])
         assert result == expected_response
 
     @pytest.mark.parametrize(
@@ -228,7 +219,7 @@ class TestSearchApiClient(object):
             'http://baseurl/{}/{}/search'.format(index, doc_type),
             json={'documents': "myresponse"},
             status_code=200)
-        result = eval("search_client.search_{}(index='{}')".format(doc_type, index))
+        result = search_client.search(index, doc_type)
         assert result == {'documents': "myresponse"}
         assert rmock.last_request.query == ''
 
@@ -243,7 +234,7 @@ class TestSearchApiClient(object):
             'http://baseurl/{}/{}/search?page=10'.format(index, doc_type),
             json={'documents': "myresponse"},
             status_code=200)
-        result = getattr(search_client, "search_{}".format(doc_type))(index, page=10)
+        result = search_client.search(index, doc_type, page=10)
         assert result == {'documents': "myresponse"}
         assert rmock.last_request.query == 'page=10'
 
@@ -258,7 +249,7 @@ class TestSearchApiClient(object):
             'http://baseurl/{}/{}/search?idOnly=True'.format(index, doc_type),
             json={'documents': "myresponse"},
             status_code=200)
-        result = eval("search_client.search_{}(index='{}', id_only=True)".format(doc_type, index))
+        result = search_client.search(index, doc_type, id_only=True)
         assert result == {'documents': "myresponse"}
 
     @staticmethod
