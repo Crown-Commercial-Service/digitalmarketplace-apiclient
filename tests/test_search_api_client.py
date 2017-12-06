@@ -356,7 +356,7 @@ class TestSearchAPIClientIterMethods(object):
             },
             status_code=200)
 
-        result = getattr(search_client, method_name)(**kwargs)
+        result = getattr(search_client, method_name)(kwargs['search_url'], kwargs['id_only'])
         results = list(result)
 
         assert len(results) == 3
@@ -369,5 +369,6 @@ class TestSearchAPIClientIterMethods(object):
             search_client, rmock,
             method_name='search_services_from_url_iter',
             model_name='services',
-            url_path='g-cloud/services/search',
-            search_api_url='http://baseurl/g-cloud/services/search')
+            url_path='g-cloud/services/search?idOnly=True',
+            search_url='http://baseurl/g-cloud/services/search',
+            id_only=True)

@@ -2,6 +2,7 @@
 
 import re
 import six
+import backoff
 try:
     from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 except ImportError:
@@ -9,8 +10,8 @@ except ImportError:
     from urllib import urlencode
 
 
-from .base import BaseAPIClient, make_iter_method
-from .errors import HTTPError
+from .base import BaseAPIClient
+from .errors import HTTPError, HTTPTemporaryError
 
 
 class SearchAPIClient(BaseAPIClient):
@@ -142,7 +143,25 @@ class SearchAPIClient(BaseAPIClient):
 
         return self._get(paged_search_api_url)
 
-    search_services_from_url_iter = make_iter_method('search_services_from_url', 'services')
+    # search_services_from_url_iter = make_iter_method('search_services_from_url', 'documents')
+
+    # This is a temporary method to allow for backwards compatability while switching from the search-api returning
+    # `documents` instead of just `services`. The data-api uses this method when locking direct award searches. The api
+    # will need to pull in this apiclient before the search-api changes. Once it does, this method can be removed and
+    # the calle to `make_iter_method` above can be uncommented.
+    def search_services_from_url_iter(self, search_url, id_only):
+        backoff_decorator = backoff.on_exception(backoff.expo, HTTPTemporaryError, max_tries=5)
+        result = backoff_decorator(self.search_services_from_url)(search_url, id_only=id_only)
+        for service in result.get('documents') or result.get('services'):
+            yield service
+
+        while True:
+            if 'next' not in result['links']:
+                return
+
+            result = backoff_decorator(self._get)(result['links']['next'])
+            for service in result.get('documents') or result.get('services'):
+                yield service
 
     def aggregate_docs(self, index, doc_type, q=None, aggregations=[], **filters):
         response = self._get(
