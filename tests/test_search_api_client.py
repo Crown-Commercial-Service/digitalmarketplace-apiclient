@@ -355,7 +355,7 @@ class TestSearchAPIClientIterMethods(object):
         assert results[1]['id'] == 2
         assert results[2]['id'] == 3
 
-    def test_search_services_from_url_iter(self, search_client, rmock):
+    def test_search_services_from_url_iter_with_services_in_response_key(self, search_client, rmock):
         self._test_find_iter(
             search_client, rmock,
             method_name='search_services_from_url_iter',
@@ -363,3 +363,22 @@ class TestSearchAPIClientIterMethods(object):
             url_path='g-cloud/services/search?idOnly=True',
             search_url='http://baseurl/g-cloud/services/search',
             id_only=True)
+
+    def test_search_services_from_url_iter_with_documents_in_response_key(self, search_client, rmock):
+        self._test_find_iter(
+            search_client, rmock,
+            method_name='search_services_from_url_iter',
+            model_name='documents',
+            url_path='g-cloud/services/search?idOnly=True',
+            search_url='http://baseurl/g-cloud/services/search',
+            id_only=True)
+
+    def test_search_services_from_url_iter_with_bad_response_key(self, search_client, rmock):
+        with pytest.raises(AssertionError):
+            self._test_find_iter(
+                search_client, rmock,
+                method_name='search_services_from_url_iter',
+                model_name='i-am-naughty',
+                url_path='g-cloud/services/search?idOnly=True',
+                search_url='http://baseurl/g-cloud/services/search',
+                id_only=True)

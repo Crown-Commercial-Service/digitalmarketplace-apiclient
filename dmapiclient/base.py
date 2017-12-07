@@ -20,17 +20,21 @@ from .exceptions import ImproperlyConfigured
 logger = logging.getLogger(__name__)
 
 
-def make_iter_method(method_name, model_name):
+def make_iter_method(method_name, *model_names):
     """Make a page-concatenating iterator method from a find method
 
     :param method_name: The name of the find method to decorate
-    :param model_name: The name of the model as it appears in the JSON response
+    :param model_names: The names of the possible models as they appear in the JSON response. The first found is used.
     """
     backoff_decorator = backoff.on_exception(backoff.expo, HTTPTemporaryError, max_tries=5)
 
     def iter_method(self, *args, **kwargs):
         method = getattr(self, method_name)
         result = backoff_decorator(method)(*args, **kwargs)
+        # Filter the list of model names for those that are a key in the response, then take the first.
+        # Useful for backwards compatability if response keys might change
+        model_name = next(filter(lambda name: name in result, model_names))
+
         for model in result[model_name]:
             yield model
 
