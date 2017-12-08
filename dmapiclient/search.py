@@ -19,8 +19,8 @@ class SearchAPIClient(BaseAPIClient):
         self.auth_token = app.config['DM_SEARCH_API_AUTH_TOKEN']
         self.enabled = app.config['ES_ENABLED']
 
-    def _url(self, index, path):
-        return u"/{}/services/{}".format(index, path)
+    def _url(self, index, path, doc_type='services'):
+        return u"/{}/{}/{}".format(index, doc_type, path)
 
     def _url_reverse(self, url):
         url = urlparse(url)
@@ -54,7 +54,7 @@ class SearchAPIClient(BaseAPIClient):
 
         return frontend_params
 
-    def get_url(self, path, index, q, page=None, aggregations=[], id_only=False, **filters):
+    def get_url(self, path, index, q, doc_type='services', page=None, aggregations=[], id_only=False, **filters):
         params = {}
         if q is not None:
             params['q'] = q
@@ -69,7 +69,7 @@ class SearchAPIClient(BaseAPIClient):
 
         self._add_filters_prefix_to_params(params, filters)
 
-        return self._build_url(url=self._url(index=index, path=path), params=params)
+        return self._build_url(url=self._url(index=index, path=path, doc_type=doc_type), params=params)
 
     def get_frontend_params_from_search_api_url(self, search_api_url):
         """
@@ -86,8 +86,8 @@ class SearchAPIClient(BaseAPIClient):
     def get_index_from_search_api_url(self, search_api_url):
         return self._url_reverse(search_api_url)[0]
 
-    def get_search_url(self, index, q=None, page=None, **filters):
-        return self.get_url(path='search', index=index, q=q, page=page, **filters)
+    def get_search_url(self, index, q=None, page=None, doc_type='services', **filters):
+        return self.get_url(path='search', index=index, doc_type=doc_type, q=q, page=page, **filters)
 
     def create_index(self, index, mapping):
         return self._put(
@@ -115,8 +115,10 @@ class SearchAPIClient(BaseAPIClient):
                 raise
         return None
 
-    def search_services(self, index, q=None, page=None, id_only=False, **filters):
-        response = self._get(self.get_search_url(index=index, q=q, page=page, id_only=id_only, **filters))
+    def search(self, index, doc_type, q=None, page=None, id_only=False, **filters):
+        response = self._get(
+            self.get_search_url(index=index, doc_type=doc_type, q=q, page=page, id_only=id_only, **filters)
+        )
         return response
 
     def search_services_from_url(self, search_api_url, id_only=False, page=None):
@@ -134,8 +136,10 @@ class SearchAPIClient(BaseAPIClient):
 
         return self._get(paged_search_api_url)
 
-    search_services_from_url_iter = make_iter_method('search_services_from_url', 'services')
+    search_services_from_url_iter = make_iter_method('search_services_from_url', 'documents', 'services')
 
-    def aggregate_services(self, index, q=None, aggregations=[], **filters):
-        response = self._get(self.get_url(path='aggregations', index=index, q=q, aggregations=aggregations, **filters))
+    def aggregate(self, index, doc_type, q=None, aggregations=[], **filters):
+        response = self._get(
+            self.get_url(path='aggregations', index=index, doc_type=doc_type, q=q, aggregations=aggregations, **filters)
+        )
         return response
