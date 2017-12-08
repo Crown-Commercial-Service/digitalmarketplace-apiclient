@@ -33,7 +33,7 @@ def make_iter_method(method_name, *model_names):
         result = backoff_decorator(method)(*args, **kwargs)
         # Filter the list of model names for those that are a key in the response, then take the first.
         # Useful for backwards compatability if response keys might change
-        model_name = next(filter(lambda name: name in result, model_names))
+        model_name = next(model_name for model_name in model_names if model_name in result)
 
         for model in result[model_name]:
             yield model
