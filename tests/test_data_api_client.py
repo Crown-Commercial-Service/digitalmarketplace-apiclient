@@ -2125,6 +2125,21 @@ class TestDataAPIClientIterMethods(object):
         assert results[1]['id'] == 2
         assert results[2]['id'] == 3
 
+        # Also check the case that we don't fall over if the API does not give us a `links` dict as part of it's
+        # response
+        rmock.get(
+            'http://baseurl/{}'.format(url_path),
+            json={
+                model_name: [{'id': 1}, {'id': 2}]
+            },
+            status_code=200)
+        result = getattr(data_client, method_name)()
+        results = list(result)
+
+        assert len(results) == 2
+        assert results[0]['id'] == 1
+        assert results[1]['id'] == 2
+
     def test_find_users_iter(self, data_client, rmock):
         self._test_find_iter(
             data_client, rmock,

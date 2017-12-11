@@ -39,7 +39,7 @@ def make_iter_method(method_name, *model_names):
             yield model
 
         while True:
-            if 'next' not in result['links']:
+            if 'next' not in result.get('links', {}):
                 return
 
             result = backoff_decorator(self._get)(result['links']['next'])
