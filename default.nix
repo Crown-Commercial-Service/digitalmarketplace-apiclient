@@ -13,6 +13,7 @@ in (with args; {
     shortName = "dm-apicl";
     buildInputs = [
       pythonPackages.virtualenv
+      pkgs.cacert
     ] ++ pkgs.stdenv.lib.optionals forDev ([
       ] ++ pkgs.stdenv.lib.optionals pkgs.stdenv.isDarwin [
       ]
@@ -20,6 +21,7 @@ in (with args; {
 
     hardeningDisable = pkgs.stdenv.lib.optionals pkgs.stdenv.isDarwin [ "format" ];
 
+    GIT_SSL_CAINFO="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
     VIRTUALENV_ROOT = "venv${pythonPackages.python.pythonVersion}";
     VIRTUAL_ENV_DISABLE_PROMPT = "1";
     SOURCE_DATE_EPOCH = "315532800";
