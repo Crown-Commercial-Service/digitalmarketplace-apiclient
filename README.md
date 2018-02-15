@@ -14,16 +14,16 @@ Originally was part of [Digital Marketplace Utils](https://github.com/alphagov/d
 
 ## Running the tests
 
-Install Python dependencies with pip
+Install Python dependencies:
 
 ```
-pip install -r requirements-dev.txt
+make requirements-dev
 ```
 
-Run the tests
+Run the tests:
 
 ```
-./scripts/run_tests.sh
+make test
 ```
 
 ## Usage examples
