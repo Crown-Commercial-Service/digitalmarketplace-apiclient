@@ -1740,6 +1740,28 @@ class TestBriefMethods(object):
         assert rmock.called
         assert result == {"briefs": [{"withdrawnAt": "2017-10-20"}]}
 
+    def test_find_briefs_cancelled_on_date(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/briefs?cancelled_on=2017-10-20",
+            json={"briefs": [{"cancelledAt": "2017-10-20"}]},
+            status_code=200)
+
+        result = data_client.find_briefs(cancelled_on="2017-10-20")
+
+        assert rmock.called
+        assert result == {"briefs": [{"cancelledAt": "2017-10-20"}]}
+
+    def test_find_briefs_unsuccessful_on_date(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/briefs?unsuccessful_on=2017-10-20",
+            json={"briefs": [{"unsuccessfulAt": "2017-10-20"}]},
+            status_code=200)
+
+        result = data_client.find_briefs(unsuccessful_on="2017-10-20")
+
+        assert rmock.called
+        assert result == {"briefs": [{"unsuccessfulAt": "2017-10-20"}]}
+
     def test_find_briefs_with_clarification_questions(self, data_client, rmock):
         rmock.get(
             "http://baseurl/briefs?with_clarification_questions=True",
