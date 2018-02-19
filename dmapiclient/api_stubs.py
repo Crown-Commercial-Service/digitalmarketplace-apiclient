@@ -66,3 +66,56 @@ def brief(status="draft",
         brief['briefs']['clarificationQuestionsAreClosed'] = clarification_questions_closed
 
     return brief
+
+
+def supplier(id=1234, contact_id=4321, other_company_registration_number=0):
+    data = {
+        "suppliers": {
+            "companiesHouseNumber": "12345678",
+            "contactInformation": [
+                {
+                    "address1": "123 Fake Road",
+                    "city": "Madeupolis",
+                    "contactName": "Mr E Man",
+                    "email": "mre@company.com",
+                    "id": contact_id,
+                    "links": {
+                        "self": "http://localhost:5000/suppliers/{id}/contact-information/{contact_id}".format(
+                            id=id, contact_id=contact_id
+                        )
+                    },
+                    "phoneNumber": "01234123123",
+                    "postcode": "A11 1AA",
+                    "website": "https://www.mre.company"
+                }
+            ],
+            "description": "I'm a supplier.",
+            "dunsNumber": "123456789",
+            "id": id,
+            "links": {
+                "self": "http://localhost:5000/suppliers/{id}".format(id=id)
+            },
+            "name": "My Little Company",
+            "organisationSize": "micro",
+            "registeredName": "My Little Registered Company",
+            "registrationCountry": "country:GB",
+            "registrationDate": "2000-01-01",
+            "service_counts": {
+                "G-Cloud 9": 109,
+                "G-Cloud 8": 108,
+                "G-Cloud 7": 107,
+                "G-Cloud 6": 106,
+                "G-Cloud 5": 105,
+            },
+            "tradingStatus": "limited company",
+            "vatNumber": "111222333"
+        }
+    }
+
+    if other_company_registration_number:
+        data['suppliers']['otherCompanyRegistrationNumber'] = other_company_registration_number
+        data['suppliers']['registrationCountry'] = 'country:NZ'
+        del data['suppliers']['companiesHouseNumber']
+        del data['suppliers']['vatNumber']
+
+    return data
