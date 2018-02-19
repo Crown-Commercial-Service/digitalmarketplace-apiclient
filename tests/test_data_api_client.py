@@ -2124,7 +2124,7 @@ class TestDirectAwardMethods(object):
 
 
 class TestDataAPIClientIterMethods(object):
-    def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path):
+    def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path, iter_kwargs={}):
         rmock.get(
             'http://baseurl/{}'.format(url_path),
             json={
@@ -2140,7 +2140,7 @@ class TestDataAPIClientIterMethods(object):
             },
             status_code=200)
 
-        result = getattr(data_client, method_name)()
+        result = getattr(data_client, method_name)(**iter_kwargs)
         results = list(result)
 
         assert len(results) == 3
@@ -2156,7 +2156,7 @@ class TestDataAPIClientIterMethods(object):
                 model_name: [{'id': 1}, {'id': 2}]
             },
             status_code=200)
-        result = getattr(data_client, method_name)()
+        result = getattr(data_client, method_name)(**iter_kwargs)
         results = list(result)
 
         assert len(results) == 2
@@ -2290,26 +2290,26 @@ class TestDataAPIClientIterMethods(object):
             model_name='projects',
             url_path='direct-award/projects')
 
-    def test_find_direct_award_project_searches_iter(self, data_client, rmock):
-        rmock.get(
-            'http://baseurl/direct-award/projects/1/searches?user-id=123',
-            json={
-                'links': {},
-                'searches': [{'id': 1}, {'id': 2}]
-            },
-            status_code=200)
-
-        result = data_client.find_direct_award_project_searches(user_id=123, project_id=1)
-
-        assert set(result.keys()) == {'links', 'searches'}
-        assert len(result['searches']) == 2
+    @pytest.mark.parametrize('url_path, iter_kwargs',
+                             (
+                                 ('direct-award/projects/1/searches', {'project_id': 1}),
+                                 ('direct-award/projects/1/searches?user-id=123', {'project_id': 1, 'user_id': 123}),
+                             ))
+    def test_find_direct_award_project_searches_iter(self, data_client, rmock, url_path, iter_kwargs):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='find_direct_award_project_searches_iter',
+            model_name='searches',
+            url_path=url_path,
+            iter_kwargs=iter_kwargs
+        )
 
     def test_get_direct_award_project_services(self, data_client, rmock):
         rmock.get('/direct-award/projects/1/services',
                   json={"services": "ok"},
                   status_code=200)
 
-        result = data_client.get_direct_award_project_services(project_id=1)
+        result = data_client.find_direct_award_project_services(project_id=1)
         assert result == {"services": "ok"}
 
     def test_get_direct_award_project_services_specific_fields(self, data_client, rmock):
@@ -2317,19 +2317,14 @@ class TestDataAPIClientIterMethods(object):
                   json={"services": "ok"},
                   status_code=200)
 
-        result = data_client.get_direct_award_project_services(user_id=123, project_id=1, fields=['id', 'price'])
+        result = data_client.find_direct_award_project_services(user_id=123, project_id=1, fields=['id', 'price'])
         assert result == {"services": "ok"}
 
-    def test_get_direct_award_project_services_iter(self, data_client, rmock):
-        rmock.get(
-            'http://baseurl/direct-award/projects/1/services',
-            json={
-                'links': {},
-                'services': [{'id': 1}, {'id': 2}]
-            },
-            status_code=200)
-
-        result = data_client.get_direct_award_project_services(project_id=1)
-
-        assert set(result.keys()) == {'links', 'services'}
-        assert len(result['services']) == 2
+    def test_find_direct_award_project_services_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='find_direct_award_project_services_iter',
+            model_name='services',
+            url_path='direct-award/projects/1/services',
+            iter_kwargs={'project_id': 1}
+        )

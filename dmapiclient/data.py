@@ -900,7 +900,7 @@ class DataAPIClient(BaseAPIClient):
             }
         )
 
-    def get_direct_award_project_services(self, project_id, user_id=None, fields=[]):
+    def find_direct_award_project_services(self, project_id, user_id=None, fields=[]):
         params = {"user-id": user_id}
         if fields:
             params.update({"fields": ','.join(fields)})
@@ -910,10 +910,7 @@ class DataAPIClient(BaseAPIClient):
             params=params
         )
 
-    get_direct_award_project_services_iter = make_iter_method('get_direct_award_project_services', 'services')
-
-    # This is here to maintain compatability with the ModelTrawler class used by the get-model-data script.
-    find_direct_award_project_services_iter = get_direct_award_project_services_iter
+    find_direct_award_project_services_iter = make_iter_method('find_direct_award_project_services', 'services')
 
     def lock_direct_award_project(self, user_email, project_id):
         return self._post_with_updated_by(
