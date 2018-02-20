@@ -162,3 +162,160 @@ def test_brief():
             "clarificationQuestions": [],
         }
     }
+
+
+def test_supplier():
+    assert api_stubs.supplier() == {
+        'suppliers': {
+            'companiesHouseNumber': '12345678',
+            'contactInformation': [{
+                'address1': '123 Fake Road',
+                'city': 'Madeupolis',
+                'contactName': 'Mr E Man',
+                'email': 'mre@company.com',
+                'id': 4321,
+                'links': {
+                    'self': 'http://localhost:5000/suppliers/1234/contact-information/4321'
+                },
+                'phoneNumber': '01234123123',
+                'postcode': 'A11 1AA',
+                "website": "https://www.mre.company"
+            }],
+            'description': "I'm a supplier.",
+            'dunsNumber': '123456789',
+            'id': 1234,
+            'links': {
+                'self': 'http://localhost:5000/suppliers/1234'
+            },
+            'name': 'My Little Company',
+            'organisationSize': 'micro',
+            'registeredName': 'My Little Registered Company',
+            'registrationCountry': 'country:GB',
+            'registrationDate': '2000-01-01',
+            'service_counts': {
+                "G-Cloud 9": 109,
+                "G-Cloud 8": 108,
+                "G-Cloud 7": 107,
+                "G-Cloud 6": 106,
+                "G-Cloud 5": 105,
+            },
+            'tradingStatus': 'limited company',
+            'vatNumber': '111222333'
+        }
+    }
+
+    assert api_stubs.supplier(id=9999) == {
+        'suppliers': {
+            'companiesHouseNumber': '12345678',
+            'contactInformation': [{
+                'address1': '123 Fake Road',
+                'city': 'Madeupolis',
+                'contactName': 'Mr E Man',
+                'email': 'mre@company.com',
+                'id': 4321,
+                'links': {
+                    'self': 'http://localhost:5000/suppliers/9999/contact-information/4321'
+                },
+                'phoneNumber': '01234123123',
+                'postcode': 'A11 1AA',
+                "website": "https://www.mre.company"
+            }],
+            'description': "I'm a supplier.",
+            'dunsNumber': '123456789',
+            'id': 9999,
+            'links': {
+                'self': 'http://localhost:5000/suppliers/9999'
+            },
+            'name': 'My Little Company',
+            'organisationSize': 'micro',
+            'registeredName': 'My Little Registered Company',
+            'registrationCountry': 'country:GB',
+            'registrationDate': '2000-01-01',
+            'service_counts': {
+                "G-Cloud 9": 109,
+                "G-Cloud 8": 108,
+                "G-Cloud 7": 107,
+                "G-Cloud 6": 106,
+                "G-Cloud 5": 105,
+            },
+            'tradingStatus': 'limited company',
+            'vatNumber': '111222333'
+        }
+    }
+
+    assert api_stubs.supplier(contact_id=9999) == {
+        'suppliers': {
+            'companiesHouseNumber': '12345678',
+            'contactInformation': [{
+                'address1': '123 Fake Road',
+                'city': 'Madeupolis',
+                'contactName': 'Mr E Man',
+                'email': 'mre@company.com',
+                'id': 9999,
+                'links': {
+                    'self': 'http://localhost:5000/suppliers/1234/contact-information/9999'
+                },
+                'phoneNumber': '01234123123',
+                'postcode': 'A11 1AA',
+                "website": "https://www.mre.company"
+            }],
+            'description': "I'm a supplier.",
+            'dunsNumber': '123456789',
+            'id': 1234,
+            'links': {
+                'self': 'http://localhost:5000/suppliers/1234'
+            },
+            'name': 'My Little Company',
+            'organisationSize': 'micro',
+            'registeredName': 'My Little Registered Company',
+            'registrationCountry': 'country:GB',
+            'registrationDate': '2000-01-01',
+            'service_counts': {
+                "G-Cloud 9": 109,
+                "G-Cloud 8": 108,
+                "G-Cloud 7": 107,
+                "G-Cloud 6": 106,
+                "G-Cloud 5": 105,
+            },
+            'tradingStatus': 'limited company',
+            'vatNumber': '111222333'
+        }
+    }
+
+    assert api_stubs.supplier(other_company_registration_number=123456) == {
+        'suppliers': {
+            'contactInformation': [{
+                'address1': '123 Fake Road',
+                'city': 'Madeupolis',
+                'contactName': 'Mr E Man',
+                'email': 'mre@company.com',
+                'id': 4321,
+                'links': {
+                    'self': 'http://localhost:5000/suppliers/1234/contact-information/4321'
+                },
+                'phoneNumber': '01234123123',
+                'postcode': 'A11 1AA',
+                "website": "https://www.mre.company"
+            }],
+            'description': "I'm a supplier.",
+            'dunsNumber': '123456789',
+            'id': 1234,
+            'links': {
+                'self': 'http://localhost:5000/suppliers/1234'
+            },
+            'name': 'My Little Company',
+            'otherCompanyRegistrationNumber': 123456,
+            'organisationSize': 'micro',
+            'registeredName': 'My Little Registered Company',
+            'registrationCountry': 'country:NZ',
+            'registrationDate': '2000-01-01',
+            'service_counts': {
+                "G-Cloud 9": 109,
+                "G-Cloud 8": 108,
+                "G-Cloud 7": 107,
+                "G-Cloud 6": 106,
+                "G-Cloud 5": 105,
+            },
+            'tradingStatus': 'limited company',
+        }
+    }
