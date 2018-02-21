@@ -2,6 +2,23 @@
 
 Records breaking changes from major version bumps
 
+## 15.0.0
+
+PR: [#123](https://github.com/alphagov/digitalmarketplace-apiclient/pull/123)
+
+Removes `get_direct_award_project_services_iter` in favour of `find_direct_award_project_services_iter`, which is the
+more consistent naming scheme.
+
+Old:
+```python
+data_api_client.get_direct_award_project_services_iter(...)
+```
+
+New:
+```python
+data_api_client.find_direct_award_project_services_iter(...)
+```
+
 ## 14.0.0
 
 PR: [#116](https://github.com/alphagov/digitalmarketplace-apiclient/pull/116)
