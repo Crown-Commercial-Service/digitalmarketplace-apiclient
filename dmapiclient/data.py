@@ -374,6 +374,7 @@ class DataAPIClient(BaseAPIClient):
                     role=None,
                     supplier_id=None,
                     name=None,
+                    user_research_opted_in=None,
                     updater="no logged-in user"):
         fields = {}
         if locked is not None:
@@ -384,6 +385,11 @@ class DataAPIClient(BaseAPIClient):
         if active is not None:
             fields.update({
                 'active': active
+            })
+
+        if user_research_opted_in is not None:
+            fields.update({
+                'userResearchOptedIn': user_research_opted_in
             })
 
         if role is not None:
