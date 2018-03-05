@@ -191,7 +191,6 @@ def test_supplier():
             'organisationSize': 'micro',
             'registeredName': 'My Little Registered Company',
             'registrationCountry': 'country:GB',
-            'registrationDate': '2000-01-01',
             'service_counts': {
                 "G-Cloud 9": 109,
                 "G-Cloud 8": 108,
@@ -230,7 +229,6 @@ def test_supplier():
             'organisationSize': 'micro',
             'registeredName': 'My Little Registered Company',
             'registrationCountry': 'country:GB',
-            'registrationDate': '2000-01-01',
             'service_counts': {
                 "G-Cloud 9": 109,
                 "G-Cloud 8": 108,
@@ -269,7 +267,6 @@ def test_supplier():
             'organisationSize': 'micro',
             'registeredName': 'My Little Registered Company',
             'registrationCountry': 'country:GB',
-            'registrationDate': '2000-01-01',
             'service_counts': {
                 "G-Cloud 9": 109,
                 "G-Cloud 8": 108,
@@ -308,7 +305,6 @@ def test_supplier():
             'organisationSize': 'micro',
             'registeredName': 'My Little Registered Company',
             'registrationCountry': 'country:NZ',
-            'registrationDate': '2000-01-01',
             'service_counts': {
                 "G-Cloud 9": 109,
                 "G-Cloud 8": 108,
