@@ -99,7 +99,6 @@ def supplier(id=1234, contact_id=4321, other_company_registration_number=0):
             "organisationSize": "micro",
             "registeredName": "My Little Registered Company",
             "registrationCountry": "country:GB",
-            "registrationDate": "2000-01-01",
             "service_counts": {
                 "G-Cloud 9": 109,
                 "G-Cloud 8": 108,
