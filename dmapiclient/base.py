@@ -113,7 +113,12 @@ class BaseAPIClient(object):
             "Authorization": "Bearer {}".format(self.auth_token),
             "User-agent": "DM-API-Client/{}".format(__version__),
         }
-        headers = self._add_request_id_header(headers)
+        if has_request_context():
+            if callable(getattr(request, "get_onwards_request_headers", None)):
+                headers.update(request.get_onwards_request_headers())
+            elif getattr(request, "request_id", None) and current_app.config.get("DM_REQUEST_ID_HEADER"):
+                # support old .request_id attr for compatibility
+                headers[current_app.config["DM_REQUEST_ID_HEADER"]] = request.request_id
 
         start_time = monotonic()
         try:
@@ -150,15 +155,6 @@ class BaseAPIClient(object):
         except ValueError as e:
             raise InvalidResponse(response,
                                   message="No JSON object could be decoded")
-
-    def _add_request_id_header(self, headers):
-        if not has_request_context():
-            return headers
-        if 'DM_REQUEST_ID_HEADER' not in current_app.config:
-            return headers
-        header = current_app.config['DM_REQUEST_ID_HEADER']
-        headers[header] = request.request_id
-        return headers
 
     def get_status(self):
         try:
