@@ -2,7 +2,10 @@
 
 Records breaking changes from major version bumps
 
-## 15.0.0
+## (14.5.0 ->) 15.0.0
+
+:rotating_light: **Note:** there was mistaken versioning between `14.5.0` and `15.0.0`, meaning that the changes
+described below for `15.0.0` actually applied from `14.5.0` onwards.
 
 PR: [#123](https://github.com/alphagov/digitalmarketplace-apiclient/pull/123)
 
