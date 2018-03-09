@@ -522,6 +522,18 @@ class TestUserMethods(object):
         assert rmock.called
         assert result == {"users": "result"}
 
+    def test_can_update_user_research_opted_ins(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/users/123",
+            json={},
+            status_code=200)
+        data_client.update_user(123, user_research_opted_in=True, updater="test@example.com")
+        assert rmock.called
+        assert rmock.last_request.json() == {
+            "updated_by": "test@example.com",
+            "users": {"userResearchOptedIn": True}
+        }
+
 
 class TestBuyerDomainMethods(object):
     def test_is_email_address_with_valid_buyer_domain_true(self, data_client, rmock):
