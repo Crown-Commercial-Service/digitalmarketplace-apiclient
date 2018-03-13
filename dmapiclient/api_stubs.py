@@ -113,8 +113,9 @@ def supplier(id=1234, contact_id=4321, other_company_registration_number=0):
 
     if other_company_registration_number:
         data['suppliers']['otherCompanyRegistrationNumber'] = other_company_registration_number
-        data['suppliers']['registrationCountry'] = 'country:NZ'
+        # We allow one or other of these registration numbers, but not both
         del data['suppliers']['companiesHouseNumber']
-        del data['suppliers']['vatNumber']
+        # Companies without a Companies House number aren't necessarily overseas, but they might well be
+        data['suppliers']['registrationCountry'] = 'country:NZ'
 
     return data

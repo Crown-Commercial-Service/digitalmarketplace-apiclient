@@ -313,5 +313,6 @@ def test_supplier():
                 "G-Cloud 5": 105,
             },
             'tradingStatus': 'limited company',
+            'vatNumber': '111222333'
         }
     }
