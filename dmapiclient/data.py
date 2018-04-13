@@ -473,10 +473,17 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def copy_draft_service_from_existing_service(self, service_id, user):
+    def copy_draft_service_from_existing_service(self, service_id, user, data={}):
         return self._put_with_updated_by(
             "/draft-services/copy-from/{}".format(service_id),
-            data={},
+            data=data,
+            user=user,
+        )
+
+    def copy_published_from_framework(self, framework_slug, lot_slug, user, data={}):
+        return self._post_with_updated_by(
+            "/draft-services/{}/{}/copy-published-from-framework".format(framework_slug, lot_slug),
+            data=data,
             user=user,
         )
 
