@@ -1116,13 +1116,33 @@ class TestDraftServiceMethods(object):
         )
 
         result = data_client.copy_draft_service_from_existing_service(
-            2, 'user'
+            2, 'user', {'some': 'data'}
         )
 
         assert result == {"done": "it"}
         assert rmock.called
         assert rmock.request_history[0].json() == {
-            'updated_by': 'user'
+            'updated_by': 'user',
+            'some': 'data',
+        }
+
+    def test_copy_published_from_framework(
+            self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/draft-services/dos-cloud/sausages/copy-published-from-framework",
+            json={"done": "it"},
+            status_code=201,
+        )
+
+        result = data_client.copy_published_from_framework(
+            'dos-cloud', 'sausages', 'user', {'some': 'data'}
+        )
+
+        assert result == {"done": "it"}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'updated_by': 'user',
+            'some': 'data',
         }
 
     def test_copy_draft_service(self, data_client, rmock):
