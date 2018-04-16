@@ -137,6 +137,7 @@ class SearchAPIClient(BaseAPIClient):
         return self._get(paged_search_api_url)
 
     search_services_from_url_iter = make_iter_method('search_services_from_url', 'documents', 'services')
+    search_services_from_url_iter.__name__ = str("search_services_from_url_iter")
 
     def aggregate(self, index, doc_type, q=None, aggregations=[], **filters):
         response = self._get(

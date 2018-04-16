@@ -53,6 +53,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_audit_events_iter = make_iter_method('find_audit_events', 'auditEvents')
+    find_audit_events_iter.__name__ = str("find_audit_events_iter")
 
     def acknowledge_audit_event(self, audit_event_id, user):
         return self._post_with_updated_by(
@@ -107,6 +108,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_suppliers_iter = make_iter_method('find_suppliers', 'suppliers')
+    find_suppliers_iter.__name__ = str("find_suppliers_iter")
 
     def get_supplier(self, supplier_id):
         return self._get(
@@ -288,6 +290,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_framework_suppliers_iter = make_iter_method('find_framework_suppliers', 'supplierFrameworks')
+    find_framework_suppliers_iter.__name__ = str("find_framework_suppliers_iter")
 
     # Users
 
@@ -312,6 +315,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get("/users", params=params)
 
     find_users_iter = make_iter_method('find_users', 'users')
+    find_users_iter.__name__ = str("find_users_iter")
 
     def get_user(self, user_id=None, email_address=None):
         if user_id is not None and email_address is not None:
@@ -460,6 +464,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get('/draft-services', params=params)
 
     find_draft_services_iter = make_iter_method('find_draft_services', 'services')
+    find_draft_services_iter.__name__ = str("find_draft_services_iter")
 
     def get_draft_service(self, draft_id):
         return self._get(
@@ -570,6 +575,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get("/services", params=params)
 
     find_services_iter = make_iter_method('find_services', 'services')
+    find_services_iter.__name__ = str("find_services_iter")
 
     def update_service(self, service_id, service, user, user_role=''):
         return self._post_with_updated_by(
@@ -712,6 +718,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_briefs_iter = make_iter_method('find_briefs', 'briefs')
+    find_briefs_iter.__name__ = str("find_briefs_iter")
 
     def delete_brief(self, brief_id, user):
         return self._delete_with_updated_by(
@@ -770,6 +777,7 @@ class DataAPIClient(BaseAPIClient):
             })
 
     find_brief_responses_iter = make_iter_method('find_brief_responses', 'briefResponses')
+    find_brief_responses_iter.__name__ = str("find_brief_responses_iter")
 
     def add_brief_clarification_question(self, brief_id, question, answer, user):
         return self._post_with_updated_by(
@@ -861,6 +869,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_direct_award_projects_iter = make_iter_method('find_direct_award_projects', 'projects')
+    find_direct_award_projects_iter.__name__ = str("find_direct_award_projects_iter")
 
     def get_direct_award_project(self, project_id):
         return self._get("/direct-award/projects/{}".format(project_id))
@@ -892,6 +901,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_direct_award_project_searches_iter = make_iter_method('find_direct_award_project_searches', 'searches')
+    find_direct_award_project_searches_iter.__name__ = str("find_direct_award_project_searches_iter")
 
     def create_direct_award_project_search(self, user_id, user_email, project_id, search_url):
         return self._post_with_updated_by(
@@ -924,6 +934,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     find_direct_award_project_services_iter = make_iter_method('find_direct_award_project_services', 'services')
+    find_direct_award_project_services_iter.__name__ = str("find_direct_award_project_services_iter")
 
     def lock_direct_award_project(self, user_email, project_id):
         return self._post_with_updated_by(
