@@ -28,6 +28,6 @@ setup(
         'backoff==1.0.7',
         'monotonic==0.3',
         'requests==2.18.4',
-        'six==1.9.0'
+        'six==1.11.0'
     ] + ([] if has_enum else ['enum34==1.1.6'])
 )
