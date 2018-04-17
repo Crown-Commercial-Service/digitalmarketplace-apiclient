@@ -68,10 +68,11 @@ def brief(status="draft",
     return brief
 
 
-def supplier(id=1234, contact_id=4321, other_company_registration_number=0):
+def supplier(id=1234, contact_id=4321, other_company_registration_number=0, company_details_confirmed=True):
     data = {
         "suppliers": {
             "companiesHouseNumber": "12345678",
+            "companyDetailsConfirmed": company_details_confirmed,
             "contactInformation": [
                 {
                     "address1": "123 Fake Road",
