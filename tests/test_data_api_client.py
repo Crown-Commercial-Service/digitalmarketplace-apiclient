@@ -1563,6 +1563,23 @@ class TestFrameworkMethods(object):
         assert result == {'frameworks': {'g-cloud-11': 'yes'}}
         assert rmock.called
 
+    def test_update_framework(self, data_client, rmock):
+        rmock.post(
+            'http://baseurl/frameworks/g-cloud-11',
+            json={'frameworks': {'key': 'value'}},
+            status_code=200)
+
+        result = data_client.update_framework(framework_slug='g-cloud-11', data={'key': 'value'}, user='me@my.mine')
+
+        assert result == {'frameworks': {'key': 'value'}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            "frameworks": {
+                'key': 'value'
+            },
+            "updated_by": "me@my.mine"
+        }
+
 
 class TestBriefMethods(object):
     def test_create_brief(self, data_client, rmock):

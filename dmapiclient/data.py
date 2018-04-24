@@ -606,6 +606,13 @@ class DataAPIClient(BaseAPIClient):
     def get_framework(self, slug):
         return self._get("/frameworks/{}".format(slug))
 
+    def update_framework(self, framework_slug, data, user):
+        return self._post_with_updated_by(
+            "/frameworks/{}".format(framework_slug),
+            data={"frameworks": data},
+            user=user
+        )
+
     def get_interested_suppliers(self, framework_slug):
         return self._get(
             "/frameworks/{}/interest".format(framework_slug)
