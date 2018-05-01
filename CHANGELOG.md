@@ -2,6 +2,28 @@
 
 Records breaking changes from major version bumps
 
+## 16.0.0
+
+PR: [#137](https://github.com/alphagov/digitalmarketplace-apiclient/pull/137)
+
+Moves `api_stubs.py` from this repo (digitalmarketplace-apiclient) to utils (digitalmarketplace-utils). Any repositories using
+the stubs need to now use stubs from dm-utils.
+
+Ensure that you update frontend app requirements files to use dmutils>=36.6.0 and that you update imports. The interface for
+some of the stubs has changed slightly, and more detailed responses are returned for the frameworks stub, so be aware
+of this as you migrate.
+
+Old:
+```python
+import dmapiclient.api_stubs
+```
+
+New:
+```python
+import dmutils.api_stubs
+```
+
+
 ## (14.5.0 ->) 15.0.0
 
 :rotating_light: **Note:** there was mistaken versioning between `14.5.0` and `15.0.0`, meaning that the changes
