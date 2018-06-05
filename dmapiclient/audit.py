@@ -70,6 +70,11 @@ class AuditTypes(Enum):
     lock_project = "lock_project"
     downloaded_project = "downloaded_project"
 
+    # Outcomes
+    create_outcome = "create_outcome"
+    complete_outcome = "complete_outcome"
+    update_outcome = "update_outcome"
+
     # Mailing list actions
     mailing_list_subscription = "mailing_list_subscription"
 
