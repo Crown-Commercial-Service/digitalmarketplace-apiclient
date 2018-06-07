@@ -956,3 +956,38 @@ class DataAPIClient(BaseAPIClient):
             data={},
             user=user_email,
         )
+
+    def create_direct_award_project_outcome_award(self, project_id, awarded_service_id, user_email):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/services/{}/award".format(project_id, awarded_service_id),
+            data={},
+            user=user_email,
+        )
+
+    def create_direct_award_project_outcome_cancelled(self, project_id, user_email):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/cancel".format(project_id),
+            data={},
+            user=user_email,
+        )
+
+    def create_direct_award_project_outcome_none_suitable(self, project_id, user_email):
+        return self._post_with_updated_by(
+            "/direct-award/projects/{}/none-suitable".format(project_id),
+            data={},
+            user=user_email,
+        )
+
+    # Outcomes
+
+    def update_outcome(self, outcome_id, outcome_data, user_email):
+        return self._put_with_updated_by(
+            "/outcomes/{}".format(outcome_id),
+            data={
+                "outcome": outcome_data,
+            },
+            user=user_email,
+        )
+
+    def get_outcome(self, outcome_id):
+        return self._get("/outcomes/{}".format(outcome_id))

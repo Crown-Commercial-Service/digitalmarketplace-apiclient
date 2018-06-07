@@ -2187,6 +2187,86 @@ class TestDirectAwardMethods(object):
             "updated_by": "user@email.com"
         }
 
+    def test_create_direct_award_project_outcome_award(self, data_client, rmock):
+        rmock.post(
+            '/direct-award/projects/31415/services/271C/award',
+            json={"outcome": "ok"},
+            status_code=200,
+        )
+
+        result = data_client.create_direct_award_project_outcome_award(
+            user_email="user@email.com",
+            project_id=31415,
+            awarded_service_id="271C",
+        )
+
+        assert result == {"outcome": "ok"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
+    def test_create_direct_award_project_outcome_none_suitable(self, data_client, rmock):
+        rmock.post(
+            '/direct-award/projects/31415/none-suitable',
+            json={"outcome": "ok"},
+            status_code=200,
+        )
+
+        result = data_client.create_direct_award_project_outcome_none_suitable(
+            user_email="user@email.com",
+            project_id=31415,
+        )
+
+        assert result == {"outcome": "ok"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
+    def test_create_direct_award_project_outcome_cancelled(self, data_client, rmock):
+        rmock.post(
+            '/direct-award/projects/31415/cancel',
+            json={"outcome": "ok"},
+            status_code=200,
+        )
+
+        result = data_client.create_direct_award_project_outcome_cancelled(
+            user_email="user@email.com",
+            project_id=31415,
+        )
+
+        assert result == {"outcome": "ok"}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@email.com"
+        }
+
+
+class TestOutcomeMethods(object):
+    def test_update_outcome(self, data_client, rmock):
+        rmock.put(
+            '/outcomes/314159',
+            json={"outcome": "ok"},
+            status_code=200,
+        )
+
+        data = {
+            "completed": True,
+            "whosAstanding": {
+                "proudPosessor": "damnall",
+            },
+        }
+
+        result = data_client.update_outcome(
+            outcome_id="314159",
+            outcome_data=data.copy(),
+            user_email="user@email.com",
+        )
+
+        assert result == {"outcome": "ok"}
+        assert rmock.last_request.json() == {
+            "outcome": data,
+            "updated_by": "user@email.com"
+        }
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path, iter_kwargs={}):
