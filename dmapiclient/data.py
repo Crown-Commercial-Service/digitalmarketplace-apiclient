@@ -292,6 +292,11 @@ class DataAPIClient(BaseAPIClient):
     find_framework_suppliers_iter = make_iter_method('find_framework_suppliers', 'supplierFrameworks')
     find_framework_suppliers_iter.__name__ = str("find_framework_suppliers_iter")
 
+    def export_suppliers(self, framework_slug):
+        return self._get(
+            "/suppliers/export/{}".format(framework_slug)
+        )
+
     # Users
 
     def create_user(self, user):
