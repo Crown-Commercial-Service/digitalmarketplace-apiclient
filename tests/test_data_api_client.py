@@ -1016,6 +1016,15 @@ class TestSupplierMethods(object):
         assert result == {'supplierFrameworks': [{"agreementReturned": False}, {"agreementReturned": True}]}
         assert rmock.called
 
+    def test_can_export_suppliers(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/suppliers/export/g-cloud-9",
+            json={"suppliers": "result"},
+            status_code=200)
+        result = data_client.export_suppliers('g-cloud-9')
+        assert rmock.called
+        assert result == {"suppliers": "result"}
+
 
 class TestAgreementMethods(object):
     def test_put_signed_agreement_on_hold(self, data_client, rmock):
