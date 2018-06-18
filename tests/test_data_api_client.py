@@ -513,6 +513,16 @@ class TestUserMethods(object):
             "users": {"name": "Star Butterfly"}
         }
 
+    def test_can_remove_user_personal_data(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/users/123/remove-personal-data",
+            json={},
+            status_code=200
+        )
+        data_client.remove_user_personal_data(123, "test@example.com")
+        assert rmock.called
+        assert rmock.last_request.json() == {"updated_by": "test@example.com"}
+
     def test_can_export_users(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users/export/g-cloud-7",
@@ -726,6 +736,16 @@ class TestSupplierMethods(object):
         assert rmock.request_history[0].json() == {
             'contactInformation': {'foo': 'bar'}, 'updated_by': 'supplier'
         }
+
+    def test_remove_contact_information_personal_data(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/123/contact-information/1/remove-personal-data",
+            json={},
+            status_code=200
+        )
+        data_client.remove_contact_information_personal_data(123, 1, "test@example.com")
+        assert rmock.called
+        assert rmock.last_request.json() == {"updated_by": "test@example.com"}
 
     def test_get_framework_interest(self, data_client, rmock):
         rmock.get(

@@ -141,6 +141,13 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def remove_contact_information_personal_data(self, supplier_id, contact_id, user):
+        return self._post_with_updated_by(
+            "/suppliers/{}/contact-information/{}/remove-personal-data".format(supplier_id, contact_id),
+            data={},
+            user=user,
+        )
+
     def get_framework_interest(self, supplier_id):
         return self._get(
             "/suppliers/{}/frameworks/interest".format(supplier_id)
@@ -429,6 +436,9 @@ class DataAPIClient(BaseAPIClient):
         logger.info("Updated user {user_id} fields {params}",
                     extra={"user_id": user_id, "params": params})
         return user
+
+    def remove_user_personal_data(self, user_id, user):
+        return self._post_with_updated_by("/users/{}/remove-personal-data".format(user_id), data={}, user=user)
 
     def export_users(self, framework_slug):
         return self._get(
