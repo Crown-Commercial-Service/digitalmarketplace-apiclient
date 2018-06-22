@@ -313,7 +313,7 @@ class DataAPIClient(BaseAPIClient):
                 "users": user,
             })
 
-    def find_users(self, supplier_id=None, page=None, role=None, personal_data_deleted=None):
+    def find_users(self, supplier_id=None, page=None, role=None, personal_data_removed=None):
         params = {}
         if supplier_id is not None and role is not None:
             raise ValueError(
@@ -324,8 +324,8 @@ class DataAPIClient(BaseAPIClient):
             params['role'] = role
         if page is not None:
             params['page'] = page
-        if personal_data_deleted is not None:
-            params['personal_data_deleted'] = personal_data_deleted
+        if personal_data_removed is not None:
+            params['personal_data_removed'] = personal_data_removed
         return self._get("/users", params=params)
 
     find_users_iter = make_iter_method('find_users', 'users')
