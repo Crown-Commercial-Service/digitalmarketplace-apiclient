@@ -69,6 +69,7 @@ class AuditTypes(Enum):
     create_project_search = "create_project_search"
     lock_project = "lock_project"
     downloaded_project = "downloaded_project"
+    update_project = "update_project"
 
     # Outcomes
     create_outcome = "create_outcome"
