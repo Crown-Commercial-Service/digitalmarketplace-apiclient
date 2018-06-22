@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+from contextlib import contextmanager
+import logging
+
+from flask import request
 import requests
 import pytest
 import mock
+
+from dmtestutils.comparisons import RestrictedAny
 
 from dmapiclient.base import BaseAPIClient
 from dmapiclient import HTTPError, InvalidResponse
@@ -19,6 +25,11 @@ def raw_rmock():
 @pytest.fixture
 def base_client():
     return BaseAPIClient('http://baseurl', 'auth-token', True)
+
+
+@contextmanager
+def _empty_context_manager():
+    yield
 
 
 class TestBaseApiClient(object):
@@ -96,3 +107,164 @@ class TestBaseApiClient(object):
         bad_client = BaseAPIClient(None, 'auth-token', True)
         with pytest.raises(ImproperlyConfigured):
             bad_client._request('GET', '/anything')
+
+    def test_onwards_request_headers_added_if_available(self, base_client, rmock, app):
+        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
+        with app.test_request_context('/'):
+            # add a simple mock callable instead of using a full request implementation
+            request.get_onwards_request_headers = mock.Mock()
+            request.get_onwards_request_headers.return_value = {
+                "Douce": "bronze",
+                "Kennedy": "gold",
+            }
+
+            base_client.get_status()
+
+            assert rmock.last_request.headers["Douce"] == "bronze"
+            assert rmock.last_request.headers["kennedy"] == "gold"
+
+            assert request.get_onwards_request_headers.call_args_list == [
+                # just a single, arg-less call
+                (),
+            ]
+
+    def test_onwards_request_headers_not_available(self, base_client, rmock, app):
+        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
+        with app.test_request_context('/'):
+            # really just asserting no exception arose from performing a call without get_onwards_request_headers being
+            # available
+            base_client.get_status()
+
+    def test_request_id_fallback(self, base_client, rmock, app):
+        # request.request_id is an old interface which we're still supporting here just for compatibility
+        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
+        app.config["DM_REQUEST_ID_HEADER"] = "Bar"
+        with app.test_request_context('/'):
+            request.request_id = "Ormond"
+
+            base_client.get_status()
+
+            assert rmock.last_request.headers["bar"] == "Ormond"
+
+    @pytest.mark.parametrize("dm_span_id_headers_setting", (None, ("X-Brian-Tweedy", "Major-Tweedy",),))
+    @pytest.mark.parametrize("has_request_context", (False, True),)
+    @mock.patch("dmapiclient.base.logger")
+    def test_child_span_id_not_provided(
+        self,
+        logger,
+        dm_span_id_headers_setting,
+        has_request_context,
+        base_client,
+        rmock,
+        app,
+    ):
+        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
+        app.config["DM_SPAN_ID_HEADERS"] = dm_span_id_headers_setting
+        with (app.test_request_context('/') if has_request_context else _empty_context_manager()):
+            if has_request_context:
+                request.get_onwards_request_headers = mock.Mock(return_value={
+                    "impression": "arrested",
+                })
+
+            base_client.get_status()
+
+            assert rmock.called
+            assert logger.log.call_args_list == [
+                mock.call(logging.DEBUG, "API request {method} {url}", extra={
+                    "method": "GET",
+                    "url": "http://baseurl/_status",
+                    # childSpanId NOT provided
+                }),
+                mock.call(logging.INFO, "API {api_method} request on {api_url} finished in {api_time}", extra={
+                    "api_method": "GET",
+                    "api_url": "http://baseurl/_status",
+                    "api_status": 200,
+                    "api_time": mock.ANY,
+                    # childSpanId NOT provided
+                }),
+            ]
+
+    @pytest.mark.parametrize("onwards_request_headers", (
+        {
+            "X-Brian-Tweedy": "Amiens Street",
+        },
+        {
+            "major-TWEEDY": "Amiens Street",
+        },
+        {
+            "Major-Tweedy": "terminus",
+            "x-brian-tweedy": "Amiens Street",
+        },
+        {
+            # note same header name, different capitalizations
+            "X-BRIAN-TWEEDY": "great northern",
+            "x-brian-tweedy": "Amiens Street",
+        },
+    ))
+    @pytest.mark.parametrize("response_status", (200, 500,))
+    @mock.patch("dmapiclient.base.logger")
+    def test_child_span_id_provided(
+        self,
+        mock_logger,
+        onwards_request_headers,
+        response_status,
+        base_client,
+        rmock,
+        app,
+    ):
+        rmock.get("http://baseurl/_status", json={"status": "foobar"}, status_code=response_status)
+        app.config["DM_SPAN_ID_HEADERS"] = ("X-Brian-Tweedy", "major-tweedy",)
+        with app.test_request_context('/'):
+            request.get_onwards_request_headers = mock.Mock(return_value=onwards_request_headers)
+
+            try:
+                base_client.get_status()
+            except HTTPError:
+                # it is tested elsewhere whether this exception is raised in the *right* circumstances or not
+                pass
+
+            assert rmock.called
+
+            # some of our scenarios test multiple header names differing only by capitalization - we care that the same
+            # span id that was chosen for the log message is the same one that was sent in the onwards request header,
+            # so we need two distinct values which are acceptable
+            either_span_id = RestrictedAny(lambda value: value == "Amiens Street" or value == "great northern")
+
+            assert mock_logger.log.call_args_list == [
+                mock.call(logging.DEBUG, "API request {method} {url}", extra={
+                    "method": "GET",
+                    "url": "http://baseurl/_status",
+                    "childSpanId": either_span_id,
+                }),
+                (
+                    mock.call(
+                        logging.INFO,
+                        "API {api_method} request on {api_url} finished in {api_time}", extra={
+                            "api_method": "GET",
+                            "api_url": "http://baseurl/_status",
+                            "api_status": response_status,
+                            "api_time": mock.ANY,
+                            "childSpanId": either_span_id,
+                        }
+                    ) if response_status == 200 else mock.call(
+                        logging.WARNING,
+                        "API {api_method} request on {api_url} failed with {api_status} '{api_error}'", extra={
+                            "api_method": "GET",
+                            "api_url": "http://baseurl/_status",
+                            "api_status": response_status,
+                            "api_time": mock.ANY,
+                            "api_error": mock.ANY,
+                            "childSpanId": either_span_id,
+                        },
+                    )
+                )
+            ]
+            # both logging calls should have had the *same* childSpanId value
+            assert mock_logger.log.call_args_list[0][1]["extra"]["childSpanId"] \
+                == mock_logger.log.call_args_list[1][1]["extra"]["childSpanId"]
+
+            # that value should be the same one that was sent in the onwards request header
+            assert (
+                rmock.last_request.headers.get("x-brian-tweedy")
+                or rmock.last_request.headers.get("major-tweedy")
+            ) == mock_logger.log.call_args_list[0][1]["extra"]["childSpanId"]

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import json, request
+from flask import json
 import pytest
 import mock
 
@@ -14,44 +14,6 @@ def data_client():
 
 
 class TestDataApiClient(object):
-    def test_onwards_request_headers_added_if_available(self, data_client, rmock, app):
-        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
-        with app.test_request_context('/'):
-            # add a simple mock callable instead of using a full request implementation
-            request.get_onwards_request_headers = mock.Mock()
-            request.get_onwards_request_headers.return_value = {
-                "Douce": "bronze",
-                "Kennedy": "gold",
-            }
-
-            data_client.get_status()
-
-            assert rmock.last_request.headers["Douce"] == "bronze"
-            assert rmock.last_request.headers["kennedy"] == "gold"
-
-            assert request.get_onwards_request_headers.call_args_list == [
-                # just a single, arg-less call
-                (),
-            ]
-
-    def test_onwards_request_headers_not_available(self, data_client, rmock, app):
-        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
-        with app.test_request_context('/'):
-            # really just asserting no exception arose from performing a call without get_onwards_request_headers being
-            # available
-            data_client.get_status()
-
-    def test_request_id_fallback(self, data_client, rmock, app):
-        # request.request_id is an old interface which we're still supporting here just for compatibility
-        rmock.get("http://baseurl/_status", json={"status": "ok"}, status_code=200)
-        app.config["DM_REQUEST_ID_HEADER"] = "Bar"
-        with app.test_request_context('/'):
-            request.request_id = "Ormond"
-
-            data_client.get_status()
-
-            assert rmock.last_request.headers["bar"] == "Ormond"
-
     def test_init_app_sets_attributes(self, data_client):
         app = mock.Mock()
         app.config = {
