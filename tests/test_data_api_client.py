@@ -220,7 +220,7 @@ class TestUserMethods(object):
             'created_at': "2015-05-05T05:05:05",
             'updated_at': "2015-05-05T05:05:05",
             'password_changed_at': "2015-05-05T05:05:05",
-            'personal_data_deleted': False,
+            'personal_data_removed': False,
             'supplier': {
                 'supplier_id': 1234,
                 'name': 'name'
@@ -259,25 +259,25 @@ class TestUserMethods(object):
 
         assert user == self.user()
 
-    def test_find_users_by_personal_data_deleted_false(self, data_client, rmock):
+    def test_find_users_by_personal_data_removed_false(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/users?personal_data_deleted=false",
+            "http://baseurl/users?personal_data_removed=false",
             json=self.user(),
             status_code=200)
-        user = data_client.find_users(personal_data_deleted=False)
+        user = data_client.find_users(personal_data_removed=False)
 
         assert user == self.user()
 
-    def test_find_users_by_personal_data_deleted_true(self, data_client, rmock):
+    def test_find_users_by_personal_data_removed_true(self, data_client, rmock):
         user = self.user()
-        user['users'].update({'personal_data_deleted': True})
+        user['users'].update({'personal_data_removed': True})
         expected_data = user.copy()
 
         rmock.get(
-            "http://baseurl/users?personal_data_deleted=true",
+            "http://baseurl/users?personal_data_removed=true",
             json=user,
             status_code=200)
-        user = data_client.find_users(personal_data_deleted=True)
+        user = data_client.find_users(personal_data_removed=True)
 
         assert user == expected_data
 
