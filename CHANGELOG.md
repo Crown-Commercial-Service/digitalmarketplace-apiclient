@@ -2,6 +2,12 @@
 
 Records breaking changes from major version bumps
 
+## 17.0.0
+
+PR: [#143](https://github.com/alphagov/digitalmarketplace-apiclient/pull/143)
+
+No longer python2 compatible.
+
 ## 16.0.0
 
 PR: [#137](https://github.com/alphagov/digitalmarketplace-apiclient/pull/137)
