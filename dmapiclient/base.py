@@ -102,12 +102,6 @@ class BaseAPIClient(object):
             return None
 
         url = self._build_url(url, params)
-
-        logger.debug("API request {method} {url}",
-                     extra={
-                         'method': method,
-                         'url': url
-                     })
         headers = {
             "Content-type": "application/json",
             "Authorization": "Bearer {}".format(self.auth_token),
@@ -120,11 +114,41 @@ class BaseAPIClient(object):
                 # support old .request_id attr for compatibility
                 headers[current_app.config["DM_REQUEST_ID_HEADER"]] = request.request_id
 
+        # not using CaseInsensitiveDict as our header dict initially as technically .update()'s behaviour is undefined
+        # for it, but past a certain point we want to be able to know we've resolved what our final header value is
+        # going to be for any certain header name
+        ci_headers = requests.structures.CaseInsensitiveDict(headers)
+        # just in case anyone misses the point and thinks adding anything more to `headers` will do anything beyond here
+        del headers
+
+        # determine our final outgoing span id - find the first of DM_SPAN_ID_HEADERS which is set to something truthy
+        child_span_id = next(
+            (
+                ci_headers[header_name] for header_name in (current_app.config.get("DM_SPAN_ID_HEADERS") or ())
+                if ci_headers.get(header_name)
+            ),
+            None,
+        ) if has_request_context() else None
+
+        common_log_extra = {
+            **({"childSpanId": child_span_id} if child_span_id is not None else {}),
+        }
+
+        logger.log(
+            logging.DEBUG,
+            "API request {method} {url}",
+            extra={
+                **common_log_extra,
+                'method': method,
+                'url': url,
+            },
+        )
+
         start_time = monotonic()
         try:
             response = requests.request(
                 method, url,
-                headers=headers, json=data)
+                headers=ci_headers, json=data)
             response.raise_for_status()
         except requests.RequestException as e:
             api_error = HTTPError.create(e)
@@ -133,23 +157,28 @@ class BaseAPIClient(object):
                 logging.INFO if api_error.status_code == 404 else logging.WARNING,
                 "API {api_method} request on {api_url} failed with {api_status} '{api_error}'",
                 extra={
+                    **common_log_extra,
                     'api_method': method,
                     'api_url': url,
                     'api_status': api_error.status_code,
                     'api_error': api_error.message,
-                    'api_time': elapsed_time
-                })
+                    'api_time': elapsed_time,
+                },
+            )
             raise api_error
         else:
             elapsed_time = monotonic() - start_time
-            logger.info(
+            logger.log(
+                logging.INFO,
                 "API {api_method} request on {api_url} finished in {api_time}",
                 extra={
+                    **common_log_extra,
                     'api_method': method,
                     'api_url': url,
                     'api_status': response.status_code,
-                    'api_time': elapsed_time
-                })
+                    'api_time': elapsed_time,
+                },
+            )
         try:
             return response.json()
         except ValueError as e:
