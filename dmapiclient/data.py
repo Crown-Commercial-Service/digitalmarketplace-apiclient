@@ -141,6 +141,13 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def remove_contact_information_personal_data(self, supplier_id, contact_id, user):
+        return self._post_with_updated_by(
+            "/suppliers/{}/contact-information/{}/remove-personal-data".format(supplier_id, contact_id),
+            data={},
+            user=user,
+        )
+
     def get_framework_interest(self, supplier_id):
         return self._get(
             "/suppliers/{}/frameworks/interest".format(supplier_id)
@@ -306,7 +313,7 @@ class DataAPIClient(BaseAPIClient):
                 "users": user,
             })
 
-    def find_users(self, supplier_id=None, page=None, role=None):
+    def find_users(self, supplier_id=None, page=None, role=None, personal_data_deleted=None):
         params = {}
         if supplier_id is not None and role is not None:
             raise ValueError(
@@ -317,6 +324,8 @@ class DataAPIClient(BaseAPIClient):
             params['role'] = role
         if page is not None:
             params['page'] = page
+        if personal_data_deleted is not None:
+            params['personal_data_deleted'] = personal_data_deleted
         return self._get("/users", params=params)
 
     find_users_iter = make_iter_method('find_users', 'users')
@@ -429,6 +438,9 @@ class DataAPIClient(BaseAPIClient):
         logger.info("Updated user {user_id} fields {params}",
                     extra={"user_id": user_id, "params": params})
         return user
+
+    def remove_user_personal_data(self, user_id, user):
+        return self._post_with_updated_by("/users/{}/remove-personal-data".format(user_id), data={}, user=user)
 
     def export_users(self, framework_slug):
         return self._get(

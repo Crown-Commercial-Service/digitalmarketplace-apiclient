@@ -220,10 +220,11 @@ class TestUserMethods(object):
             'created_at': "2015-05-05T05:05:05",
             'updated_at': "2015-05-05T05:05:05",
             'password_changed_at': "2015-05-05T05:05:05",
+            'personal_data_deleted': False,
             'supplier': {
                 'supplier_id': 1234,
                 'name': 'name'
-            }
+            },
         }}
 
     def test_find_users_by_supplier_id(self, data_client, rmock):
@@ -257,6 +258,28 @@ class TestUserMethods(object):
         user = data_client.find_users(page=12)
 
         assert user == self.user()
+
+    def test_find_users_by_personal_data_deleted_false(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/users?personal_data_deleted=false",
+            json=self.user(),
+            status_code=200)
+        user = data_client.find_users(personal_data_deleted=False)
+
+        assert user == self.user()
+
+    def test_find_users_by_personal_data_deleted_true(self, data_client, rmock):
+        user = self.user()
+        user['users'].update({'personal_data_deleted': True})
+        expected_data = user.copy()
+
+        rmock.get(
+            "http://baseurl/users?personal_data_deleted=true",
+            json=user,
+            status_code=200)
+        user = data_client.find_users(personal_data_deleted=True)
+
+        assert user == expected_data
 
     def test_get_user_by_id(self, data_client, rmock):
         rmock.get(
@@ -513,6 +536,16 @@ class TestUserMethods(object):
             "users": {"name": "Star Butterfly"}
         }
 
+    def test_can_remove_user_personal_data(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/users/123/remove-personal-data",
+            json={},
+            status_code=200
+        )
+        data_client.remove_user_personal_data(123, "test@example.com")
+        assert rmock.called
+        assert rmock.last_request.json() == {"updated_by": "test@example.com"}
+
     def test_can_export_users(self, data_client, rmock):
         rmock.get(
             "http://baseurl/users/export/g-cloud-7",
@@ -726,6 +759,16 @@ class TestSupplierMethods(object):
         assert rmock.request_history[0].json() == {
             'contactInformation': {'foo': 'bar'}, 'updated_by': 'supplier'
         }
+
+    def test_remove_contact_information_personal_data(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/123/contact-information/1/remove-personal-data",
+            json={},
+            status_code=200
+        )
+        data_client.remove_contact_information_personal_data(123, 1, "test@example.com")
+        assert rmock.called
+        assert rmock.last_request.json() == {"updated_by": "test@example.com"}
 
     def test_get_framework_interest(self, data_client, rmock):
         rmock.get(
