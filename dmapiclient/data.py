@@ -876,14 +876,23 @@ class DataAPIClient(BaseAPIClient):
 
     # Direct Award Projects
 
-    def find_direct_award_projects(self, user_id=None, page=None, latest_first=None, with_users=False):
+    def find_direct_award_projects(
+        self,
+        user_id=None,
+        having_outcome=None,
+        page=None,
+        latest_first=None,
+        with_users=False,
+    ):
         params = {
             "user-id": user_id,
-            "page": page
+            "page": page,
         }
 
         if latest_first is not None:
             params['latest-first'] = latest_first
+        if having_outcome is not None:
+            params['having-outcome'] = having_outcome
         if with_users:
             params['include'] = "users"
 
