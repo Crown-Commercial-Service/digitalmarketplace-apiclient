@@ -217,6 +217,22 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def set_supplier_framework_application_company_details_confirmed(
+        self,
+        supplier_id,
+        framework_slug,
+        application_company_details_confirmed,
+        user,
+    ):
+        return self._post_with_updated_by(
+            "/suppliers/{}/frameworks/{}".format(
+                supplier_id, framework_slug),
+            data={
+                "frameworkInterest": {"applicationCompanyDetailsConfirmed": application_company_details_confirmed},
+            },
+            user=user,
+        )
+
     def register_framework_agreement_returned(self, supplier_id, framework_slug, user, uploader_user_id=None):
         framework_interest_dict = {
             "agreementReturned": True,
