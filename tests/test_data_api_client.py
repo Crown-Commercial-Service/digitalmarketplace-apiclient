@@ -846,6 +846,21 @@ class TestSupplierMethods(object):
             "updated_by": 'user'
         }
 
+    def test_set_supplier_framework_application_company_details_confirmed(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/8765/frameworks/g-cloud-10",
+            json={"frameworkInterest": {"applicationCompanyDetailsConfirmed": True}},
+            status_code=200)
+
+        result = data_client.set_supplier_framework_application_company_details_confirmed(8765, 'g-cloud-10', True,
+                                                                                          'user')
+        assert result == {"frameworkInterest": {"applicationCompanyDetailsConfirmed": True}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            "frameworkInterest": {"applicationCompanyDetailsConfirmed": True},
+            "updated_by": 'user'
+        }
+
     def test_register_framework_agreement_returned_with_uploader_user_id(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/123/frameworks/g-cloud-8",
