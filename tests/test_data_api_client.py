@@ -2285,6 +2285,26 @@ class TestDirectAwardMethods(object):
             "updated_by": "user@email.com"
         }
 
+    def test_mark_direct_award_project_as_still_assessing(self, data_client, rmock):
+        rmock.patch(
+            '/direct-award/projects/31415',
+            json={'project': 'ok'},
+            status_code=200,
+        )
+
+        result = data_client.mark_direct_award_project_as_still_assessing(
+            user_email="user@email.com",
+            project_id=31415,
+        )
+
+        assert result == {"project": "ok"}
+        assert rmock.last_request.json() == {
+            "project": {
+                "stillAssessing": True,
+            },
+            "updated_by": "user@email.com"
+        }
+
 
 class TestOutcomeMethods(object):
     def test_update_outcome(self, data_client, rmock):
