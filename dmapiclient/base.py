@@ -55,6 +55,13 @@ class BaseAPIClient(object):
         self.auth_token = auth_token
         self.enabled = enabled
 
+    def _patch(self, url, data):
+        return self._request("PATCH", url, data=data)
+
+    def _patch_with_updated_by(self, url, data, user):
+        data = dict(data, updated_by=user)
+        return self._patch(url, data)
+
     def _put(self, url, data):
         return self._request("PUT", url, data=data)
 
