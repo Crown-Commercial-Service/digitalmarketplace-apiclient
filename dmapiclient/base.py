@@ -168,7 +168,7 @@ class BaseAPIClient(object):
                     'api_method': method,
                     'api_url': url,
                     'api_status': api_error.status_code,
-                    'api_error': api_error.message,
+                    'api_error': '{} raised {}'.format(api_error.message, str(e)),
                     'api_time': elapsed_time,
                 },
             )

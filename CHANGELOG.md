@@ -2,6 +2,14 @@
 
 Records breaking changes from major version bumps
 
+## 18.0.0
+
+PR: [#151](https://github.com/alphagov/digitalmarketplace-apiclient/pull/151)
+
+The default request error message for unrecognised/unhandled errors has changed from 'Request failed' to 'Unknown request failure in dmapiclient'. 'Request failed' should be seen only in exceptional circumstances - most exceptions raised from failed requests should now hold the str() and repr() calls of the request error as their message.
+
+Any code that relies on the specific format of the request errors raised by the apiclient will need to be updated.
+
 ## 17.0.0
 
 PR: [#143](https://github.com/alphagov/digitalmarketplace-apiclient/pull/143)
