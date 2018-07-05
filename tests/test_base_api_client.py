@@ -4,6 +4,7 @@ import logging
 
 from flask import request
 import requests
+import requests_mock
 import pytest
 import mock
 
@@ -12,7 +13,6 @@ from dmtestutils.comparisons import RestrictedAny
 from dmapiclient.base import BaseAPIClient
 from dmapiclient import HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
-from dmapiclient.errors import REQUEST_ERROR_MESSAGE
 from dmapiclient.exceptions import ImproperlyConfigured
 
 
@@ -40,7 +40,7 @@ class TestBaseApiClient(object):
         with pytest.raises(HTTPError) as e:
             base_client._request("GET", '/')
 
-        assert e.value.message == REQUEST_ERROR_MESSAGE
+        assert e.value.message == 'None\nConnectionError(None,)'
         assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
 
     def test_http_error_raises_api_error(self, base_client, rmock):
@@ -53,7 +53,8 @@ class TestBaseApiClient(object):
         with pytest.raises(HTTPError) as e:
             base_client._request("GET", '/')
 
-        assert e.value.message == REQUEST_ERROR_MESSAGE
+        assert e.value.message == "500 Server Error: None for url: http://baseurl/\n" \
+                                  "HTTPError('500 Server Error: None for url: http://baseurl/',)"
         assert e.value.status_code == 500
 
     def test_non_2xx_response_raises_api_error(self, base_client, rmock):
@@ -68,6 +69,16 @@ class TestBaseApiClient(object):
 
         assert e.value.message == "Not found"
         assert e.value.status_code == 404
+
+    def test_base_error_is_logged(self, base_client):
+        with requests_mock.Mocker() as m:
+            m.register_uri('GET', '/', exc=requests.RequestException())
+
+            with pytest.raises(HTTPError) as e:
+                base_client._request("GET", "/")
+
+            assert e.value.message == "\nRequestException()"
+            assert e.value.status_code == 503
 
     def test_invalid_json_raises_api_error(self, base_client, rmock):
         rmock.request(

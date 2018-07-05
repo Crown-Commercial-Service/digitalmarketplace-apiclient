@@ -1,5 +1,5 @@
 REQUEST_ERROR_STATUS_CODE = 503
-REQUEST_ERROR_MESSAGE = "Request failed"
+REQUEST_ERROR_MESSAGE = "Unknown request failure in dmapiclient"
 
 
 class APIError(Exception):
@@ -28,9 +28,12 @@ class APIError(Exception):
 class HTTPError(APIError):
     @staticmethod
     def create(e):
-        error = HTTPError(e.response)
+        fallback_message = '{}\n{}'.format(str(e), repr(e))
+
+        error = HTTPError(e.response, fallback_message)
         if error.status_code in [502, 503, 504]:
-            error = HTTPTemporaryError(e.response)
+            error = HTTPTemporaryError(e.response, fallback_message)
+
         return error
 
 
