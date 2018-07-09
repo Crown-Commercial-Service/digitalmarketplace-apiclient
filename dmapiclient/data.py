@@ -1030,6 +1030,13 @@ class DataAPIClient(BaseAPIClient):
             user=user_email,
         )
 
+    def update_direct_award_project(self, project_id, project_data, user_email):
+        return self._patch_with_updated_by(
+            f"/direct-award/projects/{project_id}",
+            data={"project": project_data},
+            user=user_email,
+        )
+
     # Outcomes
 
     def update_outcome(self, outcome_id, outcome_data, user_email):
