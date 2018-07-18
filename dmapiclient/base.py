@@ -7,6 +7,8 @@ except ImportError:
     import urllib.parse as urlparse
 
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from flask import has_request_context, request, current_app
 
 import backoff
@@ -50,6 +52,11 @@ def make_iter_method(method_name, *model_names):
 
 
 class BaseAPIClient(object):
+    RETRIES = 3
+    RETRIES_BACKOFF_FACTOR = 0.3
+    #  Respose status codes to retry on.
+    RETRIES_FORCE_STATUS_CODES = (500, 502, 503, 504)
+
     def __init__(self, base_url=None, auth_token=None, enabled=True):
         self.base_url = base_url
         self.auth_token = auth_token
@@ -104,6 +111,22 @@ class BaseAPIClient(object):
 
         return r.url
 
+    def _requests_retry_session(self):
+        session = requests.Session()
+        retry = Retry(
+            total=self.RETRIES,
+            read=self.RETRIES,
+            connect=self.RETRIES,
+            status=self.RETRIES,
+            backoff_factor=self.RETRIES_BACKOFF_FACTOR,
+            status_forcelist=self.RETRIES_FORCE_STATUS_CODES,
+            raise_on_status=False,
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        return session
+
     def _request(self, method, url, data=None, params=None):
         if not self.enabled:
             return None
@@ -153,7 +176,7 @@ class BaseAPIClient(object):
 
         start_time = monotonic()
         try:
-            response = requests.request(
+            response = self._requests_retry_session().request(
                 method, url,
                 headers=ci_headers, json=data)
             response.raise_for_status()

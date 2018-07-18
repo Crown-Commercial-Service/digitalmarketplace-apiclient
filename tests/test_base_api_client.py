@@ -15,6 +15,8 @@ from dmapiclient import HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmapiclient.exceptions import ImproperlyConfigured
 
+from urllib3.exceptions import NewConnectionError, ProtocolError
+
 
 @pytest.yield_fixture
 def raw_rmock():
@@ -33,29 +35,70 @@ def _empty_context_manager():
 
 
 class TestBaseApiClient(object):
-    def test_connection_error_raises_api_error(self, base_client, raw_rmock):
-        raw_rmock.side_effect = requests.exceptions.ConnectionError(
-            None
-        )
-        with pytest.raises(HTTPError) as e:
-            base_client._request("GET", '/')
+    @pytest.mark.parametrize(('retry_count'), range(1, 4))
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
+    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    def test_client_retries_on_connection_error_and_raises_api_error(self, _make_request, base_client, retry_count):
+        _make_request.side_effect = NewConnectionError(mock.Mock(), 'Im a message')
 
-        assert e.value.message == 'None\nConnectionError(None,)'
+        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+            with pytest.raises(HTTPError) as e:
+                base_client._request("GET", '/')
+
+        requests = _make_request.call_args_list
+
+        assert len(requests) == retry_count + 1
+        assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
+
+        assert 'ConnectionError' in e.value.message
         assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
 
-    def test_http_error_raises_api_error(self, base_client, rmock):
-        rmock.request(
-            "GET",
-            "http://baseurl/",
-            text="Internal Error",
-            status_code=500)
+    @pytest.mark.parametrize(('retry_count'), range(1, 4))
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
+    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    def test_client_retries_on_read_error_and_raises_api_error(self, _make_request, base_client, retry_count):
+        _make_request.side_effect = ProtocolError(mock.Mock(), 'Im a message')
 
-        with pytest.raises(HTTPError) as e:
-            base_client._request("GET", '/')
+        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+            with pytest.raises(HTTPError) as e:
+                base_client._request("GET", '/')
 
-        assert e.value.message == "500 Server Error: None for url: http://baseurl/\n" \
-                                  "HTTPError('500 Server Error: None for url: http://baseurl/',)"
-        assert e.value.status_code == 500
+        requests = _make_request.call_args_list
+
+        assert len(requests) == retry_count + 1
+        assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
+
+        assert 'ProtocolError' in e.value.message
+        assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
+
+    @pytest.mark.parametrize(('retry_count'), range(1, 4))
+    @pytest.mark.parametrize(('status'), BaseAPIClient.RETRIES_FORCE_STATUS_CODES)
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool.ResponseCls.from_httplib')
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
+    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    def test_client_retries_on_http_error_and_raises_api_error(
+        self, _make_request, from_httplib, base_client, status, retry_count
+    ):
+        response_mock = mock.Mock(
+            status=status, headers={}, spec=['get_redirect_location', 'getheader', 'read', 'reason']
+        )
+        response_mock.get_redirect_location.return_value = None
+        response_mock.getheader.return_value = None
+        response_mock.read.return_value = None
+        response_mock.reason = f'Mocked {status} response'
+        from_httplib.return_value = response_mock
+
+        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+            with pytest.raises(HTTPError) as e:
+                base_client._request("GET", '/')
+
+        requests = _make_request.call_args_list
+
+        assert len(requests) == retry_count + 1
+        assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
+
+        assert f'{status} Server Error: {response_mock.reason} for url: http://baseurl/\n' in e.value.message
+        assert e.value.status_code == status
 
     def test_non_2xx_response_raises_api_error(self, base_client, rmock):
         rmock.request(
