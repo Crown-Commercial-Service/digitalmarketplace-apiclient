@@ -11,11 +11,10 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from flask import has_request_context, request, current_app
 
-import backoff
 from monotonic import monotonic
 
 from . import __version__
-from .errors import APIError, HTTPError, HTTPTemporaryError, InvalidResponse
+from .errors import APIError, HTTPError, InvalidResponse
 from .exceptions import ImproperlyConfigured
 
 
@@ -28,11 +27,8 @@ def make_iter_method(method_name, *model_names):
     :param method_name: The name of the find method to decorate
     :param model_names: The names of the possible models as they appear in the JSON response. The first found is used.
     """
-    backoff_decorator = backoff.on_exception(backoff.expo, HTTPTemporaryError, max_tries=5)
-
     def iter_method(self, *args, **kwargs):
-        method = getattr(self, method_name)
-        result = backoff_decorator(method)(*args, **kwargs)
+        result = getattr(self, method_name)(*args, **kwargs)
         # Filter the list of model names for those that are a key in the response, then take the first.
         # Useful for backwards compatability if response keys might change
         model_name = next(model_name for model_name in model_names if model_name in result)
@@ -44,7 +40,7 @@ def make_iter_method(method_name, *model_names):
             if 'next' not in result.get('links', {}):
                 return
 
-            result = backoff_decorator(self._get)(result['links']['next'])
+            result = self._get(result['links']['next'])
             for model in result[model_name]:
                 yield model
 
@@ -52,7 +48,7 @@ def make_iter_method(method_name, *model_names):
 
 
 class BaseAPIClient(object):
-    RETRIES = 3
+    RETRIES = 5
     RETRIES_BACKOFF_FACTOR = 0.3
     #  Respose status codes to retry on.
     RETRIES_FORCE_STATUS_CODES = (500, 502, 503, 504)

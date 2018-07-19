@@ -2,6 +2,20 @@
 
 Records breaking changes from major version bumps
 
+## 19.0.0
+
+PR: [#152](https://github.com/alphagov/digitalmarketplace-apiclient/pull/152)
+
+We're now using urllib3's Retry util to retry failed requests made by the base api client. This has allowed us to
+remove backoff from `make_iter_method` and so also remove the package from the api client's dependencies. It also means
+that we no longer need `HTTPTemporaryError` so it's been removed.
+
+Anything that uses the api client and has it's own backoff setup (such as some of our scripts)
+will need to adjust (or remove) their config to prevent potentially making far too many retry requests.
+
+Anything that uses `HTTPTemporaryError` will need to remove it. The only place I've found it is in a few one off scripts
+in the scripts repo for backoff setup.
+
 ## 18.0.0
 
 PR: [#151](https://github.com/alphagov/digitalmarketplace-apiclient/pull/151)
