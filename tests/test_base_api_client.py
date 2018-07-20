@@ -35,6 +35,17 @@ def _empty_context_manager():
 
 
 class TestBaseApiClient(object):
+    def _from_httplib_response_mock(self, status, response_data=None):
+        response_mock = mock.Mock(
+            status=status, headers={}, spec=['get_redirect_location', 'getheader', 'read', 'reason']
+        )
+        response_mock.get_redirect_location.return_value = None
+        response_mock.getheader.return_value = None
+        response_mock.read.side_effect = [response_data, None, None]
+        response_mock.reason = f'Mocked {status} response'
+
+        return response_mock
+
     @pytest.mark.parametrize(('retry_count'), range(1, 4))
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
     @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
@@ -79,13 +90,7 @@ class TestBaseApiClient(object):
     def test_client_retries_on_http_error_and_raises_api_error(
         self, _make_request, from_httplib, base_client, status, retry_count
     ):
-        response_mock = mock.Mock(
-            status=status, headers={}, spec=['get_redirect_location', 'getheader', 'read', 'reason']
-        )
-        response_mock.get_redirect_location.return_value = None
-        response_mock.getheader.return_value = None
-        response_mock.read.return_value = None
-        response_mock.reason = f'Mocked {status} response'
+        response_mock = self._from_httplib_response_mock(status)
         from_httplib.return_value = response_mock
 
         with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
@@ -99,6 +104,29 @@ class TestBaseApiClient(object):
 
         assert f'{status} Server Error: {response_mock.reason} for url: http://baseurl/\n' in e.value.message
         assert e.value.status_code == status
+
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool.ResponseCls.from_httplib')
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
+    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    def test_client_retries_and_returns_data_if_successful(self, _make_request, from_httplib, base_client):
+        #  The third response here would normally be a httplib response object. It's only use is to be passed in to
+        #  `from_httplib`, which we're mocking the return of below. `from_httplib` converts a httplib response into a
+        #  urllib3 response. The mock object we're returning is a mock for that urllib3 response.
+        _make_request.side_effect = [
+            ProtocolError(mock.Mock(), '1st error'),
+            ProtocolError(mock.Mock(), '2nd error'),
+            ProtocolError(mock.Mock(), '3nd error'),
+            'httplib_response - success!',
+        ]
+
+        from_httplib.return_value = self._from_httplib_response_mock(200, response_data=b'{"Success?": "Yes!"}')
+
+        response = base_client._request("GET", '/')
+        requests = _make_request.call_args_list
+
+        assert len(requests) == 4
+        assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
+        assert response == {'Success?': 'Yes!'}
 
     def test_non_2xx_response_raises_api_error(self, base_client, rmock):
         rmock.request(
