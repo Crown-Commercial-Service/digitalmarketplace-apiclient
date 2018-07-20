@@ -30,19 +30,7 @@ class HTTPError(APIError):
     def create(e):
         fallback_message = '{}\n{}'.format(str(e), repr(e))
 
-        error = HTTPError(e.response, fallback_message)
-        if error.status_code in [502, 503, 504]:
-            error = HTTPTemporaryError(e.response, fallback_message)
-
-        return error
-
-
-class HTTPTemporaryError(HTTPError):
-    """Specific instance of HTTPError for temporary 502, 503 and 504 errors
-
-    Used for detecting whether failed requests should be retried.
-    """
-    pass
+        return HTTPError(e.response, fallback_message)
 
 
 class InvalidResponse(APIError):

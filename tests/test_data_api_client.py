@@ -2501,22 +2501,6 @@ class TestDataAPIClientIterMethods(object):
 
         assert len(results) == 2
 
-    @pytest.mark.parametrize("status_code", [
-        502, 503, 504
-    ])
-    @mock.patch('time.sleep')
-    def test_find_services_backoff_on_502_503_504(self, sleep, data_client, rmock, status_code):
-        rmock.get(
-            'http://baseurl/services',
-            [{'json': {}, 'status_code': status_code},
-             {'json': {'links': {}, 'services': [{'id': 1}]}, 'status_code': 200}])
-
-        result = data_client.find_services_iter()
-        results = list(result)
-
-        assert sleep.called
-        assert len(results) == 1
-
     def test_find_direct_award_projects_iter(self, data_client, rmock):
         self._test_find_iter(
             data_client, rmock,
