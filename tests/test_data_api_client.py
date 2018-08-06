@@ -2546,3 +2546,21 @@ class TestDataAPIClientIterMethods(object):
             url_path='direct-award/projects/1/services',
             iter_kwargs={'project_id': 1}
         )
+
+    def test_export_users_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='export_users_iter',
+            model_name='users',
+            url_path='users/export/g-cloud-9',
+            iter_kwargs={'framework_slug': 'g-cloud-9'}
+        )
+
+    def test_export_suppliers_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='export_suppliers_iter',
+            model_name='suppliers',
+            url_path='suppliers/export/g-cloud-9',
+            iter_kwargs={'framework_slug': 'g-cloud-9'}
+        )

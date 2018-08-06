@@ -320,6 +320,9 @@ class DataAPIClient(BaseAPIClient):
             "/suppliers/export/{}".format(framework_slug)
         )
 
+    export_suppliers_iter = make_iter_method('export_suppliers', 'suppliers')
+    export_suppliers_iter.__name__ = str("export_suppliers_iter")
+
     # Users
 
     def create_user(self, user):
@@ -462,6 +465,9 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/users/export/{}".format(framework_slug)
         )
+
+    export_users_iter = make_iter_method('export_users', 'users')
+    export_users_iter.__name__ = str("export_users_iter")
 
     def is_email_address_with_valid_buyer_domain(self, email_address):
         return self._get(
