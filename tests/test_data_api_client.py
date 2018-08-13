@@ -1363,11 +1363,22 @@ class TestAuditEventMethods(object):
         assert result == {"audit-event": "result"}
         assert rmock.called
 
+    def test_find_audit_events_with_data_supplier_id(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/audit-events?data-supplier-id=123456",
+            json={"audit-event": "result"},
+            status_code=200)
+
+        result = data_client.find_audit_events(data_supplier_id=123456)
+
+        assert result == {"audit-event": "result"}
+        assert rmock.called
+
     def test_find_audit_events_with_all_params(self, data_client, rmock):
         url = (
             "http://baseurl/audit-events?object-type=foo&object-id=34&acknowledged=all&latest_first=True"
             "&audit-date=2010-01-01&page=12&audit-type=contact_update&per_page=23&earliest_for_each_object=True"
-            "&user=ruby.cohen@example.com"
+            "&user=ruby.cohen@example.com&data-supplier-id=123456"
         )
         rmock.get(
             url,
@@ -1376,16 +1387,17 @@ class TestAuditEventMethods(object):
         )
 
         result = data_client.find_audit_events(
-            audit_type=AuditTypes.contact_update,
+            acknowledged='all',
             audit_date='2010-01-01',
+            audit_type=AuditTypes.contact_update,
+            data_supplier_id=123456,
+            earliest_for_each_object=True,
+            latest_first=True,
             page=12,
             per_page=23,
-            acknowledged='all',
-            object_type='foo',
             object_id=34,
-            user="ruby.cohen@example.com",
-            latest_first=True,
-            earliest_for_each_object=True)
+            object_type='foo',
+            user="ruby.cohen@example.com")
 
         assert result == {"audit-event": "result"}
         assert rmock.called
