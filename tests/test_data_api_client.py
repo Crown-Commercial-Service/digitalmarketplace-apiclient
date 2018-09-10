@@ -1621,6 +1621,24 @@ class TestFrameworkMethods(object):
             "updated_by": "me@my.mine"
         }
 
+    def test_transition_dos_framework(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/frameworks/transition-dos/dos-22",
+            json={"returned": "framework"},
+            status_code=200
+        )
+
+        result = data_client.transition_dos_framework(
+            framework_slug="dos-22", expiring_framework_slug="dos-21", user="Clem Fandango"
+        )
+
+        assert result == {"returned": "framework"}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            "expiringFramework": "dos-21",
+            "updated_by": "Clem Fandango",
+        }
+
 
 class TestBriefMethods(object):
     def test_create_brief(self, data_client, rmock):
