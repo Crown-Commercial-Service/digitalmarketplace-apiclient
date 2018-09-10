@@ -654,6 +654,13 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
+    def transition_dos_framework(self, framework_slug, expiring_framework_slug, user):
+        return self._post_with_updated_by(
+            "/frameworks/transition-dos/{}".format(framework_slug),
+            data={"expiringFramework": expiring_framework_slug},
+            user=user,
+        )
+
     def get_interested_suppliers(self, framework_slug):
         return self._get(
             "/frameworks/{}/interest".format(framework_slug)
