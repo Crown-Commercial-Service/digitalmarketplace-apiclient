@@ -24,7 +24,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Flask==0.10.1',
+        'Flask<1.1,>=1.0.2',
         'monotonic==0.3',
         'requests==2.18.4',
         'six==1.11.0'
