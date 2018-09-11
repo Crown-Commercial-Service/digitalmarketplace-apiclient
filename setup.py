@@ -27,6 +27,6 @@ setup(
         'Flask<1.1,>=1.0.2',
         'monotonic==0.3',
         'requests==2.18.4',
-        'six==1.11.0'
+        'six<2,>=1.11.0'
     ] + ([] if has_enum else ['enum34==1.1.6'])
 )
