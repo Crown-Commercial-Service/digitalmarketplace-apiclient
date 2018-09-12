@@ -24,9 +24,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Flask==0.10.1',
-        'monotonic==0.3',
-        'requests==2.18.4',
-        'six==1.11.0'
-    ] + ([] if has_enum else ['enum34==1.1.6'])
+        'monotonic>=0.3',
+        'requests<3,>=2.18.4',
+        'six<2,>=1.11.0'
+    ] + ([] if has_enum else ['enum34<2,>=1.1.6'])
 )
