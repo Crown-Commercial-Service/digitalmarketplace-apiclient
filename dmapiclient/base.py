@@ -53,7 +53,7 @@ class BaseAPIClient(object):
     #  Respose status codes to retry on.
     RETRIES_FORCE_STATUS_CODES = (500, 502, 503, 504)
 
-    def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=45):
+    def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):
         self.base_url = base_url
         self.auth_token = auth_token
         self.enabled = enabled
