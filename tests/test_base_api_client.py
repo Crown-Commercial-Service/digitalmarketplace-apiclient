@@ -15,7 +15,7 @@ from dmapiclient import HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmapiclient.exceptions import ImproperlyConfigured
 
-from urllib3.exceptions import NewConnectionError, ProtocolError
+from urllib3.exceptions import NewConnectionError, ProtocolError, TimeoutError as _TimeoutError
 
 
 @pytest.yield_fixture
@@ -47,10 +47,11 @@ class TestBaseApiClient(object):
         return response_mock
 
     @pytest.mark.parametrize(('retry_count'), range(1, 4))
+    @pytest.mark.parametrize(('exc_class'), (NewConnectionError, ProtocolError, _TimeoutError,))
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
     @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
-    def test_client_retries_on_connection_error_and_raises_api_error(self, _make_request, base_client, retry_count):
-        _make_request.side_effect = NewConnectionError(mock.Mock(), 'Im a message')
+    def test_client_retries_on_httperror_and_raises_api_error(self, _make_request, base_client, retry_count, exc_class):
+        _make_request.side_effect = exc_class(mock.Mock(), "I'm a message")
 
         with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
             with pytest.raises(HTTPError) as e:
@@ -61,25 +62,7 @@ class TestBaseApiClient(object):
         assert len(requests) == retry_count + 1
         assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
 
-        assert 'ConnectionError' in e.value.message
-        assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
-
-    @pytest.mark.parametrize(('retry_count'), range(1, 4))
-    @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
-    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
-    def test_client_retries_on_read_error_and_raises_api_error(self, _make_request, base_client, retry_count):
-        _make_request.side_effect = ProtocolError(mock.Mock(), 'Im a message')
-
-        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
-            with pytest.raises(HTTPError) as e:
-                base_client._request("GET", '/')
-
-        requests = _make_request.call_args_list
-
-        assert len(requests) == retry_count + 1
-        assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
-
-        assert 'ProtocolError' in e.value.message
+        assert exc_class.__name__ in e.value.message
         assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
 
     @pytest.mark.parametrize(('retry_count'), range(1, 4))

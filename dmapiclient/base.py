@@ -53,10 +53,11 @@ class BaseAPIClient(object):
     #  Respose status codes to retry on.
     RETRIES_FORCE_STATUS_CODES = (500, 502, 503, 504)
 
-    def __init__(self, base_url=None, auth_token=None, enabled=True):
+    def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):
         self.base_url = base_url
         self.auth_token = auth_token
         self.enabled = enabled
+        self.timeout = timeout
 
     def _patch(self, url, data):
         return self._request("PATCH", url, data=data)
@@ -173,8 +174,12 @@ class BaseAPIClient(object):
         start_time = monotonic()
         try:
             response = self._requests_retry_session().request(
-                method, url,
-                headers=ci_headers, json=data)
+                method,
+                url,
+                headers=ci_headers,
+                json=data,
+                timeout=self.timeout
+            )
             response.raise_for_status()
         except requests.RequestException as e:
             api_error = HTTPError.create(e)
