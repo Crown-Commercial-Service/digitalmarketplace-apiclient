@@ -36,7 +36,7 @@ class TestAntivirusApiClient(object):
 
 class TestServiceMethods(object):
     def test_scan_and_tag_s3_object(self, antivirus_client, rmock):
-        rmock.post(
+        rmock.put(
             "http://baseurl/scan/s3-object",
             json={"Clappy": "clapclap"},
             status_code=200,

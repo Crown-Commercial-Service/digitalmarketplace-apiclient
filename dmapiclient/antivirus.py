@@ -7,7 +7,7 @@ class AntivirusAPIClient(BaseAPIClient):
         self.auth_token = app.config['DM_ANTIVIRUS_API_AUTH_TOKEN']
 
     def scan_and_tag_s3_object(self, bucket_name, object_key, object_version_id):
-        return self._post(
+        return self._put(
             "/scan/s3-object",
             data={
                 "bucketName": bucket_name,
