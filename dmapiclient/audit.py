@@ -55,6 +55,7 @@ class AuditTypes(Enum):
     upload_countersigned_agreement = "upload_countersigned_agreement"
     countersign_agreement = "countersign_agreement"
     delete_countersigned_agreement = "delete_countersigned_agreement"
+    delete_supplier_framework_declaration = "delete_supplier_framework_declaration"
 
     # Framework lifecycle
     create_framework = "create_framework"
