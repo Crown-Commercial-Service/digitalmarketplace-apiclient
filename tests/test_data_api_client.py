@@ -798,6 +798,21 @@ class TestSupplierMethods(object):
             'updated_by': 'user',
             'declaration': {'question': 'answer'}}
 
+    def test_remove_supplier_declaration(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7/declaration",
+            json={"supplierFramework": "serialized_object"},
+            status_code=200
+        )
+
+        result = data_client.remove_supplier_declaration(123, 'g-cloud-7', "user")
+
+        assert result == {"supplierFramework": "serialized_object"}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'updated_by': "user"
+        }
+
     def test_get_supplier_frameworks(self, data_client, rmock):
         rmock.get(
             "http://baseurl/suppliers/123/frameworks",
