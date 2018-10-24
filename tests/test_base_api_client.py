@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from contextlib import contextmanager
+from itertools import chain
 import logging
 
 from flask import request
@@ -15,7 +16,7 @@ from dmapiclient import HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmapiclient.exceptions import ImproperlyConfigured
 
-from urllib3.exceptions import NewConnectionError, ProtocolError, TimeoutError as _TimeoutError
+from urllib3.exceptions import NewConnectionError, ProtocolError, ReadTimeoutError
 
 
 @pytest.yield_fixture
@@ -46,23 +47,65 @@ class TestBaseApiClient(object):
 
         return response_mock
 
-    @pytest.mark.parametrize(('retry_count'), range(1, 4))
-    @pytest.mark.parametrize(('exc_class'), (NewConnectionError, ProtocolError, _TimeoutError,))
+    @pytest.mark.parametrize("method,exc_factory", chain(
+        ((m, lambda: NewConnectionError(mock.Mock(), "I'm a message")) for m in ("GET", "PUT", "POST", "PATCH",)),
+        ((m, lambda: ProtocolError(mock.Mock(), "I'm a message")) for m in ("GET", "PUT",)),
+        ((m, lambda: ReadTimeoutError(mock.Mock(), mock.Mock(), "I'm a message")) for m in ("GET", "PUT",)),
+    ))
+    @pytest.mark.parametrize('retry_count', range(1, 4))
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
     @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
-    def test_client_retries_on_httperror_and_raises_api_error(self, _make_request, base_client, retry_count, exc_class):
-        _make_request.side_effect = exc_class(mock.Mock(), "I'm a message")
+    def test_client_retries_on_httperror_and_raises_api_error(
+        self,
+        _make_request,
+        base_client,
+        retry_count,
+        exc_factory,
+        method,
+    ):
+        _make_request.side_effect = exc_factory()
 
         with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
             with pytest.raises(HTTPError) as e:
-                base_client._request("GET", '/')
+                base_client._request(method, '/')
 
         requests = _make_request.call_args_list
 
         assert len(requests) == retry_count + 1
-        assert all((request[0][1], request[0][2]) == ('GET', '/') for request in requests)
+        assert all((request[0][1], request[0][2]) == (method, '/') for request in requests)
 
-        assert exc_class.__name__ in e.value.message
+        assert type(_make_request.side_effect).__name__ in e.value.message
+        assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
+
+    @pytest.mark.parametrize("exc_factory", (
+        lambda: ProtocolError(mock.Mock(), "I'm a message"),
+        lambda: ReadTimeoutError(mock.Mock(), mock.Mock(), "I'm a message"),
+    ))
+    @pytest.mark.parametrize("method", ("POST", "PATCH",))
+    @pytest.mark.parametrize('retry_count', range(1, 4))
+    @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
+    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    def test_client_doesnt_retry_non_whitelisted_methods_on_unsafe_errors(
+        self,
+        _make_request,
+        base_client,
+        retry_count,
+        exc_factory,
+        method,
+    ):
+        _make_request.side_effect = exc_factory()
+
+        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+            with pytest.raises(HTTPError) as e:
+                base_client._request(method, '/')
+
+        requests = _make_request.call_args_list
+
+        assert len(requests) == 1
+        assert requests[0][0][1] == method
+        assert requests[0][0][2] == "/"
+
+        assert type(_make_request.side_effect).__name__ in e.value.message
         assert e.value.status_code == REQUEST_ERROR_STATUS_CODE
 
     @pytest.mark.parametrize(('retry_count'), range(1, 4))
@@ -70,7 +113,7 @@ class TestBaseApiClient(object):
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool.ResponseCls.from_httplib')
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
     @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
-    def test_client_retries_on_http_error_and_raises_api_error(
+    def test_client_retries_on_status_error_and_raises_api_error(
         self, _make_request, from_httplib, base_client, status, retry_count
     ):
         response_mock = self._from_httplib_response_mock(status)
