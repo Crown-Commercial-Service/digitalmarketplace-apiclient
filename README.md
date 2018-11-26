@@ -3,6 +3,7 @@ Digital Marketplace API client
 
 [![Coverage Status](https://coveralls.io/repos/alphagov/digitalmarketplace-apiclient/badge.svg?branch=master&service=github)](https://coveralls.io/github/alphagov/digitalmarketplace-apiclient?branch=master)
 [![Requirements Status](https://requires.io/github/alphagov/digitalmarketplace-apiclient/requirements.svg?branch=master)](https://requires.io/github/alphagov/digitalmarketplace-apiclient/requirements/?branch=master)
+![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)
 
 ## What's in here?
 
