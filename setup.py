@@ -24,7 +24,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'monotonic>=0.3',
         'requests<3,>=2.18.4',
         'six<2,>=1.11.0'
     ] + ([] if has_enum else ['enum34<2,>=1.1.6']),

@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import logging
+import time
 
 try:
     import urlparse
@@ -10,8 +11,6 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from flask import has_request_context, request, current_app
-
-from monotonic import monotonic
 
 from . import __version__
 from .errors import APIError, HTTPError, InvalidResponse
@@ -171,7 +170,7 @@ class BaseAPIClient(object):
             },
         )
 
-        start_time = monotonic()
+        start_time = time.perf_counter()
         try:
             response = self._requests_retry_session().request(
                 method,
@@ -183,7 +182,7 @@ class BaseAPIClient(object):
             response.raise_for_status()
         except requests.RequestException as e:
             api_error = HTTPError.create(e)
-            elapsed_time = monotonic() - start_time
+            elapsed_time = time.perf_counter() - start_time
             logger.log(
                 logging.INFO if api_error.status_code == 404 else logging.WARNING,
                 "API {api_method} request on {api_url} failed with {api_status} '{api_error}'",
@@ -198,7 +197,7 @@ class BaseAPIClient(object):
             )
             raise api_error
         else:
-            elapsed_time = monotonic() - start_time
+            elapsed_time = time.perf_counter() - start_time
             logger.log(
                 logging.INFO,
                 "API {api_method} request on {api_url} finished in {api_time}",
