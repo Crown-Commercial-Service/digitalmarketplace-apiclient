@@ -1,10 +1,6 @@
 import re
 import ast
-import sys
 from setuptools import setup, find_packages
-
-
-has_enum = sys.version_info >= (3, 4)
 
 
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
@@ -25,7 +21,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'requests<3,>=2.18.4',
-        'six<2,>=1.11.0'
-    ] + ([] if has_enum else ['enum34<2,>=1.1.6']),
+    ],
     python_requires="==3.6.*",
 )
