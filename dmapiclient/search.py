@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import six
 try:
     from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 except ImportError:
@@ -36,7 +35,7 @@ class SearchAPIClient(BaseAPIClient):
 
     def _add_filters_prefix_to_params(self, params, filters):
         """In-place transformation of filter keys and storage in params."""
-        for filter_name, filter_values in six.iteritems(filters):
+        for filter_name, filter_values in filters.items():
             params[u'filter_{}'.format(filter_name)] = filter_values
 
     def _remove_filters_prefix_from_params(self, search_api_params):
