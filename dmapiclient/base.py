@@ -211,7 +211,7 @@ class BaseAPIClient(object):
             )
         try:
             return response.json()
-        except ValueError as e:
+        except ValueError:
             raise InvalidResponse(response,
                                   message="No JSON object could be decoded")
 
