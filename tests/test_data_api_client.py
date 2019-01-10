@@ -2412,6 +2412,17 @@ class TestOutcomeMethods(object):
             "updated_by": "user@email.com"
         }
 
+    def test_find_outcomes(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/outcomes?page=2&completed=false",
+            json={"outcomes": []},
+            status_code=200,
+        )
+
+        result = data_client.find_outcomes(page=2, completed=False)
+
+        assert result == {"outcomes": []}
+
 
 class TestDataAPIClientIterMethods(object):
     def _test_find_iter(self, data_client, rmock, method_name, model_name, url_path, iter_kwargs={}):
@@ -2619,4 +2630,13 @@ class TestDataAPIClientIterMethods(object):
             model_name='suppliers',
             url_path='suppliers/export/g-cloud-9',
             iter_kwargs={'framework_slug': 'g-cloud-9'}
+        )
+
+    def test_find_outcomes_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name='find_outcomes_iter',
+            model_name='outcomes',
+            url_path='outcomes',
+            iter_kwargs={},
         )

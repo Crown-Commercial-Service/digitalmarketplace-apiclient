@@ -1077,3 +1077,17 @@ class DataAPIClient(BaseAPIClient):
 
     def get_outcome(self, outcome_id):
         return self._get("/outcomes/{}".format(outcome_id))
+
+    def find_outcomes(self, completed=None, page=None):
+        # we call this "find outcomes" for consistency with other methods, but it's not particularly useful for finding
+        # specific outcomes yet due to the lack of filtering options
+        return self._get(
+            "/outcomes",
+            params={
+                "page": page,
+                "completed": completed,
+            },
+        )
+
+    find_outcomes_iter = make_iter_method("find_outcomes", "outcomes")
+    find_outcomes_iter.__name__ = str("find_outcomes_iter")
