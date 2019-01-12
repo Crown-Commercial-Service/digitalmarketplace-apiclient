@@ -6,7 +6,7 @@ Flask<1.1,>=0.10.1
 mock==2.0.0
 pytest==3.2.3
 pytest-cov==2.5.1
-python-coveralls==2.5.0
+python-coveralls==2.9.1
 requests-mock==0.6.0
 
 git+https://github.com/alphagov/digitalmarketplace-test-utils.git@1.4.0#egg=digitalmarketplace-test-utils==1.4.0
