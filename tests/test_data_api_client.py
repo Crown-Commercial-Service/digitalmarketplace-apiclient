@@ -613,6 +613,17 @@ class TestSupplierMethods(object):
         assert result == {"services": "result"}
         assert rmock.called
 
+    def test_find_suppliers_with_name(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/suppliers?name=a",
+            json={"services": "result"},
+            status_code=200)
+
+        result = data_client.find_suppliers(name='a')
+
+        assert result == {"services": "result"}
+        assert rmock.called
+
     def test_find_suppliers_with_framework(self, data_client, rmock):
         rmock.get(
             "http://baseurl/suppliers?framework=gcloud",
