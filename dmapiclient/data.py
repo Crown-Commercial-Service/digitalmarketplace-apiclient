@@ -94,11 +94,13 @@ class DataAPIClient(BaseAPIClient):
     # Suppliers
 
     def find_suppliers(
-        self, prefix=None, page=None, framework=None, duns_number=None, company_registration_number=None
+        self, prefix=None, page=None, framework=None, duns_number=None, company_registration_number=None, name=None
     ):
         params = {}
         if prefix:
             params["prefix"] = prefix
+        if name:
+            params["name"] = name
         if page is not None:
             params['page'] = page
         if framework is not None:
