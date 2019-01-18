@@ -30,7 +30,10 @@ def make_iter_method(method_name, *model_names):
         result = getattr(self, method_name)(*args, **kwargs)
         # Filter the list of model names for those that are a key in the response, then take the first.
         # Useful for backwards compatability if response keys might change
-        model_name = next(model_name for model_name in model_names if model_name in result)
+        model_name = next((model_name for model_name in model_names if model_name in result), None)
+        # If there are no model names, return None to avoid raising StopIteration
+        if not model_name:
+            return
 
         for model in result[model_name]:
             yield model
