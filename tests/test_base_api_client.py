@@ -42,7 +42,7 @@ class TestBaseApiClient(object):
         )
         response_mock.get_redirect_location.return_value = None
         response_mock.getheader.return_value = None
-        response_mock.read.side_effect = [response_data, None, None]
+        response_mock.read.side_effect = [response_data, None, None, None]
         response_mock.reason = f'Mocked {status} response'
 
         return response_mock
