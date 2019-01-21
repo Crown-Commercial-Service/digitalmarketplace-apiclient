@@ -44,6 +44,7 @@ class AuditTypes(Enum):
     send_clarification_question = "send_clarification_question"
     send_application_question = "send_application_question"
     answer_selection_questions = "answer_selection_questions"
+    update_declaration_answers = "update_declaration_answers"
     agree_framework_variation = "agree_framework_variation"
     update_supplier_framework = "update_supplier_framework"
 
