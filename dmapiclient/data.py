@@ -189,6 +189,15 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
+    def update_supplier_declaration(self, supplier_id, framework_slug, declaration_update, user):
+        return self._patch_with_updated_by(
+            "/suppliers/{}/frameworks/{}/declaration".format(supplier_id, framework_slug),
+            data={
+                "declaration": declaration_update,
+            },
+            user=user
+        )
+
     def remove_supplier_declaration(self, supplier_id, framework_slug, user):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}/declaration".format(
