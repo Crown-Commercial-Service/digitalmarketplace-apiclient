@@ -820,6 +820,20 @@ class TestSupplierMethods(object):
             'updated_by': 'user',
             'declaration': {'question': 'answer'}}
 
+    def test_update_supplier_declaration(self, data_client, rmock):
+        rmock.patch(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7/declaration",
+            json={"declaration": {"question": "answer"}},
+            status_code=200)
+
+        result = data_client.update_supplier_declaration(123, 'g-cloud-7', {"question": "answer"}, "user")
+
+        assert result == {'declaration': {'question': 'answer'}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'updated_by': 'user',
+            'declaration': {'question': 'answer'}}
+
     def test_remove_supplier_declaration(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/123/frameworks/g-cloud-7/declaration",
