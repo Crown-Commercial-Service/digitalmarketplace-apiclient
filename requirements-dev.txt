@@ -1,7 +1,9 @@
 -r requirements.txt
+
+Flask<1.1,>=0.10.1
+
 coverage==4.5.3
 flake8==3.7.7
-Flask<1.1,>=0.10.1
 mock==2.0.0
 pytest==4.3.1
 pytest-cov==2.6.1
