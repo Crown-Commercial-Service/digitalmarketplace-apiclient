@@ -2,6 +2,12 @@
 
 Records breaking changes from major version bumps
 
+## 20.0.0
+
+PR: [#205](https://github.com/alphagov/digitalmarketplace-apiclient/pull/205)
+
+The with_declarations parameter of find_framework_suppliers method of DataAPIClient now defaults to True instead of None. This will increase significantly the size of all replies using it. 
+
 ## 19.0.0
 
 PR: [#152](https://github.com/alphagov/digitalmarketplace-apiclient/pull/152)

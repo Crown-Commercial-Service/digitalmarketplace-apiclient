@@ -316,7 +316,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def find_framework_suppliers(self, framework_slug, agreement_returned=None, statuses=None, with_declarations=None):
+    def find_framework_suppliers(self, framework_slug, agreement_returned=None, statuses=None, with_declarations=True):
         '''
         :param agreement_returned: A boolean value that allows filtering by suppliers who have or have not
                                    returned their framework agreement. If 'agreement_returned' is set then
@@ -330,7 +330,7 @@ class DataAPIClient(BaseAPIClient):
             params['agreement_returned'] = bool(agreement_returned)
         if statuses is not None:
             params['status'] = statuses
-        if with_declarations is not None:
+        if with_declarations is not True:
             params['with_declarations'] = bool(with_declarations)
         return self._get(
             '/frameworks/{}/suppliers'.format(framework_slug),
