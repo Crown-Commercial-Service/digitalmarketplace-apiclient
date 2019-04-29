@@ -8,6 +8,6 @@ flake8==3.7.7
 mock==2.0.0
 pytest==4.4.1
 pytest-cov==2.6.1
-requests-mock==1.5.2
+requests-mock==1.6.0
 
 git+https://github.com/alphagov/digitalmarketplace-test-utils.git@1.4.0#egg=digitalmarketplace-test-utils==1.4.0
