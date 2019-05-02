@@ -13,6 +13,7 @@ in (with args; {
     shortName = "dm-apicl";
     buildInputs = [
       pythonPackages.python
+      pkgs.glibcLocales
       pkgs.git
       pkgs.cacert
     ] ++ pkgs.stdenv.lib.optionals forDev ([
