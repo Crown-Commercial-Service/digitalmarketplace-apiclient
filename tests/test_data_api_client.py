@@ -549,6 +549,27 @@ class TestBuyerDomainMethods(object):
         assert rmock.called
         assert result is False
 
+    def test_get_buyer_email_domains(self, data_client, rmock):
+        expected = {"buyerEmailDomains": [{"domainName": "gov.uk", "id": "1"}]}
+        rmock.get(
+            "http://baseurl/buyer-email-domains",
+            json=expected,
+            status_code=200,
+        )
+
+        got = data_client.get_buyer_email_domains()
+        assert expected == got
+
+    def test_get_buyer_email_domains_can_have_page(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/buyer-email-domains?page=2",
+            json={},
+            status_code=200,
+        )
+
+        data_client.get_buyer_email_domains(page=2)
+        assert rmock.called
+
     def test_create_buyer_email_domain(self, data_client, rmock):
         rmock.post(
             "http://baseurl/buyer-email-domains",
@@ -2663,5 +2684,14 @@ class TestDataAPIClientIterMethods(object):
             method_name='find_outcomes_iter',
             model_name='outcomes',
             url_path='outcomes',
+            iter_kwargs={},
+        )
+
+    def test_get_buyer_email_domains_iter(self, data_client, rmock):
+        self._test_find_iter(
+            data_client, rmock,
+            method_name="get_buyer_email_domains_iter",
+            model_name="buyerEmailDomains",
+            url_path="buyer-email-domains",
             iter_kwargs={},
         )
