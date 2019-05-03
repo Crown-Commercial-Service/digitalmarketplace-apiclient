@@ -499,6 +499,16 @@ class DataAPIClient(BaseAPIClient):
             "/users/check-buyer-email", params={'email_address': email_address}
         )['valid']
 
+    def get_buyer_email_domains(self, page=None):
+        params = {}
+        if page is not None:
+            params["page"] = page
+
+        return self._get("/buyer-email-domains", params=params)
+
+    get_buyer_email_domains_iter = make_iter_method("get_buyer_email_domains", "buyerEmailDomains")
+    get_buyer_email_domains_iter.__name__ = str("get_buyer_email_domains_iter")
+
     def create_buyer_email_domain(self, buyer_email_domain, user):
         return self._post_with_updated_by(
             "/buyer-email-domains",
