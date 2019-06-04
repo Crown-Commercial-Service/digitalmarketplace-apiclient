@@ -136,7 +136,7 @@ class TestSearchApiClient(object):
 
     def test_should_not_call_search_api_if_es_disabled(
             self, search_client, rmock):
-        search_client.enabled = False
+        search_client._enabled = False
         rmock.put(
             'http://baseurl/g-cloud/services/12345',
             json={'message': 'acknowledged'},

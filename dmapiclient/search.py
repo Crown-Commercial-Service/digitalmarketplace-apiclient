@@ -14,9 +14,9 @@ from .errors import HTTPError
 
 class SearchAPIClient(BaseAPIClient):
     def init_app(self, app):
-        self.base_url = app.config['DM_SEARCH_API_URL']
-        self.auth_token = app.config['DM_SEARCH_API_AUTH_TOKEN']
-        self.enabled = app.config['ES_ENABLED']
+        self._base_url = app.config['DM_SEARCH_API_URL']
+        self._auth_token = app.config['DM_SEARCH_API_AUTH_TOKEN']
+        self._enabled = app.config['ES_ENABLED']
 
     def _url(self, index, path, doc_type='services'):
         return u"/{}/{}/{}".format(index, doc_type, path)

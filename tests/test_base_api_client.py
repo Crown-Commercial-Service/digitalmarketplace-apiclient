@@ -54,7 +54,7 @@ class TestBaseApiClient(object):
     ))
     @pytest.mark.parametrize('retry_count', range(1, 4))
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
-    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    @mock.patch('dmapiclient.base.BaseAPIClient._RETRIES_BACKOFF_FACTOR', 0)
     def test_client_retries_on_httperror_and_raises_api_error(
         self,
         _make_request,
@@ -65,7 +65,7 @@ class TestBaseApiClient(object):
     ):
         _make_request.side_effect = exc_factory()
 
-        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+        with mock.patch('dmapiclient.base.BaseAPIClient._RETRIES', retry_count):
             with pytest.raises(HTTPError) as e:
                 base_client._request(method, '/')
 
@@ -84,7 +84,7 @@ class TestBaseApiClient(object):
     @pytest.mark.parametrize("method", ("POST", "PATCH",))
     @pytest.mark.parametrize('retry_count', range(1, 4))
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
-    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    @mock.patch('dmapiclient.base.BaseAPIClient._RETRIES_BACKOFF_FACTOR', 0)
     def test_client_doesnt_retry_non_whitelisted_methods_on_unsafe_errors(
         self,
         _make_request,
@@ -95,7 +95,7 @@ class TestBaseApiClient(object):
     ):
         _make_request.side_effect = exc_factory()
 
-        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+        with mock.patch('dmapiclient.base.BaseAPIClient._RETRIES', retry_count):
             with pytest.raises(HTTPError) as e:
                 base_client._request(method, '/')
 
@@ -112,14 +112,14 @@ class TestBaseApiClient(object):
     @pytest.mark.parametrize(('status'), BaseAPIClient.RETRIES_FORCE_STATUS_CODES)
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool.ResponseCls.from_httplib')
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
-    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    @mock.patch('dmapiclient.base.BaseAPIClient._RETRIES_BACKOFF_FACTOR', 0)
     def test_client_retries_on_status_error_and_raises_api_error(
         self, _make_request, from_httplib, base_client, status, retry_count
     ):
         response_mock = self._from_httplib_response_mock(status)
         from_httplib.return_value = response_mock
 
-        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+        with mock.patch('dmapiclient.base.BaseAPIClient._RETRIES', retry_count):
             with pytest.raises(HTTPError) as e:
                 base_client._request("GET", '/')
 
@@ -133,7 +133,7 @@ class TestBaseApiClient(object):
 
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool.ResponseCls.from_httplib')
     @mock.patch('urllib3.connectionpool.HTTPConnectionPool._make_request')
-    @mock.patch('dmapiclient.base.BaseAPIClient.RETRIES_BACKOFF_FACTOR', 0)
+    @mock.patch('dmapiclient.base.BaseAPIClient._RETRIES_BACKOFF_FACTOR', 0)
     def test_client_retries_and_returns_data_if_successful(self, _make_request, from_httplib, base_client):
         #  The third response here would normally be a httplib response object. It's only use is to be passed in to
         #  `from_httplib`, which we're mocking the return of below. `from_httplib` converts a httplib response into a
