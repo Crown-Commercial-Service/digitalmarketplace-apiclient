@@ -904,6 +904,20 @@ class TestSupplierMethods(object):
             'updated_by': 'user'
         }
 
+    def test_set_supplier_framework_allow_declaration_reuse(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7",
+            json={"frameworkInterest": {"allowDeclarationReuse": True}},
+            status_code=200)
+
+        result = data_client.set_supplier_framework_allow_declaration_reuse(123, 'g-cloud-7', True, "user")
+        assert result == {"frameworkInterest": {"allowDeclarationReuse": True}}
+        assert rmock.called
+        assert rmock.request_history[0].json() == {
+            'frameworkInterest': {'allowDeclarationReuse': True},
+            'updated_by': 'user'
+        }
+
     def test_set_supplier_framework_prefill_declaration(self, data_client, rmock):
         rmock.post(
             "http://baseurl/suppliers/8765/frameworks/breeches",
