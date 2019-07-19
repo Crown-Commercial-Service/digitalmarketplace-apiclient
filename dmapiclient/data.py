@@ -24,12 +24,15 @@ class DataAPIClient(BaseAPIClient):
             earliest_for_each_object=None,
             user=None,
             data_supplier_id=None,
+            *,
+            data_draft_service_id=None,
     ):
 
         params = {
             "acknowledged": acknowledged,
             "audit-date": audit_date,
             "data-supplier-id": data_supplier_id,
+            "data-draft-service-id": data_draft_service_id,
             "earliest_for_each_object": earliest_for_each_object,
             "latest_first": latest_first,
             "object-id": object_id,
