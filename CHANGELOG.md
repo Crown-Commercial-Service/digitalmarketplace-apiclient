@@ -2,6 +2,16 @@
 
 Records breaking changes from major version bumps
 
+## 21.0.0
+
+All "attributes" of apiclient instances have been made private and replaced with read-only properties of the same name.
+This is to encourage use of apiclients as objects that are unmutated after construction, making their use (hopefully)
+threadsafe.
+
+The attributes in question comprise `RETRIES`, `RETRIES_BACKOFF_FACTOR`, `RETRIES_FORCE_STATUS_CODES`, `base_url`,
+`auth_token`, `enabled`, `timeout`. It seems unlikely that any code was mutating these values
+post-construction/`init_app`, but it's worth doing a check before upgrading.
+
 ## 20.0.0
 
 PR: [#205](https://github.com/alphagov/digitalmarketplace-apiclient/pull/205)
