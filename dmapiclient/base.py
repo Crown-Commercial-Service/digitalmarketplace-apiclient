@@ -49,17 +49,54 @@ def make_iter_method(method_name, *model_names):
     return iter_method
 
 
+class classproperty(object):
+    def __init__(self, getter):
+        self.getter = getter
+
+    def __get__(self, instance, owner):
+        return self.getter(owner)
+
+
 class BaseAPIClient(object):
-    RETRIES = 5
-    RETRIES_BACKOFF_FACTOR = 0.3
+    _RETRIES = 5
+    _RETRIES_BACKOFF_FACTOR = 0.3
     #  Respose status codes to retry on.
-    RETRIES_FORCE_STATUS_CODES = (500, 502, 503, 504)
+    _RETRIES_FORCE_STATUS_CODES = (500, 502, 503, 504)
+
+    # the following are really intended to be read-only from outside the class, hence properties
+    @classproperty
+    def RETRIES(cls):
+        return cls._RETRIES
+
+    @classproperty
+    def RETRIES_BACKOFF_FACTOR(cls):
+        return cls._RETRIES_BACKOFF_FACTOR
+
+    @classproperty
+    def RETRIES_FORCE_STATUS_CODES(cls):
+        return cls._RETRIES_FORCE_STATUS_CODES
+
+    @property
+    def base_url(self):
+        return self._base_url
+
+    @property
+    def auth_token(self):
+        return self._auth_token
+
+    @property
+    def enabled(self):
+        return self._enabled
+
+    @property
+    def timeout(self):
+        return self._timeout
 
     def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):
-        self.base_url = base_url
-        self.auth_token = auth_token
-        self.enabled = enabled
-        self.timeout = timeout
+        self._base_url = base_url
+        self._auth_token = auth_token
+        self._enabled = enabled
+        self._timeout = timeout
 
     def _patch(self, url, data):
         return self._request("PATCH", url, data=data)
@@ -93,16 +130,16 @@ class BaseAPIClient(object):
         return self._delete(url, data)
 
     def _build_url(self, url, params):
-        if not self.base_url:
+        if not self._base_url:
             raise ImproperlyConfigured("{} has no URL configured".format(self.__class__.__name__))
 
-        url = urlparse.urljoin(self.base_url, url)
+        url = urlparse.urljoin(self._base_url, url)
 
         # Make sure we always preserve the base_url host and scheme
         # eg when using next link from the API response we need to keep the scheme
         # so that app requests don't try to switch from HTTP to HTTPS
         url = urlparse.urlparse(url)
-        base_url = urlparse.urlparse(self.base_url)
+        base_url = urlparse.urlparse(self._base_url)
         url = url._replace(netloc=base_url.netloc, scheme=base_url.scheme).geturl()
 
         r = requests.PreparedRequest()
@@ -113,12 +150,12 @@ class BaseAPIClient(object):
     def _requests_retry_session(self):
         session = requests.Session()
         retry = Retry(
-            total=self.RETRIES,
-            read=self.RETRIES,
-            connect=self.RETRIES,
-            status=self.RETRIES,
-            backoff_factor=self.RETRIES_BACKOFF_FACTOR,
-            status_forcelist=self.RETRIES_FORCE_STATUS_CODES,
+            total=self._RETRIES,
+            read=self._RETRIES,
+            connect=self._RETRIES,
+            status=self._RETRIES,
+            backoff_factor=self._RETRIES_BACKOFF_FACTOR,
+            status_forcelist=self._RETRIES_FORCE_STATUS_CODES,
             raise_on_status=False,
         )
         adapter = HTTPAdapter(max_retries=retry)
@@ -127,13 +164,13 @@ class BaseAPIClient(object):
         return session
 
     def _request(self, method, url, data=None, params=None):
-        if not self.enabled:
+        if not self._enabled:
             return None
 
         url = self._build_url(url, params)
         headers = {
             "Content-type": "application/json",
-            "Authorization": "Bearer {}".format(self.auth_token),
+            "Authorization": "Bearer {}".format(self._auth_token),
             "User-agent": "DM-API-Client/{}".format(__version__),
         }
         if has_request_context():
@@ -180,7 +217,7 @@ class BaseAPIClient(object):
                 url,
                 headers=ci_headers,
                 json=data,
-                timeout=self.timeout
+                timeout=self._timeout
             )
             response.raise_for_status()
         except requests.RequestException as e:
@@ -220,7 +257,7 @@ class BaseAPIClient(object):
 
     def get_status(self):
         try:
-            return self._get("{}/_status".format(self.base_url))
+            return self._get("{}/_status".format(self._base_url))
         except APIError as e:
             try:
                 return e.response.json()
