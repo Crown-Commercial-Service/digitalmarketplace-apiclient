@@ -183,6 +183,7 @@ class TestUserMethods(object):
             'updated_at': "2015-05-05T05:05:05",
             'password_changed_at': "2015-05-05T05:05:05",
             'personal_data_removed': False,
+            'user_research_opted_in': False,
             'supplier': {
                 'supplier_id': 1234,
                 'name': 'name'
@@ -240,6 +241,28 @@ class TestUserMethods(object):
             json=user,
             status_code=200)
         user = data_client.find_users(personal_data_removed=True)
+
+        assert user == expected_data
+
+    def test_find_users_by_user_research_opted_in_false(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/users?user_research_opted_in=false",
+            json=self.user(),
+            status_code=200)
+        user = data_client.find_users(user_research_opted_in=False)
+
+        assert user == self.user()
+
+    def test_find_users_by_user_research_opted_in_true(self, data_client, rmock):
+        user = self.user()
+        user['users'].update({'user_research_opted_in': True})
+        expected_data = user.copy()
+
+        rmock.get(
+            "http://baseurl/users?user_research_opted_in=true",
+            json=user,
+            status_code=200)
+        user = data_client.find_users(user_research_opted_in=True)
 
         assert user == expected_data
 
