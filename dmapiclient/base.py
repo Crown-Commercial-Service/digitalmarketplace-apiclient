@@ -10,6 +10,8 @@ except ImportError:
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from requests.exceptions import ReadTimeout
+from urllib3.exceptions import ReadTimeoutError
 from flask import has_request_context, request, current_app
 
 from . import __version__
@@ -92,6 +94,14 @@ class BaseAPIClient(object):
     def timeout(self):
         return self._timeout
 
+    @property
+    def nowait_timeout(self):
+        read_timeout = 1.e-3
+        try:
+            return self.timeout[0], read_timeout
+        except (TypeError, LookupError):
+            return self._timeout, read_timeout
+
     def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):
         self._base_url = base_url
         self._auth_token = auth_token
@@ -147,11 +157,11 @@ class BaseAPIClient(object):
 
         return r.url
 
-    def _requests_retry_session(self):
+    def _requests_retry_session(self, *, retry_read_timeouts: bool = True):
         session = requests.Session()
         retry = Retry(
             total=self._RETRIES,
-            read=self._RETRIES,
+            read=self._RETRIES if retry_read_timeouts else 0,
             connect=self._RETRIES,
             status=self._RETRIES,
             backoff_factor=self._RETRIES_BACKOFF_FACTOR,
@@ -163,7 +173,24 @@ class BaseAPIClient(object):
         session.mount('https://', adapter)
         return session
 
-    def _request(self, method, url, data=None, params=None):
+    @staticmethod
+    def _iter_exceptions_by_cause(exc):
+        yield exc
+        while True:
+            if getattr(exc, "__cause__", None) is not None:
+                exc = exc.__cause__
+            # you might have hoped that PEP 3134 would have successfully standardized this and we could stop
+            # here, but no - many exceptions thrown up by requests/urllib3 have nonstandard ways of chaining exceptions:
+            elif getattr(exc, "reason", None) is not None:
+                exc = exc.reason
+            elif getattr(exc, "args", None) is not None and len(exc.args) and isinstance(exc.args[0], BaseException):
+                exc = exc.args[0]
+            else:
+                break
+
+            yield exc
+
+    def _request(self, method, url, data=None, params=None, *, client_wait_for_response: bool = True):
         if not self._enabled:
             return None
 
@@ -212,17 +239,36 @@ class BaseAPIClient(object):
 
         start_time = time.perf_counter()
         try:
-            response = self._requests_retry_session().request(
+            response = self._requests_retry_session(retry_read_timeouts=client_wait_for_response).request(
                 method,
                 url,
                 headers=ci_headers,
                 json=data,
-                timeout=self._timeout
+                timeout=self.timeout if client_wait_for_response else self.nowait_timeout,
             )
             response.raise_for_status()
         except requests.RequestException as e:
-            api_error = HTTPError.create(e)
             elapsed_time = time.perf_counter() - start_time
+
+            # requests appears quite variable in what exceptions it will actually provide given a certain error,
+            # depending on e.g. whether retries are enabled, so we need to be quite flexible in detecting ReadTimeout
+            if (not client_wait_for_response) and any(
+                isinstance(exc, (ReadTimeout, ReadTimeoutError)) for exc in self._iter_exceptions_by_cause(e)
+            ):
+                logger.log(
+                    logging.INFO,
+                    "API {api_method} request on {api_url} dispatched but ignoring response",
+                    extra={
+                        **common_log_extra,
+                        'api_method': method,
+                        'api_url': url,
+                        'api_time': elapsed_time,
+                        'api_time_incomplete': True,
+                    },
+                )
+                return None
+
+            api_error = HTTPError.create(e)
             logger.log(
                 logging.INFO if api_error.status_code == 404 else logging.WARNING,
                 "API {api_method} request on {api_url} failed with {api_status} '{api_error}'",
