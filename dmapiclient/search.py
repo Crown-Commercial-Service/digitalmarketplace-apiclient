@@ -112,11 +112,11 @@ class SearchAPIClient(BaseAPIClient):
         url = '/{}/{}/{}'.format(index_name, doc_type, object_id)
         return self._put(url, data={'document': serialized_object}, client_wait_for_response=client_wait_for_response)
 
-    def delete(self, index, service_id):
+    def delete(self, index, service_id, *, client_wait_for_response: bool = True):
         url = self._url(index, service_id)
 
         try:
-            return self._delete(url)
+            return self._delete(url, client_wait_for_response=client_wait_for_response)
         except HTTPError as e:
             if e.status_code != 404:
                 raise

@@ -107,8 +107,13 @@ class TestSearchApiClient(object):
         )
         assert result == {'message': 'acknowledged'}
 
+    @pytest.mark.parametrize("client_wait_for_response", (False, True,))
     def test_delete_to_delete_method_service_id(
-            self, search_client, rmock):
+        self,
+        search_client,
+        rmock,
+        client_wait_for_response
+    ):
         rmock.delete(
             'http://baseurl/g-cloud/services/12345',
             json={"services": {
@@ -119,8 +124,16 @@ class TestSearchApiClient(object):
                 "found": True
             }},
             status_code=200)
-        result = search_client.delete(index='g-cloud', service_id="12345")
+        result = search_client.delete(
+            index='g-cloud',
+            service_id="12345",
+            client_wait_for_response=client_wait_for_response,
+        )
         assert result['services']['found'] is True
+
+        assert tuple(req.timeout for req in rmock.request_history) == (
+            search_client.timeout if client_wait_for_response else search_client.nowait_timeout,
+        )
 
     def test_delete_raises_if_http_error_not_404(
             self, search_client, rmock):
