@@ -143,15 +143,19 @@ class TestServiceMethods(object):
         assert result == {"services": "result"}
         assert rmock.called
 
-    def test_update_service_status(self, data_client, rmock):
+    @pytest.mark.parametrize("wait_for_index_call_arg,wait_for_index_req_arg", (
+        (False, "false"),
+        (True, "true"),
+    ))
+    def test_update_service_status(self, data_client, rmock, wait_for_index_call_arg, wait_for_index_req_arg):
         rmock.post(
-            "http://baseurl/services/123/status/published",
+            f"http://baseurl/services/123/status/published?wait-for-index={wait_for_index_req_arg}",
             json={"services": "result"},
             status_code=200,
         )
 
         result = data_client.update_service_status(
-            123, "published", "person")
+            123, "published", "person", wait_for_index=wait_for_index_call_arg)
 
         assert result == {"services": "result"}
         assert rmock.called
