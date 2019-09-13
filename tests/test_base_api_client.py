@@ -16,7 +16,7 @@ from dmapiclient import HTTPError, InvalidResponse
 from dmapiclient.errors import REQUEST_ERROR_STATUS_CODE
 from dmapiclient.exceptions import ImproperlyConfigured
 
-from urllib3.exceptions import NewConnectionError, ProtocolError, ReadTimeoutError
+from urllib3.exceptions import NewConnectionError, ProtocolError, ReadTimeoutError, MaxRetryError
 
 
 @pytest.yield_fixture
@@ -376,3 +376,84 @@ class TestBaseApiClient(object):
                 rmock.last_request.headers.get("x-brian-tweedy")
                 or rmock.last_request.headers.get("major-tweedy")
             ) == mock_logger.log.call_args_list[0][1]["extra"]["childSpanId"]
+
+    @pytest.mark.parametrize("thrown_exception", (
+        # requests can be slightly unpredictable in the exceptions it raises
+        requests.exceptions.ConnectionError(
+            MaxRetryError(mock.Mock(), "http://abc.net", ReadTimeoutError(mock.Mock(), mock.Mock(), mock.Mock()))
+        ),
+        requests.exceptions.ConnectionError(ReadTimeoutError(mock.Mock(), mock.Mock(), mock.Mock())),
+        requests.exceptions.ReadTimeout,
+    ))
+    @mock.patch("dmapiclient.base.logger")
+    def test_nowait_times_out(
+        self,
+        mock_logger,
+        base_client,
+        rmock,
+        app,
+        thrown_exception,
+    ):
+        "test the case when a request with client_wait_for_response=False does indeed time out"
+        rmock.post("http://baseurl/services/10000", exc=thrown_exception)
+
+        retval = base_client._request(
+            "POST",
+            "/services/10000",
+            {"serviceName": "Postcard"},
+            client_wait_for_response=False,
+        )
+
+        assert retval is None
+
+        assert rmock.called
+        assert tuple(req.timeout for req in rmock.request_history) == (base_client.nowait_timeout,)
+
+        assert mock_logger.log.call_args_list == [
+            mock.call(logging.DEBUG, "API request {method} {url}", extra={
+                "method": "POST",
+                "url": "http://baseurl/services/10000",
+            }),
+            mock.call(logging.INFO, "API {api_method} request on {api_url} dispatched but ignoring response", extra={
+                "api_method": "POST",
+                "api_url": "http://baseurl/services/10000",
+                "api_time": mock.ANY,
+                "api_time_incomplete": True,
+            }),
+        ]
+
+    @mock.patch("dmapiclient.base.logger")
+    def test_nowait_completes(
+        self,
+        mock_logger,
+        base_client,
+        rmock,
+        app,
+    ):
+        "test the case when a request with client_wait_for_response=False completes before it can time out"
+        rmock.post("http://baseurl/services/10000", json={"services": {"id": "10000"}}, status_code=200)
+
+        retval = base_client._request(
+            "POST",
+            "/services/10000",
+            {"serviceName": "Postcard"},
+            client_wait_for_response=False,
+        )
+
+        assert retval == {"services": {"id": "10000"}}
+
+        assert rmock.called
+        assert tuple(req.timeout for req in rmock.request_history) == (base_client.nowait_timeout,)
+
+        assert mock_logger.log.call_args_list == [
+            mock.call(logging.DEBUG, "API request {method} {url}", extra={
+                "method": "POST",
+                "url": "http://baseurl/services/10000",
+            }),
+            mock.call(logging.INFO, "API {api_method} request on {api_url} finished in {api_time}", extra={
+                "api_method": "POST",
+                "api_url": "http://baseurl/services/10000",
+                "api_time": mock.ANY,
+                "api_status": 200,
+            }),
+        ]

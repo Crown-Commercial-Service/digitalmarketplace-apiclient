@@ -115,7 +115,7 @@ class TestServiceMethods(object):
 
     def test_update_service(self, data_client, rmock):
         rmock.post(
-            "http://baseurl/services/123",
+            "http://baseurl/services/123?&wait-for-index=true",
             json={"services": "result"},
             status_code=200,
         )
@@ -126,15 +126,19 @@ class TestServiceMethods(object):
         assert result == {"services": "result"}
         assert rmock.called
 
-    def test_update_service_by_admin(self, data_client, rmock):
+    @pytest.mark.parametrize("wait_for_index_call_arg,wait_for_index_req_arg", (
+        (False, "false"),
+        (True, "true"),
+    ))
+    def test_update_service_by_admin(self, data_client, rmock, wait_for_index_call_arg, wait_for_index_req_arg):
         rmock.post(
-            "http://baseurl/services/123?user-role=admin",
+            f"http://baseurl/services/123?&wait-for-index={wait_for_index_req_arg}&user-role=admin",
             json={"services": "result"},
             status_code=200,
         )
 
         result = data_client.update_service(
-            123, {"foo": "bar"}, "person", user_role='admin')
+            123, {"foo": "bar"}, "person", user_role='admin', wait_for_index=wait_for_index_call_arg)
 
         assert result == {"services": "result"}
         assert rmock.called

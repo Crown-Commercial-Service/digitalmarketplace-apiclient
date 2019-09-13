@@ -69,19 +69,30 @@ class TestSearchApiClient(object):
             "target": 'target'
         }
 
+    @pytest.mark.parametrize("client_wait_for_response", (False, True,))
     def test_post_to_index_with_type_and_id(
-            self, search_client, rmock):
+        self,
+        search_client,
+        rmock,
+        client_wait_for_response,
+    ):
         rmock.put(
             'http://baseurl/briefs-digital-outcomes-and-specialists-2/briefs/12345',
             json={'message': 'acknowledged'},
-            status_code=200)
+            status_code=200,
+        )
         result = search_client.index(
             'briefs-digital-outcomes-and-specialists-2',
             "12345",
             {'serialized': 'brief'},
             doc_type='briefs',
+            client_wait_for_response=client_wait_for_response,
         )
         assert result == {'message': 'acknowledged'}
+
+        assert tuple(req.timeout for req in rmock.request_history) == (
+            search_client.timeout if client_wait_for_response else search_client.nowait_timeout,
+        )
 
     def test_post_to_index_without_type_defaults_to_services(
             self, search_client, rmock):
