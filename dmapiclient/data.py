@@ -684,9 +684,13 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def update_service_status(self, service_id, status, user):
+    def update_service_status(self, service_id, status, user, *, wait_for_index: bool = True):
         return self._post_with_updated_by(
-            "/services/{}/status/{}".format(service_id, status),
+            "/services/{}/status/{}{}".format(
+                service_id,
+                status,
+                "?wait-for-index={}".format(str(wait_for_index).lower()),
+            ),
             data={},
             user=user,
         )
