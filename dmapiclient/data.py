@@ -881,7 +881,16 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/brief-responses/{}".format(brief_response_id))
 
-    def find_brief_responses(self, brief_id=None, supplier_id=None, status=None, framework=None, awarded_at=None):
+    def find_brief_responses(
+        self,
+        brief_id=None,
+        supplier_id=None,
+        status=None,
+        framework=None,
+        awarded_at=None,
+        *,
+        with_data: bool = None,
+    ):
         return self._get(
             "/brief-responses",
             params={
@@ -889,7 +898,8 @@ class DataAPIClient(BaseAPIClient):
                 "supplier_id": supplier_id,
                 "status": status,
                 "framework": framework,
-                "awarded_at": awarded_at
+                "awarded_at": awarded_at,
+                "with-data": str(with_data).lower() if with_data is not None else None,
             })
 
     find_brief_responses_iter = make_iter_method('find_brief_responses', 'briefResponses')

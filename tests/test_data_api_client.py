@@ -2162,7 +2162,7 @@ class TestBriefResponseMethods(object):
     def test_find_brief_responses(self, data_client, rmock):
         url = (
             "http://baseurl/brief-responses?brief_id=1&supplier_id=2&status=draft&"
-            "framework=digital-outcomes-and-specialists-2&awarded_at=2018-01-01"
+            "framework=digital-outcomes-and-specialists-2&awarded_at=2018-01-01&with-data=false"
         )
         rmock.get(
             url,
@@ -2170,8 +2170,12 @@ class TestBriefResponseMethods(object):
             status_code=200)
 
         result = data_client.find_brief_responses(
-            brief_id=1, supplier_id=2, status='draft', framework='digital-outcomes-and-specialists-2',
-            awarded_at="2018-01-01"
+            brief_id=1,
+            supplier_id=2,
+            status='draft',
+            framework='digital-outcomes-and-specialists-2',
+            awarded_at="2018-01-01",
+            with_data=False,
         )
 
         assert result == {"briefResponses": []}
