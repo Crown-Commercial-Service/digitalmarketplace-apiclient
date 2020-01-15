@@ -124,13 +124,31 @@ class TestServiceMethods(object):
             123, {"foo": "bar"}, "person")
 
         assert result == {"services": "result"}
-        assert rmock.called
+        assert tuple(req.json() for req in rmock.request_history) == (
+            {
+                'services': {'foo': 'bar'},
+                'page_questions': [],
+                'updated_by': 'person',
+            },
+        )
 
     @pytest.mark.parametrize("wait_for_index_call_arg,wait_for_index_req_arg", (
         (False, "false"),
         (True, "true"),
     ))
-    def test_update_service_by_admin(self, data_client, rmock, wait_for_index_call_arg, wait_for_index_req_arg):
+    @pytest.mark.parametrize("page_questions_arg,expected_page_questions", (
+        (None, []),
+        (["u", "p", "up"], ["u", "p", "up"]),
+    ))
+    def test_update_service_by_admin(
+        self,
+        data_client,
+        rmock,
+        wait_for_index_call_arg,
+        wait_for_index_req_arg,
+        page_questions_arg,
+        expected_page_questions,
+    ):
         rmock.post(
             f"http://baseurl/services/123?&wait-for-index={wait_for_index_req_arg}&user-role=admin",
             json={"services": "result"},
@@ -138,10 +156,22 @@ class TestServiceMethods(object):
         )
 
         result = data_client.update_service(
-            123, {"foo": "bar"}, "person", user_role='admin', wait_for_index=wait_for_index_call_arg)
+            123,
+            {"foo": "bar"},
+            "important@person",
+            user_role='admin',
+            wait_for_index=wait_for_index_call_arg,
+            page_questions=page_questions_arg,
+        )
 
         assert result == {"services": "result"}
-        assert rmock.called
+        assert tuple(req.json() for req in rmock.request_history) == (
+            {
+                'services': {'foo': 'bar'},
+                'page_questions': expected_page_questions,
+                'updated_by': 'important@person',
+            },
+        )
 
     @pytest.mark.parametrize("wait_for_index_call_arg,wait_for_index_req_arg", (
         (False, "false"),
