@@ -26,6 +26,7 @@ class AuditTypes(Enum):
     update_service = "update_service"
     update_service_admin = "update_service_admin"
     update_service_status = "update_service_status"
+    update_service_supplier = "update_service_supplier"
 
     # Brief lifecycle events
     create_brief = "create_brief"
