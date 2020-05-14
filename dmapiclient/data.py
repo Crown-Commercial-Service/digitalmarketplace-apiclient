@@ -560,6 +560,18 @@ class DataAPIClient(BaseAPIClient):
     find_draft_services_iter = make_iter_method('find_draft_services', 'services')
     find_draft_services_iter.__name__ = str("find_draft_services_iter")
 
+    def find_draft_services_by_framework(self, framework_slug, page=None, status=None, supplier_id=None):
+        params = {
+            'page': page,
+            'status': status,
+            'supplier_id': supplier_id
+        }
+
+        return self._get('/draft-services/framework/{}'.format(framework_slug), params=params)
+
+    find_draft_services_by_framework_iter = make_iter_method('find_draft_services_by_framework', 'services')
+    find_draft_services_by_framework_iter.__name__ = str("find_draft_services_by_framework_iter")
+
     def get_draft_service(self, draft_id):
         return self._get(
             "/draft-services/{}".format(draft_id)
