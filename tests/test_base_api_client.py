@@ -38,7 +38,7 @@ def _empty_context_manager():
 class TestBaseApiClient(object):
     def _from_httplib_response_mock(self, status, response_data=None):
         response_mock = mock.Mock(
-            status=status, headers={}, spec=['get_redirect_location', 'getheader', 'read', 'reason']
+            status=status, headers={}, spec=['get_redirect_location', 'getheader', 'read', 'reason', 'drain_conn']
         )
         response_mock.get_redirect_location.return_value = None
         response_mock.getheader.return_value = None
