@@ -1224,6 +1224,43 @@ class TestDraftServiceMethods(object):
         assert result == {"draft-services": "result"}
         assert rmock.called
 
+    def test_find_draft_services_by_framework(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/draft-services/framework/g-cloud-6",
+            json={"draft-services": "result"},
+            status_code=200,
+        )
+
+        result = data_client.find_draft_services_by_framework('g-cloud-6')
+
+        assert result == {"draft-services": "result"}
+        assert rmock.called
+
+    def test_find_draft_services_by_framework_by_page(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/draft-services/framework/g-cloud-6?page=123",
+            json={"draft-services": "result"},
+            status_code=200,
+        )
+
+        result = data_client.find_draft_services_by_framework('g-cloud-6', page=123)
+
+        assert result == {"draft-services": "result"}
+        assert rmock.called
+
+    def test_find_draft_services_by_framework_with_optional_params(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/draft-services/framework/g-cloud-6?status=submitted&supplier_id=2",
+            json={"draft-services": "result"},
+            status_code=200,
+        )
+
+        result = data_client.find_draft_services_by_framework(
+            'g-cloud-6', status='submitted', supplier_id=2)
+
+        assert result == {"draft-services": "result"}
+        assert rmock.called
+
     def test_get_draft_service(self, data_client, rmock):
         rmock.get(
             "http://baseurl/draft-services/2",
@@ -2641,6 +2678,31 @@ class TestDataAPIClientIterMethods(object):
         assert results[0]['id'] == 1
         assert results[1]['id'] == 2
         assert results[2]['id'] == 3
+
+    def test_find_draft_services_by_framework_iter(self, data_client, rmock):
+        rmock.get(
+            'http://baseurl/draft-services/framework/g-cloud-12?status=submitted',
+            json={
+                'links': {'next': 'http://baseurl/draft-services/framework/g-cloud-12?status=submitted&page=2'},
+                'services': [{'foo': 'bar'}, {'foo': 'bat'}]
+            },
+            status_code=200)
+        rmock.get(
+            'http://baseurl/draft-services/framework/g-cloud-12?status=submitted&page=2',
+            json={
+                'links': {'prev': 'http://baseurl/draft-services/framework/g-cloud-12?status=submitted'},
+                'services': [{'foo': 'baz'}]
+            },
+            status_code=200)
+
+        result = data_client.find_draft_services_by_framework_iter('g-cloud-12', status='submitted')
+
+        results = list(result)
+
+        assert len(results) == 3
+        assert results[0]['foo'] == 'bar'
+        assert results[1]['foo'] == 'bat'
+        assert results[2]['foo'] == 'baz'
 
     def test_find_services_iter(self, data_client, rmock):
         self._test_find_iter(
