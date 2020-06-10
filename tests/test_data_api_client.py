@@ -563,8 +563,8 @@ class TestUserMethods(object):
 
 class TestBuyerDomainMethods(object):
     def test_is_email_address_with_valid_buyer_domain_true(self, data_client, rmock):
-        rmock.get(
-            "http://baseurl/users/check-buyer-email?email_address=kev%40gov.uk",
+        rmock.post(
+            "http://baseurl/users/check-buyer-email",
             json={"valid": True},
             status_code=200)
         result = data_client.is_email_address_with_valid_buyer_domain('kev@gov.uk')
@@ -572,8 +572,8 @@ class TestBuyerDomainMethods(object):
         assert result is True
 
     def test_is_email_address_with_valid_buyer_domain_false(self, data_client, rmock):
-        rmock.get(
-            "http://baseurl/users/check-buyer-email?email_address=kev%40ymail.com",
+        rmock.post(
+            "http://baseurl/users/check-buyer-email",
             json={"valid": False},
             status_code=200)
         result = data_client.is_email_address_with_valid_buyer_domain('kev@ymail.com')
@@ -622,8 +622,8 @@ class TestBuyerDomainMethods(object):
 class TestEmailVaildForAdminMethod(object):
 
     def test_email_address_with_valid_admin_domain_is_true(self, data_client, rmock):
-        rmock.get(
-            "http://baseurl/users/valid-admin-email?email_address=kev%40gov.uk",
+        rmock.post(
+            "http://baseurl/users/valid-admin-email",
             json={"valid": True},
             status_code=200
         )
@@ -632,8 +632,8 @@ class TestEmailVaildForAdminMethod(object):
         assert result is True
 
     def test_email_address_with_invalid_admin_domain_is_false(self, data_client, rmock):
-        rmock.get(
-            "http://baseurl/users/valid-admin-email?email_address=kev%40not-gov.uk",
+        rmock.post(
+            "http://baseurl/users/valid-admin-email",
             json={"valid": False},
             status_code=200
         )

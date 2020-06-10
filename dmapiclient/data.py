@@ -515,8 +515,8 @@ class DataAPIClient(BaseAPIClient):
     export_users_iter.__name__ = str("export_users_iter")
 
     def is_email_address_with_valid_buyer_domain(self, email_address):
-        return self._get(
-            "/users/check-buyer-email", params={'email_address': email_address}
+        return self._post(
+            "/users/check-buyer-email", data={'emailAddress': email_address}
         )['valid']
 
     def get_buyer_email_domains(self, page=None):
@@ -539,8 +539,8 @@ class DataAPIClient(BaseAPIClient):
         )
 
     def email_is_valid_for_admin_user(self, email_address):
-        return self._get(
-            "/users/valid-admin-email", params={'email_address': email_address}
+        return self._post(
+            "/users/valid-admin-email", data={'emailAddress': email_address}
         )['valid']
 
     # Services
