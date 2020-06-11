@@ -628,6 +628,7 @@ class TestEmailVaildForAdminMethod(object):
             status_code=200
         )
         result = data_client.email_is_valid_for_admin_user('kev@gov.uk')
+        assert rmock.last_request.json() == {"emailAddress": "kev@gov.uk"}
         assert rmock.called
         assert result is True
 
@@ -638,6 +639,7 @@ class TestEmailVaildForAdminMethod(object):
             status_code=200
         )
         result = data_client.email_is_valid_for_admin_user('kev@not-gov.uk')
+        assert rmock.last_request.json() == {"emailAddress": "kev@not-gov.uk"}
         assert rmock.called
         assert result is False
 
