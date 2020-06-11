@@ -569,6 +569,7 @@ class TestBuyerDomainMethods(object):
             status_code=200)
         result = data_client.is_email_address_with_valid_buyer_domain('kev@gov.uk')
         assert rmock.called
+        assert rmock.last_request.json() == {'emailAddress': 'kev@gov.uk'}
         assert result is True
 
     def test_is_email_address_with_valid_buyer_domain_false(self, data_client, rmock):
@@ -578,6 +579,7 @@ class TestBuyerDomainMethods(object):
             status_code=200)
         result = data_client.is_email_address_with_valid_buyer_domain('kev@ymail.com')
         assert rmock.called
+        assert rmock.last_request.json() == {'emailAddress': 'kev@ymail.com'}
         assert result is False
 
     def test_get_buyer_email_domains(self, data_client, rmock):
