@@ -1254,13 +1254,13 @@ class TestDraftServiceMethods(object):
 
     def test_find_draft_services_by_framework_with_optional_params(self, data_client, rmock):
         rmock.get(
-            "http://baseurl/draft-services/framework/g-cloud-6?status=submitted&supplier_id=2",
+            "http://baseurl/draft-services/framework/g-cloud-6?status=submitted&supplier_id=2&lot=cloud-support",
             json={"draft-services": "result"},
             status_code=200,
         )
 
         result = data_client.find_draft_services_by_framework(
-            'g-cloud-6', status='submitted', supplier_id=2)
+            'g-cloud-6', status='submitted', supplier_id=2, lot='cloud-support')
 
         assert result == {"draft-services": "result"}
         assert rmock.called
