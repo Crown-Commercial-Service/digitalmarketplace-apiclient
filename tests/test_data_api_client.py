@@ -1709,6 +1709,31 @@ class TestAuditEventMethods(object):
 
 
 class TestFrameworkMethods(object):
+    def test_create_framework(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/frameworks",
+            json={"frameworks": "result"},
+            status_code=201,
+        )
+
+        result = data_client.create_framework(
+            "digital-things-2", "Digital Things", "digital-things", [], True, False, "user@email.com")
+
+        assert result == {"frameworks": "result"}
+        assert rmock.last_request.json() == {
+            'frameworks': {
+                'clarificationQuestionsOpen': False,
+                'framework': 'digital-things',
+                'hasDirectAward': True,
+                'hasFurtherCompetition': False,
+                'lots': [],
+                'name': 'Digital Things',
+                'slug': 'digital-things-2',
+                'status': 'coming'
+            },
+            'updated_by': 'user@email.com'
+        }
+
     def test_get_interested_suppliers(self, data_client, rmock):
         rmock.get(
             'http://baseurl/frameworks/g-cloud-11/interest',

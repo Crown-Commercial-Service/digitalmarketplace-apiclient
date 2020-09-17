@@ -721,6 +721,34 @@ class DataAPIClient(BaseAPIClient):
     def get_framework(self, slug):
         return self._get("/frameworks/{}".format(slug))
 
+    def create_framework(self,
+                         slug,
+                         name,
+                         framework_family_slug,
+                         lots,
+                         has_direct_award,
+                         has_further_competition,
+                         user,
+                         *,
+                         status="coming",
+                         clarification_questions_open=False):
+        framework_data = {
+            "slug": slug,
+            "name": name,
+            "framework": framework_family_slug,
+            "status": status,
+            "clarificationQuestionsOpen": clarification_questions_open,
+            "lots": lots,
+            "hasDirectAward": has_direct_award,
+            "hasFurtherCompetition": has_further_competition
+        }
+
+        return self._post_with_updated_by(
+            "/frameworks",
+            data={"frameworks": framework_data},
+            user=user
+        )
+
     def update_framework(self, framework_slug, data, user):
         return self._post_with_updated_by(
             "/frameworks/{}".format(framework_slug),
