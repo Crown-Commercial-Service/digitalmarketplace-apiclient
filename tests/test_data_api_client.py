@@ -36,6 +36,29 @@ class TestDataApiClient(object):
         assert result['status'] == "ok"
         assert rmock.called
 
+    def test_updated_by_user_can_be_set_in_constructor(self, rmock):
+        data_client = DataAPIClient('http://baseurl', 'auth-token', user="testuser@example.com", enabled=True)
+
+        rmock.patch(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7/declaration",
+            json={"declaration": {"question": "answer"}},
+            status_code=200)
+
+        data_client.update_supplier_declaration(123, 'g-cloud-7', {"question": "answer"})
+
+        assert rmock.request_history[0].json() == {
+            'updated_by': 'testuser@example.com',
+            'declaration': {'question': 'answer'}}
+
+    def test_value_error_is_raised_if_no_user_in_constructor_or_method_call(self, data_client, rmock):
+        rmock.patch(
+            "http://baseurl/suppliers/123/frameworks/g-cloud-7/declaration",
+            json={"declaration": {"question": "answer"}},
+            status_code=200)
+
+        with pytest.raises(ValueError):
+            data_client.update_supplier_declaration(123, 'g-cloud-7', {"question": "answer"})
+
 
 class TestServiceMethods(object):
     def test_get_archived_service(self, data_client, rmock):
@@ -420,6 +443,20 @@ class TestUserMethods(object):
                 "password": "newpassword"
             },
             "updated_by": "test@example.com"
+        }
+
+    def test_update_user_password_with_user_property(self, rmock):
+        data_client = DataAPIClient('http://baseurl', 'auth-token', user="testuser@example.com", enabled=True)
+        rmock.post(
+            "http://baseurl/users/123",
+            json={},
+            status_code=200)
+        assert data_client.update_user_password(123, "newpassword")
+        assert rmock.last_request.json() == {
+            "users": {
+                "password": "newpassword"
+            },
+            "updated_by": "testuser@example.com"
         }
 
     def test_update_user_password_returns_false_on_non_200(

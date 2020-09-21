@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import logging
 import time
+from typing import Optional
 
 try:
     import urlparse
@@ -102,23 +103,36 @@ class BaseAPIClient(object):
         except (TypeError, LookupError):
             return self._timeout, read_timeout
 
-    def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):
+    def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,), *, user=None):
         self._base_url = base_url
         self._auth_token = auth_token
+        self._user = user
         self._enabled = enabled
         self._timeout = timeout
+
+    def _getuser(self, user=None):
+        if user is None and self._user is None:
+            raise ValueError(
+                "you must provide a user for updated_by, either in the API client constructor or in each method call"
+            )
+        elif user is None:
+            return self._user
+        else:
+            return user
 
     def _patch(self, url, data, *, client_wait_for_response: bool = True):
         return self._request("PATCH", url, data=data, client_wait_for_response=client_wait_for_response)
 
-    def _patch_with_updated_by(self, url, data, user, *, client_wait_for_response: bool = True):
+    def _patch_with_updated_by(self, url, data, *, user: Optional[str] = None, client_wait_for_response: bool = True):
+        user = self._getuser(user)
         data = dict(data, updated_by=user)
         return self._patch(url, data, client_wait_for_response=client_wait_for_response)
 
     def _put(self, url, data, *, client_wait_for_response: bool = True):
         return self._request("PUT", url, data=data, client_wait_for_response=client_wait_for_response)
 
-    def _put_with_updated_by(self, url, data, user, *, client_wait_for_response: bool = True):
+    def _put_with_updated_by(self, url, data, *, user: Optional[str] = None, client_wait_for_response: bool = True):
+        user = self._getuser(user)
         data = dict(data, updated_by=user)
         return self._put(url, data, client_wait_for_response=client_wait_for_response)
 
@@ -128,14 +142,16 @@ class BaseAPIClient(object):
     def _post(self, url, data, *, client_wait_for_response: bool = True):
         return self._request("POST", url, data=data, client_wait_for_response=client_wait_for_response)
 
-    def _post_with_updated_by(self, url, data, user, *, client_wait_for_response: bool = True):
+    def _post_with_updated_by(self, url, data, *, user: Optional[str] = True, client_wait_for_response: bool = True):
+        user = self._getuser(user)
         data = dict(data, updated_by=user)
         return self._post(url, data, client_wait_for_response=client_wait_for_response)
 
     def _delete(self, url, data=None, *, client_wait_for_response: bool = True):
         return self._request("DELETE", url, data=data, client_wait_for_response=client_wait_for_response)
 
-    def _delete_with_updated_by(self, url, data, user, *, client_wait_for_response: bool = True):
+    def _delete_with_updated_by(self, url, data, *, user: Optional[str] = None, client_wait_for_response: bool = True):
+        user = self._getuser(user)
         data = dict(data, updated_by=user)
         return self._delete(url, data, client_wait_for_response=client_wait_for_response)
 

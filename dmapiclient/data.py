@@ -57,14 +57,14 @@ class DataAPIClient(BaseAPIClient):
     find_audit_events_iter = make_iter_method('find_audit_events', 'auditEvents')
     find_audit_events_iter.__name__ = str("find_audit_events_iter")
 
-    def acknowledge_audit_event(self, audit_event_id, user):
+    def acknowledge_audit_event(self, audit_event_id, user=None):
         return self._post_with_updated_by(
             "/audit-events/{}/acknowledge".format(audit_event_id),
             data={},
             user=user,
         )
 
-    def acknowledge_service_update_including_previous(self, service_id, audit_event_id, user):
+    def acknowledge_service_update_including_previous(self, service_id, audit_event_id, user=None):
         return self._post_with_updated_by(
             "/services/{}/updates/acknowledge".format(service_id),
             data={"latestAuditEventId": audit_event_id},
@@ -129,7 +129,7 @@ class DataAPIClient(BaseAPIClient):
             data={"suppliers": supplier},
         )
 
-    def update_supplier(self, supplier_id, supplier, user):
+    def update_supplier(self, supplier_id, supplier, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}".format(supplier_id),
             data={
@@ -139,7 +139,7 @@ class DataAPIClient(BaseAPIClient):
         )
 
     def update_contact_information(self, supplier_id, contact_id,
-                                   contact, user):
+                                   contact, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/contact-information/{}".format(
                 supplier_id, contact_id),
@@ -149,7 +149,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def remove_contact_information_personal_data(self, supplier_id, contact_id, user):
+    def remove_contact_information_personal_data(self, supplier_id, contact_id, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/contact-information/{}/remove-personal-data".format(supplier_id, contact_id),
             data={},
@@ -161,7 +161,7 @@ class DataAPIClient(BaseAPIClient):
             "/suppliers/{}/frameworks/interest".format(supplier_id)
         )
 
-    def register_framework_interest(self, supplier_id, framework_slug, user):
+    def register_framework_interest(self, supplier_id, framework_slug, user=None):
         return self._put_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -180,7 +180,7 @@ class DataAPIClient(BaseAPIClient):
         )
         return {'declaration': response['frameworkInterest']['declaration']}
 
-    def set_supplier_declaration(self, supplier_id, framework_slug, declaration, user):
+    def set_supplier_declaration(self, supplier_id, framework_slug, declaration, user=None):
         return self._put_with_updated_by(
             "/suppliers/{}/frameworks/{}/declaration".format(supplier_id, framework_slug),
             data={
@@ -189,7 +189,7 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
-    def update_supplier_declaration(self, supplier_id, framework_slug, declaration_update, user):
+    def update_supplier_declaration(self, supplier_id, framework_slug, declaration_update, user=None):
         return self._patch_with_updated_by(
             "/suppliers/{}/frameworks/{}/declaration".format(supplier_id, framework_slug),
             data={
@@ -198,7 +198,7 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
-    def remove_supplier_declaration(self, supplier_id, framework_slug, user):
+    def remove_supplier_declaration(self, supplier_id, framework_slug, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}/declaration".format(
                 supplier_id, framework_slug),
@@ -216,7 +216,7 @@ class DataAPIClient(BaseAPIClient):
             "/suppliers/{}/frameworks/{}".format(supplier_id, framework_slug)
         )
 
-    def set_framework_result(self, supplier_id, framework_slug, is_on_framework, user):
+    def set_framework_result(self, supplier_id, framework_slug, is_on_framework, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -226,7 +226,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def set_supplier_framework_allow_declaration_reuse(self, supplier_id, framework_slug, allow, user):
+    def set_supplier_framework_allow_declaration_reuse(self, supplier_id, framework_slug, allow, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -241,7 +241,7 @@ class DataAPIClient(BaseAPIClient):
         supplier_id,
         framework_slug,
         prefill_declaration_from_framework_slug,
-        user,
+        user=None,
     ):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
@@ -257,7 +257,7 @@ class DataAPIClient(BaseAPIClient):
         supplier_id,
         framework_slug,
         application_company_details_confirmed,
-        user,
+        user=None,
     ):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
@@ -268,7 +268,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def register_framework_agreement_returned(self, supplier_id, framework_slug, user, uploader_user_id=None):
+    def register_framework_agreement_returned(self, supplier_id, framework_slug, user=None, uploader_user_id=None):
         framework_interest_dict = {
             "agreementReturned": True,
         }
@@ -282,7 +282,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def unset_framework_agreement_returned(self, supplier_id, framework_slug, user):
+    def unset_framework_agreement_returned(self, supplier_id, framework_slug, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -294,7 +294,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def update_supplier_framework_agreement_details(self, supplier_id, framework_slug, agreement_details, user):
+    def update_supplier_framework_agreement_details(self, supplier_id, framework_slug, agreement_details, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -306,7 +306,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def register_framework_agreement_countersigned(self, supplier_id, framework_slug, user):
+    def register_framework_agreement_countersigned(self, supplier_id, framework_slug, user=None):
         return self._post_with_updated_by(
             "/suppliers/{}/frameworks/{}".format(
                 supplier_id, framework_slug),
@@ -316,7 +316,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def agree_framework_variation(self, supplier_id, framework_slug, variation_slug, agreed_user_id, user):
+    def agree_framework_variation(self, supplier_id, framework_slug, variation_slug, agreed_user_id, user=None):
         return self._put_with_updated_by(
             "/suppliers/{}/frameworks/{}/variation/{}".format(
                 supplier_id, framework_slug, variation_slug),
@@ -436,14 +436,14 @@ class DataAPIClient(BaseAPIClient):
             if e.status_code not in [400, 403, 404]:
                 raise
 
-    def update_user_password(self, user_id, new_password, updater="no logged-in user"):
+    def update_user_password(self, user_id, new_password, updater=None):
         try:
             self._post_with_updated_by(
                 '/users/{}'.format(user_id),
                 data={
                     "users": {"password": new_password},
                 },
-                user=updater,
+                user=updater or self._user or "no logged-in user",
             )
             return True
         except HTTPError:
@@ -457,7 +457,7 @@ class DataAPIClient(BaseAPIClient):
                     supplier_id=None,
                     name=None,
                     user_research_opted_in=None,
-                    updater="no logged-in user"):
+                    updater=None):
         fields = {}
         if locked is not None:
             fields.update({
@@ -496,14 +496,14 @@ class DataAPIClient(BaseAPIClient):
         user = self._post_with_updated_by(
             '/users/{}'.format(user_id),
             data=params,
-            user=updater,
+            user=updater or self._user or "no logged-in user",
         )
 
         logger.info("Updated user {user_id} fields {params}",
                     extra={"user_id": user_id, "params": params})
         return user
 
-    def remove_user_personal_data(self, user_id, user):
+    def remove_user_personal_data(self, user_id, user=None):
         return self._post_with_updated_by("/users/{}/remove-personal-data".format(user_id), data={}, user=user)
 
     def export_users(self, framework_slug):
@@ -529,7 +529,7 @@ class DataAPIClient(BaseAPIClient):
     get_buyer_email_domains_iter = make_iter_method("get_buyer_email_domains", "buyerEmailDomains")
     get_buyer_email_domains_iter.__name__ = str("get_buyer_email_domains_iter")
 
-    def create_buyer_email_domain(self, buyer_email_domain, user):
+    def create_buyer_email_domain(self, buyer_email_domain, user=None):
         return self._post_with_updated_by(
             "/buyer-email-domains",
             data={
@@ -578,35 +578,35 @@ class DataAPIClient(BaseAPIClient):
             "/draft-services/{}".format(draft_id)
         )
 
-    def delete_draft_service(self, draft_id, user):
+    def delete_draft_service(self, draft_id, user=None):
         return self._delete_with_updated_by(
             "/draft-services/{}".format(draft_id),
             data={},
             user=user,
         )
 
-    def copy_draft_service_from_existing_service(self, service_id, user, data={}):
+    def copy_draft_service_from_existing_service(self, service_id, user=None, data={}):
         return self._put_with_updated_by(
             "/draft-services/copy-from/{}".format(service_id),
             data=data,
             user=user,
         )
 
-    def copy_published_from_framework(self, framework_slug, lot_slug, user, data={}):
+    def copy_published_from_framework(self, framework_slug, lot_slug, user=None, data={}):
         return self._post_with_updated_by(
             "/draft-services/{}/{}/copy-published-from-framework".format(framework_slug, lot_slug),
             data=data,
             user=user,
         )
 
-    def copy_draft_service(self, draft_id, user):
+    def copy_draft_service(self, draft_id, user=None):
         return self._post_with_updated_by(
             "/draft-services/{}/copy".format(draft_id),
             data={},
             user=user,
         )
 
-    def update_draft_service(self, draft_id, service, user, page_questions=None):
+    def update_draft_service(self, draft_id, service, user=None, page_questions=None):
         data = {
             "services": service,
         }
@@ -616,14 +616,14 @@ class DataAPIClient(BaseAPIClient):
 
         return self._post_with_updated_by("/draft-services/{}".format(draft_id), data=data, user=user)
 
-    def complete_draft_service(self, draft_id, user):
+    def complete_draft_service(self, draft_id, user=None):
         return self._post_with_updated_by(
             "/draft-services/{}/complete".format(draft_id),
             data={},
             user=user,
         )
 
-    def update_draft_service_status(self, draft_id, status, user):
+    def update_draft_service_status(self, draft_id, status, user=None):
         data = {
             "services": {"status": status},
         }
@@ -634,14 +634,14 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def publish_draft_service(self, draft_id, user):
+    def publish_draft_service(self, draft_id, user=None):
         return self._post_with_updated_by(
             "/draft-services/{}/publish".format(draft_id),
             data={},
             user=user,
         )
 
-    def create_new_draft_service(self, framework_slug, lot, supplier_id, data, user, page_questions=None):
+    def create_new_draft_service(self, framework_slug, lot, supplier_id, data, user=None, page_questions=None):
         service_data = data.copy()
         service_data.update({
             "frameworkSlug": framework_slug,
@@ -684,7 +684,7 @@ class DataAPIClient(BaseAPIClient):
     find_services_iter = make_iter_method('find_services', 'services')
     find_services_iter.__name__ = str("find_services_iter")
 
-    def update_service(self, service_id, service, user, user_role='', *, wait_for_index: bool = True):
+    def update_service(self, service_id, service, user=None, user_role='', *, wait_for_index: bool = True):
         return self._post_with_updated_by(
             "/services/{}?{}{}".format(
                 service_id,
@@ -697,7 +697,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def update_service_status(self, service_id, status, user, *, wait_for_index: bool = True):
+    def update_service_status(self, service_id, status, user=None, *, wait_for_index: bool = True):
         return self._post_with_updated_by(
             "/services/{}/status/{}{}".format(
                 service_id,
@@ -708,7 +708,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def revert_service(self, service_id, archived_service_id, user):
+    def revert_service(self, service_id, archived_service_id, user=None):
         return self._post_with_updated_by(
             "/services/{}/revert".format(service_id),
             data={"archivedServiceId": int(archived_service_id)},
@@ -728,7 +728,7 @@ class DataAPIClient(BaseAPIClient):
                          lots,
                          has_direct_award,
                          has_further_competition,
-                         user,
+                         user=None,
                          *,
                          status="coming",
                          clarification_questions_open=False):
@@ -749,14 +749,14 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
-    def update_framework(self, framework_slug, data, user):
+    def update_framework(self, framework_slug, data, user=None):
         return self._post_with_updated_by(
             "/frameworks/{}".format(framework_slug),
             data={"frameworks": data},
             user=user
         )
 
-    def transition_dos_framework(self, framework_slug, expiring_framework_slug, user):
+    def transition_dos_framework(self, framework_slug, expiring_framework_slug, user=None):
         return self._post_with_updated_by(
             "/frameworks/transition-dos/{}".format(framework_slug),
             data={"expiringFramework": expiring_framework_slug},
@@ -774,7 +774,7 @@ class DataAPIClient(BaseAPIClient):
 
     # Buyer briefs
 
-    def create_brief(self, framework_slug, lot_slug, user_id, data, updated_by, page_questions=None):
+    def create_brief(self, framework_slug, lot_slug, user_id, data, updated_by=None, page_questions=None):
         brief_data = data.copy()
         brief_data.update({
             "frameworkSlug": framework_slug,
@@ -790,14 +790,14 @@ class DataAPIClient(BaseAPIClient):
             user=updated_by,
         )
 
-    def copy_brief(self, brief_id, updated_by):
+    def copy_brief(self, brief_id, updated_by=None):
         return self._post_with_updated_by(
             "/briefs/{}/copy".format(brief_id),
             data={},
             user=updated_by,
         )
 
-    def update_brief(self, brief_id, brief, updated_by, page_questions=None):
+    def update_brief(self, brief_id, brief, updated_by=None, page_questions=None):
         return self._post_with_updated_by(
             "/briefs/{}".format(brief_id),
             data={
@@ -807,42 +807,42 @@ class DataAPIClient(BaseAPIClient):
             user=updated_by,
         )
 
-    def update_brief_award_brief_response(self, brief_id, brief_response_id, updated_by):
+    def update_brief_award_brief_response(self, brief_id, brief_response_id, updated_by=None):
         return self._post_with_updated_by(
             "/briefs/{}/award".format(brief_id),
             data={"briefResponseId": brief_response_id},
             user=updated_by,
         )
 
-    def update_brief_award_details(self, brief_id, brief_response_id, award_details, updated_by):
+    def update_brief_award_details(self, brief_id, brief_response_id, award_details, updated_by=None):
         return self._post_with_updated_by(
             "/briefs/{}/award/{}/contract-details".format(brief_id, brief_response_id),
             data={"awardDetails": award_details},
             user=updated_by,
         )
 
-    def publish_brief(self, brief_id, user):
+    def publish_brief(self, brief_id, user=None):
         return self._post_with_updated_by(
             "/briefs/{}/publish".format(brief_id),
             data={},
             user=user,
         )
 
-    def cancel_brief(self, brief_id, user):
+    def cancel_brief(self, brief_id, user=None):
         return self._post_with_updated_by(
             "/briefs/{}/cancel".format(brief_id),
             data={},
             user=user,
         )
 
-    def withdraw_brief(self, brief_id, user):
+    def withdraw_brief(self, brief_id, user=None):
         return self._post_with_updated_by(
             "/briefs/{}/withdraw".format(brief_id),
             data={},
             user=user,
         )
 
-    def update_brief_as_unsuccessful(self, brief_id, user):
+    def update_brief_as_unsuccessful(self, brief_id, user=None):
         return self._post_with_updated_by(
             "/briefs/{}/unsuccessful".format(brief_id),
             data={},
@@ -877,7 +877,7 @@ class DataAPIClient(BaseAPIClient):
     find_briefs_iter = make_iter_method('find_briefs', 'briefs')
     find_briefs_iter.__name__ = str("find_briefs_iter")
 
-    def delete_brief(self, brief_id, user):
+    def delete_brief(self, brief_id, user=None):
         return self._delete_with_updated_by(
             "/briefs/{}".format(brief_id),
             data={},
@@ -890,7 +890,7 @@ class DataAPIClient(BaseAPIClient):
             params={"supplier_id": supplier_id}
         )['services']) > 0
 
-    def create_brief_response(self, brief_id, supplier_id, data, user, page_questions=None):
+    def create_brief_response(self, brief_id, supplier_id, data, user=None, page_questions=None):
         data = dict(data, briefId=brief_id, supplierId=supplier_id)
         return self._post_with_updated_by(
             "/brief-responses",
@@ -901,7 +901,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def update_brief_response(self, brief_response_id, data, user, page_questions=None):
+    def update_brief_response(self, brief_response_id, data, user=None, page_questions=None):
         return self._post_with_updated_by(
             "/brief-responses/{}".format(brief_response_id),
             data={
@@ -911,7 +911,7 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
-    def submit_brief_response(self, brief_response_id, user):
+    def submit_brief_response(self, brief_response_id, user=None):
         return self._post_with_updated_by(
             "/brief-responses/{}/submit".format(brief_response_id),
             data={},
@@ -946,7 +946,7 @@ class DataAPIClient(BaseAPIClient):
     find_brief_responses_iter = make_iter_method('find_brief_responses', 'briefResponses')
     find_brief_responses_iter.__name__ = str("find_brief_responses_iter")
 
-    def add_brief_clarification_question(self, brief_id, question, answer, user):
+    def add_brief_clarification_question(self, brief_id, question, answer, user=None):
         return self._post_with_updated_by(
             "/briefs/{}/clarification-questions".format(brief_id),
             data={
@@ -963,7 +963,7 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/agreements/{}".format(framework_agreement_id))
 
-    def create_framework_agreement(self, supplier_id, framework_slug, user):
+    def create_framework_agreement(self, supplier_id, framework_slug, user=None):
         return self._post_with_updated_by(
             "/agreements",
             data={
@@ -972,7 +972,7 @@ class DataAPIClient(BaseAPIClient):
             user=user
         )
 
-    def update_framework_agreement(self, framework_agreement_id, framework_agreement, user):
+    def update_framework_agreement(self, framework_agreement_id, framework_agreement, user=None):
         return self._post_with_updated_by(
             "/agreements/{}".format(framework_agreement_id),
             data={
