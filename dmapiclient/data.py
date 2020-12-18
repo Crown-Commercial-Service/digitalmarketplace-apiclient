@@ -671,6 +671,9 @@ class DataAPIClient(BaseAPIClient):
         return None
 
     def find_services(self, supplier_id=None, framework=None, status=None, page=None, lot=None):
+        """
+        The response will be paginated unless you provide supplier_id.
+        """
         params = {
             'supplier_id': supplier_id,
             'framework': framework,
@@ -857,6 +860,9 @@ class DataAPIClient(BaseAPIClient):
         self, user_id=None, status=None, framework=None, lot=None, page=None, human=None, with_users=None,
         with_clarification_questions=None, closed_on=None, withdrawn_on=None, cancelled_on=None, unsuccessful_on=None
     ):
+        """
+        The response will be paginated unless you provide user_id.
+        """
         return self._get(
             "/briefs",
             params={"user_id": user_id,
@@ -932,6 +938,9 @@ class DataAPIClient(BaseAPIClient):
         *,
         with_data: bool = None,
     ):
+        """
+        The response will be paginated unless you provide supplier_id or brief_id.
+        """
         return self._get(
             "/brief-responses",
             params={
