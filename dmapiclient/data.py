@@ -1,4 +1,7 @@
 from __future__ import unicode_literals
+
+import warnings
+
 from .audit import AuditTypes
 from .base import BaseAPIClient, logger, make_iter_method
 from .errors import HTTPError
@@ -25,6 +28,10 @@ class DataAPIClient(BaseAPIClient):
             user=None,
             data_supplier_id=None,
     ):
+        warnings.warn(
+            "The output of 'find_audit_events' is paginated. Use 'find_audit_events_iter' instead.",
+            DeprecationWarning
+        )
 
         params = {
             "acknowledged": acknowledged,
@@ -96,6 +103,11 @@ class DataAPIClient(BaseAPIClient):
     def find_suppliers(
         self, prefix=None, page=None, framework=None, duns_number=None, company_registration_number=None, name=None
     ):
+        warnings.warn(
+            "The output of 'find_suppliers' is paginated. Use 'find_suppliers_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {}
         if prefix:
             params["prefix"] = prefix
@@ -376,6 +388,11 @@ class DataAPIClient(BaseAPIClient):
         *,
         user_research_opted_in=None,
     ):
+        warnings.warn(
+            "The output of 'find_users' is paginated. Use 'find_users_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {}
         if supplier_id is not None and role is not None:
             raise ValueError(
@@ -520,6 +537,11 @@ class DataAPIClient(BaseAPIClient):
         )['valid']
 
     def get_buyer_email_domains(self, page=None):
+        warnings.warn(
+            "The output of 'get_buyer_email_domains' is paginated. Use 'get_buyer_email_domains_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {}
         if page is not None:
             params["page"] = page
@@ -561,6 +583,12 @@ class DataAPIClient(BaseAPIClient):
     find_draft_services_iter.__name__ = str("find_draft_services_iter")
 
     def find_draft_services_by_framework(self, framework_slug, page=None, status=None, supplier_id=None, lot=None):
+        warnings.warn(
+            "The output of 'find_draft_services_by_framework' is paginated. "
+            "Use 'find_draft_services_by_framework_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {
             'page': page,
             'status': status,
@@ -674,6 +702,11 @@ class DataAPIClient(BaseAPIClient):
         """
         The response will be paginated unless you provide supplier_id.
         """
+        warnings.warn(
+            "The output of 'find_services' is paginated. Use 'find_services_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {
             'supplier_id': supplier_id,
             'framework': framework,
@@ -863,6 +896,11 @@ class DataAPIClient(BaseAPIClient):
         """
         The response will be paginated unless you provide user_id.
         """
+        warnings.warn(
+            "The output of 'find_briefs' is paginated. Use 'find_briefs_iter' instead.",
+            DeprecationWarning
+        )
+
         return self._get(
             "/briefs",
             params={"user_id": user_id,
@@ -1037,6 +1075,11 @@ class DataAPIClient(BaseAPIClient):
         latest_first=None,
         with_users=False,
     ):
+        warnings.warn(
+            "The output of 'find_direct_award_projects' is paginated. Use 'find_direct_award_projects_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {
             "user-id": user_id,
             "page": page,
@@ -1075,6 +1118,12 @@ class DataAPIClient(BaseAPIClient):
         )
 
     def find_direct_award_project_searches(self, project_id, user_id=None, page=None, only_active=None):
+        warnings.warn(
+            "The output of 'find_direct_award_project_searches' is paginated. "
+            "Use 'find_direct_award_project_searches_iter' instead.",
+            DeprecationWarning
+        )
+
         params = {
             "user-id": user_id,
             "page": page,
@@ -1188,6 +1237,11 @@ class DataAPIClient(BaseAPIClient):
         return self._get("/outcomes/{}".format(outcome_id))
 
     def find_outcomes(self, completed=None, page=None):
+        warnings.warn(
+            "The output of 'find_outcomes' is paginated. Use 'find_outcomes_iter' instead.",
+            DeprecationWarning
+        )
+
         # we call this "find outcomes" for consistency with other methods, but it's not particularly useful for finding
         # specific outcomes yet due to the lack of filtering options
         return self._get(

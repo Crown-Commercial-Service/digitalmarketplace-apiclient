@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import warnings
+
 try:
     from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 except ImportError:
@@ -129,6 +131,11 @@ class SearchAPIClient(BaseAPIClient):
         return response
 
     def search_services_from_url(self, search_api_url, id_only=False, page=None):
+        warnings.warn(
+            "The output of 'search_services_from_url' is paginated. Use 'search_services_from_url_iter' instead.",
+            DeprecationWarning
+        )
+
         scheme, netloc, path, params, query, fragment = urlparse(search_api_url)
 
         query_params = parse_qsl(query)
