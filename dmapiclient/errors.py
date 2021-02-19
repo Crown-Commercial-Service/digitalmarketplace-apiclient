@@ -1,3 +1,5 @@
+from typing import Union
+
 REQUEST_ERROR_STATUS_CODE = 503
 REQUEST_ERROR_MESSAGE = "Unknown request failure in dmapiclient"
 
@@ -8,14 +10,14 @@ class APIError(Exception):
         self._message = message
 
     @property
-    def message(self):
+    def message(self) -> Union[str, dict]:
         try:
             return self.response.json()['error']
         except (TypeError, ValueError, AttributeError, KeyError):
             return self._message or REQUEST_ERROR_MESSAGE
 
     @property
-    def status_code(self):
+    def status_code(self) -> int:
         try:
             return self.response.status_code
         except AttributeError:
