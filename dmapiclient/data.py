@@ -560,6 +560,15 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def delete_buyer_email_domain(self, buyer_email_domain, user=None):
+        return self._delete_with_updated_by(
+            "/buyer-email-domains",
+            data={
+                "buyerEmailDomains": {"domainName": buyer_email_domain}
+            },
+            user=user,
+        )
+
     def email_is_valid_for_admin_user(self, email_address):
         return self._post(
             "/users/valid-admin-email", data={'emailAddress': email_address}

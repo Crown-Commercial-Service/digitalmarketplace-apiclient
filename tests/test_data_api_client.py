@@ -657,8 +657,25 @@ class TestBuyerDomainMethods(object):
             "updated_by": "user@email.com"
         }
 
+    def test_delete_buyer_email_domain(self, data_client, rmock):
+        rmock.delete(
+            "http://baseurl/buyer-email-domains",
+            json={"buyerEmailDomains": "result"},
+            status_code=201,
+        )
 
-class TestEmailVaildForAdminMethod(object):
+        result = data_client.delete_buyer_email_domain(
+            "whatever.org", "user@email.com"
+        )
+
+        assert result == {"buyerEmailDomains": "result"}
+        assert rmock.last_request.json() == {
+            "buyerEmailDomains": {"domainName": "whatever.org"},
+            "updated_by": "user@email.com"
+        }
+
+
+class TestEmailValidForAdminMethod(object):
 
     def test_email_address_with_valid_admin_domain_is_true(self, data_client, rmock):
         rmock.post(
