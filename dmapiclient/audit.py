@@ -66,6 +66,7 @@ class AuditTypes(Enum):
     # Admin actions
     snapshot_framework_stats = "snapshot_framework_stats"
     create_buyer_email_domain = "create_buyer_email_domain"
+    delete_buyer_email_domain = "delete_buyer_email_domain"
 
     # Projects
     create_project = "create_project"
