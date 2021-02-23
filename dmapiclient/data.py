@@ -857,6 +857,13 @@ class DataAPIClient(BaseAPIClient):
             user=updated_by,
         )
 
+    def unaward_brief_response(self, brief_id, brief_response_id, updated_by=None):
+        return self._delete_with_updated_by(
+            f"/briefs/{brief_id}/award/{brief_response_id}/contract-details",
+            data={},
+            user=updated_by,
+        )
+
     def publish_brief(self, brief_id, user=None):
         return self._post_with_updated_by(
             "/briefs/{}/publish".format(brief_id),

@@ -1951,6 +1951,18 @@ class TestBriefMethods(object):
             "updated_by": "user@email.com"
         }
 
+    def test_unaward_brief_response(self, data_client, rmock):
+        rmock.delete(
+            "http://baseurl/briefs/123/award/456/contract-details",
+            json={"briefs": "result"},
+            status_code=200,
+        )
+
+        result = data_client.unaward_brief_response(123, 456, updated_by="user@email.com")
+
+        assert result == {"briefs": "result"}
+        assert rmock.last_request.json() == {"updated_by": "user@email.com"}
+
     def test_publish_brief(self, data_client, rmock):
         rmock.post(
             "http://baseurl/briefs/123/publish",
