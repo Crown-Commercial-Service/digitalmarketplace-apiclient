@@ -1,3 +1,7 @@
+"""
+API clients for Digital Marketplace Data API and Search API.
+"""
+
 import re
 import ast
 from setuptools import setup, find_packages
