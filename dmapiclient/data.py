@@ -560,6 +560,15 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def delete_buyer_email_domain(self, buyer_email_domain, user=None):
+        return self._delete_with_updated_by(
+            "/buyer-email-domains",
+            data={
+                "buyerEmailDomains": {"domainName": buyer_email_domain}
+            },
+            user=user,
+        )
+
     def email_is_valid_for_admin_user(self, email_address):
         return self._post(
             "/users/valid-admin-email", data={'emailAddress': email_address}
@@ -854,6 +863,13 @@ class DataAPIClient(BaseAPIClient):
         return self._post_with_updated_by(
             "/briefs/{}/award/{}/contract-details".format(brief_id, brief_response_id),
             data={"awardDetails": award_details},
+            user=updated_by,
+        )
+
+    def unaward_brief_response(self, brief_id, brief_response_id, updated_by=None):
+        return self._delete_with_updated_by(
+            f"/briefs/{brief_id}/award/{brief_response_id}/contract-details",
+            data={},
             user=updated_by,
         )
 
