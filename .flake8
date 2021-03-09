@@ -7,3 +7,5 @@ exclude = venv*,__pycache__,node_modules,bower_components
 ignore = D203,W503
 max-complexity = 11
 max-line-length = 120
+per-file-ignores =
+    tasks.py: F401
