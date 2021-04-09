@@ -137,7 +137,7 @@ class BaseAPIClient(object):
     def _post(self, url, data, *, client_wait_for_response: bool = True):
         return self._request("POST", url, data=data, client_wait_for_response=client_wait_for_response)
 
-    def _post_with_updated_by(self, url, data, *, user: Optional[str] = True, client_wait_for_response: bool = True):
+    def _post_with_updated_by(self, url, data, *, user: Optional[str] = None, client_wait_for_response: bool = True):
         user = self._getuser(user)
         data = dict(data, updated_by=user)
         return self._post(url, data, client_wait_for_response=client_wait_for_response)
