@@ -170,7 +170,8 @@ class BaseAPIClient(object):
 
     def _requests_retry_session(self, *, retry_read_timeouts: bool = True):
         session = requests.Session()
-        retry = Retry(
+        # TODO: remove ignore once requests' typeshed entry is correct (currently missing status and raise_on_status).
+        retry = Retry(  # type: ignore
             total=self._RETRIES,
             read=self._RETRIES if retry_read_timeouts else 0,
             connect=self._RETRIES,
@@ -212,11 +213,12 @@ class BaseAPIClient(object):
             "User-agent": "DM-API-Client/{}".format(__version__),
         }
         if has_request_context():
+            # Disable type checking for attributes added by RequestIdRequestMixin - mypy doesn't know about it.
             if callable(getattr(request, "get_onwards_request_headers", None)):
-                headers.update(request.get_onwards_request_headers())
+                headers.update(request.get_onwards_request_headers())  # type: ignore
             elif getattr(request, "request_id", None) and current_app.config.get("DM_REQUEST_ID_HEADER"):
                 # support old .request_id attr for compatibility
-                headers[current_app.config["DM_REQUEST_ID_HEADER"]] = request.request_id
+                headers[current_app.config["DM_REQUEST_ID_HEADER"]] = request.request_id  # type: ignore
 
         # not using CaseInsensitiveDict as our header dict initially as technically .update()'s behaviour is undefined
         # for it, but past a certain point we want to be able to know we've resolved what our final header value is
