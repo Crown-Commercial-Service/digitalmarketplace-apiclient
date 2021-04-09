@@ -3,12 +3,7 @@
 import re
 import warnings
 
-try:
-    from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
-except ImportError:
-    from urlparse import urlparse, urlunparse, parse_qsl
-    from urllib import urlencode
-
+from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 
 from .base import BaseAPIClient, make_iter_method
 from .errors import HTTPError

@@ -2,18 +2,13 @@ from __future__ import absolute_import
 import logging
 import time
 from typing import Optional
-
-try:
-    import urlparse
-except ImportError:
-    import urllib.parse as urlparse
-
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from requests.exceptions import ReadTimeout
 from urllib3.exceptions import ReadTimeoutError
 from flask import has_request_context, request, current_app
+import urllib.parse as urlparse
 
 from . import __version__
 from .errors import APIError, HTTPError, InvalidResponse
