@@ -22,6 +22,7 @@ setup(
     description='Digital Marketplace Data and Search API clients',
     long_description=__doc__,
     packages=find_packages(),
+    package_data={'dmapiclient': ['py.typed']},
     include_package_data=True,
     install_requires=[
         'requests<3,>=2.18.4',
