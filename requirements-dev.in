@@ -1,0 +1,13 @@
+-e file:.
+
+Flask<1.1,>=0.10.1
+
+coverage
+coveralls
+flake8
+mock
+pytest
+pytest-cov
+requests-mock
+
+digitalmarketplace-test-utils<3.0.0,>=2.8.2
