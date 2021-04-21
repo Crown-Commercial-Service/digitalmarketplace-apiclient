@@ -50,6 +50,10 @@ mock==4.0.2
     # via -r requirements-dev.in
 more-itertools==8.7.0
     # via pytest
+mypy-extensions==0.4.3
+    # via mypy
+mypy==0.812
+    # via -r requirements-dev.in
 packaging==20.9
     # via pytest
 pluggy==0.13.1
@@ -79,8 +83,12 @@ six==1.15.0
     # via
     #   pytest
     #   requests-mock
+typed-ast==1.4.3
+    # via mypy
 typing-extensions==3.7.4.3
-    # via importlib-metadata
+    # via
+    #   importlib-metadata
+    #   mypy
 urllib3==1.26.4
     # via requests
 wcwidth==0.2.5

@@ -2,6 +2,12 @@
 
 Records breaking changes from major version bumps
 
+## 22.0.0
+
+Mark this package as PEP 561 compatible. If you have dmapiclient as a dependency and run type checking, the type checker
+will now check that you're using dmapiclient correctly. This might break your application's type checking if you're 
+using dmapiclient incorrectly.
+
 ## 21.0.0
 
 All "attributes" of apiclient instances have been made private and replaced with read-only properties of the same name.
