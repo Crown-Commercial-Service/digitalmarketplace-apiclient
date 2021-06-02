@@ -34,10 +34,7 @@ flask==1.0.4
 idna==2.10
     # via requests
 importlib-metadata==4.0.1
-    # via
-    #   flake8
-    #   pluggy
-    #   pytest
+    # via pytest
 itsdangerous==1.1.0
     # via flask
 jinja2==2.11.3
@@ -77,8 +74,8 @@ requests-mock==1.7.0
 requests==2.25.1
     # via
     #   coveralls
-    #   digitalmarketplace-apiclient
     #   requests-mock
+    #   sanitized-package
 six==1.15.0
     # via
     #   pytest
@@ -86,10 +83,8 @@ six==1.15.0
 typed-ast==1.4.3
     # via mypy
 typing-extensions==3.7.4.3
-    # via
-    #   importlib-metadata
-    #   mypy
-urllib3==1.26.4
+    # via mypy
+urllib3==1.26.5
     # via requests
 wcwidth==0.2.5
     # via pytest
