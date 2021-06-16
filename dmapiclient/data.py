@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import warnings
+from typing import Dict
 
 from .audit import AuditTypes
 from .base import BaseAPIClient, logger, make_iter_method
@@ -907,31 +908,41 @@ class DataAPIClient(BaseAPIClient):
 
     def find_briefs(
         self, user_id=None, status=None, framework=None, lot=None, page=None, human=None, with_users=None,
-        with_clarification_questions=None, closed_on=None, withdrawn_on=None, cancelled_on=None, unsuccessful_on=None
+        with_clarification_questions=None, closed_on=None, withdrawn_on=None, cancelled_on=None, unsuccessful_on=None,
+        status_date_filters: Dict[str, str] = None,
     ):
         """
         The response will be paginated unless you provide user_id.
+
+        :param status_date_filters: contains additional status date filters. For permitted keys, see `list_briefs` in
+        https://github.com/alphagov/digitalmarketplace-api/blob/main/app/main/views/briefs.py
         """
         warnings.warn(
             "The output of 'find_briefs' is paginated. Use 'find_briefs_iter' instead.",
             DeprecationWarning
         )
 
+        params = {
+            "user_id": user_id,
+            "framework": framework,
+            "lot": lot,
+            "status": status,
+            "page": page,
+            "human": human,
+            "with_users": with_users,
+            "with_clarification_questions": with_clarification_questions,
+            "closed_on": closed_on,
+            "withdrawn_on": withdrawn_on,
+            "cancelled_on": cancelled_on,
+            "unsuccessful_on": unsuccessful_on
+        }
+
+        if status_date_filters:
+            params.update(status_date_filters)
+
         return self._get(
             "/briefs",
-            params={"user_id": user_id,
-                    "framework": framework,
-                    "lot": lot,
-                    "status": status,
-                    "page": page,
-                    "human": human,
-                    "with_users": with_users,
-                    "with_clarification_questions": with_clarification_questions,
-                    "closed_on": closed_on,
-                    "withdrawn_on": withdrawn_on,
-                    "cancelled_on": cancelled_on,
-                    "unsuccessful_on": unsuccessful_on
-                    }
+            params=params
         )
 
     find_briefs_iter = make_iter_method('find_briefs', 'briefs')
