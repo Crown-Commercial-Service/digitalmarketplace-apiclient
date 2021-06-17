@@ -1590,7 +1590,7 @@ class TestAuditEventMethods(object):
         url = (
             "http://baseurl/audit-events?object-type=foo&object-id=34&acknowledged=all&latest_first=True"
             "&audit-date=2010-01-01&page=12&audit-type=contact_update&per_page=23&earliest_for_each_object=True"
-            "&user=ruby.cohen@example.com&data-supplier-id=123456"
+            "&user=ruby.cohen@example.com&data-supplier-id=123456&sort_by=bar"
         )
         rmock.get(
             url,
@@ -1609,6 +1609,7 @@ class TestAuditEventMethods(object):
             per_page=23,
             object_id=34,
             object_type='foo',
+            sort_by='bar',
             user="ruby.cohen@example.com")
 
         assert result == {"audit-event": "result"}

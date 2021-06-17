@@ -26,6 +26,7 @@ class DataAPIClient(BaseAPIClient):
             object_id=None,
             latest_first=None,
             earliest_for_each_object=None,
+            sort_by=None,
             user=None,
             data_supplier_id=None,
     ):
@@ -44,6 +45,7 @@ class DataAPIClient(BaseAPIClient):
             "object-type": object_type,
             "page": page,
             "per_page": per_page,
+            "sort_by": sort_by,
             "user": user,
         }
 
