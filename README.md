@@ -1,7 +1,7 @@
 Digital Marketplace API client
 =========================
 
-![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)
+![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)
 
 ## What's in here?
 
