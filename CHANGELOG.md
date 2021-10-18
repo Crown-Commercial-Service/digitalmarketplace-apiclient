@@ -2,6 +2,13 @@
 
 Records breaking changes from major version bumps
 
+## 23.0.0
+Update to use python 3.8 as python 3.6 is reaching end of life.
+
+Dropping support for:
+- python 3.6
+- python 3.7
+
 ## 22.0.0
 
 Mark this package as PEP 561 compatible. If you have dmapiclient as a dependency and run type checking, the type checker
