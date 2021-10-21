@@ -5,10 +5,10 @@ Digital Marketplace API client
 
 ## What's in here?
 
-API clients for Digital Marketplace [Data API](https://github.com/alphagov/digitalmarketplace-api) and
-[Search API](https://github.com/alphagov/digitalmarketplace-search-api).
+API clients for Digital Marketplace [Data API](https://github.com/Crown-Commercial-Service/digitalmarketplace-api) and
+[Search API](https://github.com/Crown-Commercial-Service/digitalmarketplace-search-api).
 
-Originally was part of [Digital Marketplace Utils](https://github.com/alphagov/digitalmarketplace-utils).
+Originally was part of [Digital Marketplace Utils](https://github.com/Crown-Commercial-Service/digitalmarketplace-utils).
 
 
 ## Running the tests
@@ -44,7 +44,7 @@ Once the tag is available on GitHub, the new version can be used by the apps by 
 line to the app `requirements.txt` (replacing `X.Y.Z` with the current version number):
 
 ```
-git+https://github.com/alphagov/digitalmarketplace-apiclient.git@X.Y.Z#egg=digitalmarketplace-apiclient==X.Y.Z
+git+https://github.com/Crown-Commercial-Service/digitalmarketplace-apiclient.git@X.Y.Z#egg=digitalmarketplace-apiclient==X.Y.Z
 ```
 
 When changing a major version number consider adding a record to the `CHANGELOG.md` with a
