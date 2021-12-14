@@ -390,6 +390,7 @@ class DataAPIClient(BaseAPIClient):
         personal_data_removed=None,
         *,
         user_research_opted_in=None,
+        active=None,
     ):
         warnings.warn(
             "The output of 'find_users' is paginated. Use 'find_users_iter' instead.",
@@ -410,6 +411,8 @@ class DataAPIClient(BaseAPIClient):
             params['personal_data_removed'] = personal_data_removed
         if user_research_opted_in is not None:
             params['user_research_opted_in'] = user_research_opted_in
+        if active is not None:
+            params['active'] = active
         return self._get("/users", params=params)
 
     find_users_iter = make_iter_method('find_users', 'users')

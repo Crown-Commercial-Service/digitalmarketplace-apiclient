@@ -208,7 +208,7 @@ class TestUserMethods(object):
             'email_address': 'email_address',
             'name': 'name',
             'role': 'supplier',
-            'active': 'active',
+            'active': True,
             'locked': False,
             'created_at': "2015-05-05T05:05:05",
             'updated_at': "2015-05-05T05:05:05",
@@ -294,6 +294,28 @@ class TestUserMethods(object):
             json=user,
             status_code=200)
         user = data_client.find_users(user_research_opted_in=True)
+
+        assert user == expected_data
+
+    def test_find_users_by_active_false(self, data_client, rmock):
+        rmock.get(
+            "http://baseurl/users?active=false",
+            json=self.user(),
+            status_code=200)
+        user = data_client.find_users(active=False)
+
+        assert user == self.user()
+
+    def test_find_users_by_active_true(self, data_client, rmock):
+        user = self.user()
+        user['users'].update({'active': True})
+        expected_data = user.copy()
+
+        rmock.get(
+            "http://baseurl/users?active=true",
+            json=user,
+            status_code=200)
+        user = data_client.find_users(active=True)
 
         assert user == expected_data
 
