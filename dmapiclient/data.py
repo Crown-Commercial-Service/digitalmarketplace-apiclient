@@ -1042,9 +1042,9 @@ class DataAPIClient(BaseAPIClient):
         return self._get(
             "/agreements/{}".format(framework_agreement_id))
 
-    def get_supplier_framework_agreement(self, framework_slug, supplier_id):
+    def get_supplier_framework_agreement(self, framework_slug):
         return self._get(
-            "/agreements/{}/{}".format(framework_slug, supplier_id))
+            "/agreements/{}".format(framework_slug))
 
     def create_framework_agreement(self, supplier_id, framework_slug, user=None):
         return self._post_with_updated_by(
