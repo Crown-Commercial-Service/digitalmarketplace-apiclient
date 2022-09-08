@@ -2386,6 +2386,19 @@ class TestFrameworkAgreementMethods(object):
             "updated_by": "user@example.com",
         }
 
+    def test_update_framework_agreement_undo_countersign(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/agreements/12345/undo-countersign",
+            json={},
+            status_code=200)
+
+        result = data_client.update_framework_agreement_undo_countersign(12345, "user@example.com")
+
+        assert result == {}
+        assert rmock.last_request.json() == {
+            "updated_by": "user@example.com",
+        }
+
     def test_sign_framework_agreement_with_no_signed_agreement_details(self, data_client, rmock):
         rmock.post(
             "http://baseurl/agreements/12345/sign",
