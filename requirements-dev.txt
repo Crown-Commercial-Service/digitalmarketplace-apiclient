@@ -10,7 +10,7 @@ atomicwrites==1.4.0
     # via pytest
 attrs==20.3.0
     # via pytest
-certifi==2020.12.5
+certifi==2022.12.7
     # via requests
 chardet==4.0.0
     # via requests
@@ -72,8 +72,8 @@ pytest-cov==2.7.1
 requests==2.25.1
     # via
     #   coveralls
-    #   digitalmarketplace-apiclient
     #   requests-mock
+    #   sanitized-package
 requests-mock==1.7.0
     # via -r requirements-dev.in
 six==1.15.0
