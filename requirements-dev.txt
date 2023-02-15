@@ -88,7 +88,7 @@ urllib3==1.26.5
     # via requests
 wcwidth==0.2.5
     # via pytest
-werkzeug==1.0.1
+werkzeug==2.2.3
     # via flask
 zipp==3.4.1
     # via importlib-metadata
