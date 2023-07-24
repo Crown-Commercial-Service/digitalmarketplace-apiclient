@@ -27,5 +27,5 @@ setup(
     install_requires=[
         'requests<3,>=2.18.4',
     ],
-    python_requires="~=3.8",
+    python_requires="~=3.9",
 )
