@@ -14,7 +14,7 @@ certifi==2022.12.7
     # via requests
 charset-normalizer==2.1.1
     # via requests
-click==7.1.2
+click==8.1.6
     # via flask
 coverage==4.5.3
     # via
@@ -29,15 +29,17 @@ docopt==0.6.2
     # via coveralls
 flake8==3.8.0
     # via -r requirements-dev.in
-flask==1.0.4
+flask==2.2.5
     # via -r requirements-dev.in
 idna==2.10
     # via requests
 importlib-metadata==4.0.1
-    # via pytest
-itsdangerous==1.1.0
+    # via
+    #   flask
+    #   pytest
+itsdangerous==2.1.2
     # via flask
-jinja2==2.11.3
+jinja2==3.1.2
     # via flask
 markupsafe==2.1.2
     # via
@@ -74,8 +76,8 @@ pytest-cov==2.7.1
 requests==2.31.0
     # via
     #   coveralls
+    #   digitalmarketplace-apiclient
     #   requests-mock
-    #   sanitized-package
 requests-mock==1.7.0
     # via -r requirements-dev.in
 six==1.15.0
