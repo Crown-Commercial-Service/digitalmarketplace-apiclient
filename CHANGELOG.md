@@ -2,7 +2,7 @@
 
 Records breaking changes from major version bumps
 
-## [Unreleased changes]
+## 24.0.0
 Update to use python 3.9 and drop support for python 3.8.
 
 Updated other packages so minimum Flask requirement is now v2
