@@ -76,8 +76,8 @@ pytest-cov==2.7.1
 requests==2.31.0
     # via
     #   coveralls
-    #   digitalmarketplace-apiclient
     #   requests-mock
+    #   sanitized-package
 requests-mock==1.7.0
     # via -r requirements-dev.in
 six==1.15.0
@@ -92,7 +92,7 @@ urllib3==1.26.5
     # via requests
 wcwidth==0.2.5
     # via pytest
-werkzeug==2.2.3
+werkzeug==3.0.1
     # via flask
 zipp==3.4.1
     # via importlib-metadata
