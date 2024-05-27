@@ -73,11 +73,11 @@ pytest==4.6.3
     #   pytest-cov
 pytest-cov==2.7.1
     # via -r requirements-dev.in
-requests==2.31.0
+requests==2.32.2
     # via
     #   coveralls
+    #   digitalmarketplace-apiclient
     #   requests-mock
-    #   sanitized-package
 requests-mock==1.7.0
     # via -r requirements-dev.in
 six==1.15.0
