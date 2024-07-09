@@ -94,5 +94,5 @@ wcwidth==0.2.5
     # via pytest
 werkzeug==2.3.8
     # via flask
-zipp==3.4.1
+zipp==3.19.1
     # via importlib-metadata
